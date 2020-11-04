@@ -3,7 +3,6 @@ package models
 // Encrypt these values irl
 // PlaidIntegration Table that stores plaid access info needed for requests to linked bank accounts
 type PlaidIntegration struct {
-	gorm.Model
 	User        string `json:"user"`
 	ItemID      string `json:"itemid"`
 	AccessToken string `json:"accesstoken"`

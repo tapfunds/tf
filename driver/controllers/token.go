@@ -1,16 +1,16 @@
 package controllers
 
 import (
-	"tfdb/models"
 	"fmt"
 	"net/http"
+	"tfdb/models"
 	"github.com/gin-gonic/gin"
 )
 
 // GetPlaidInfo ... Get all users
 func GetPlaidInfo(c *gin.Context) {
 	var plaidInfo []models.PlaidIntegration
-	err := models.GetAllPlaidInfo(&plaidInfo)
+	err := models.GetPlaidInfo(&plaidInfo)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -52,7 +52,7 @@ func UpdatePlaidInfo(c *gin.Context) {
 		c.JSON(http.StatusNotFound, plaidInfo)
 	}
 	c.BindJSON(&plaidInfo)
-	err = models.UpdateUser(&plaidInfo, id)
+	err = models.UpdatePlaidInfo(&plaidInfo, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {

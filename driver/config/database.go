@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 var(
 	DB_HOST = os.Getenv("DB_HOST")

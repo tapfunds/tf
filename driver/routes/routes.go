@@ -12,10 +12,10 @@ func SetupRouter() *gin.Engine {
 	tok := r.Group("/db")
 	{
 		tok.GET("token", controllers.GetPlaidInfo)
-		tok.POST("user", controllers.CreatePlaidInfo)
-		tok.GET("user/:id", controllers.GetPlaidInfoByID)
-		tok.PUT("user/:id", controllers.UpdatePlaidInfo)
-		tok.DELETE("user/:id", controllers.DeletePlaidInfo)
+		tok.POST("token", controllers.CreatePlaidInfo)
+		tok.GET("token/:id", controllers.GetPlaidInfoByID)
+		tok.PUT("token/:id", controllers.UpdatePlaidInfo)
+		tok.DELETE("token/:id", controllers.DeletePlaidInfo)
 	}
 	return r
 }
