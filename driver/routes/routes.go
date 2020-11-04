@@ -2,6 +2,7 @@ package routes
 
 import (
 	"tfdb/controllers"
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,6 +10,7 @@ import (
 //SetupRouter ... Configure routes
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(cors.Default())
 	tok := r.Group("/db")
 	{
 		tok.GET("token", controllers.GetPlaidInfo)

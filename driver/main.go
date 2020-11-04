@@ -1,25 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"tfdb/config"
-	"tfdb/models"
-	"tfdb/routes"
-	"gorm.io/gorm"
-	"gorm.io/driver/postgres"
+	"tfdb/controllers" // new
+	"tfdb/models"                  // new
+
+	"github.com/gin-gonic/gin"
 )
 
-var err error
-
 func main() {
-	dsn := "user=postgres password=*Grow dbname=tapfunds port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	config.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		fmt.Println("Status:", err)
-	}
-	config.DB.AutoMigrate(&models.PlaidIntegration{})
-	r := routes.SetupRouter()
-	//runnin
+	r := gin.Default()
+
+	db := models.SetupModels() // new
+
+	// Provide db variable to controllers
+	r.Use(func(c *gin.Context) {
+		c.Set("db", db)
+		c.Next()
+	})
+
+	r.GET("/books", controllers.FindBooks)
+
+	r.POST("/books", controllers.CreateBook) // create
+
+	r.GET("/books/:id", controllers.FindBook) // find by id
+
+	r.PATCH("/books/:id", controllers.UpdateBook) // update by id
+
+	r.DELETE("/books/:id", controllers.DeleteBook) // delete by id
+
 	r.Run()
 }
