@@ -16,19 +16,18 @@ func SetupModels() *gorm.DB {
 
 	// To get the value from the config file using key
 
-	// // viper package read .env
-	// viper_user := viper.Get("DB_USER")
-	// viper_password := viper.Get("DB_PASSWORD")
-	// viper_db := viper.Get("DB_DBNAME")
-	// viper_host := viper.Get("DB_HOST")
-	// viper_port := viper.Get("DB_PORT")
+	// viper package read .env
+	viper_user := viper.Get("DB_USER")
+	viper_password := viper.Get("DB_PASSWORD")
+	viper_db := viper.Get("DB_DBNAME")
+	viper_host := viper.Get("DB_HOST")
+	viper_port := viper.Get("DB_PORT")
 
-	// // https://gobyexample.com/string-formatting
-	// prosgret_conname := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v sslmode=disable", viper_host, viper_port, viper_user, viper_db, viper_password)
-
-	// fmt.Println("conname is\t\t", prosgret_conname)
+	// https://gobyexample.com/string-formatting
+	dsn := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v sslmode=disable", viper_host, viper_port, viper_user, viper_db, viper_password)
 
 	fmt.Println("conname is\t\t", dsn)
+
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	
