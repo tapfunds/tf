@@ -9,3 +9,11 @@ type PlaidIntegration struct {
 	AccessToken string `json:"accesstoken"`
 	PaymentID   string `json:"paymentid"`
 }
+
+// CreatePlaidIntegration create new entries in table
+type CreatePlaidIntegration struct {
+	User        string `json:"user" binding:"required"`
+	ItemID      string `json:"itemid" binding:"required"`
+	AccessToken string `json:"accesstoken" binding:"required"`
+	PaymentID   string `json:"paymentid" binding:"required"`
+}

@@ -1,73 +1,72 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
 	"tfdb/models"
+	"net/http"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-// GetPlaidInfo ... Get all users
-func GetPlaidInfo(c *gin.Context) {
-	var plaidInfo []models.PlaidIntegration
-	err := models.GetPlaidInfo(&plaidInfo)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, plaidInfo)
-	}
+// FindPlaidInfo ... Get all users
+// GET /books
+// Get all books
+func FindPlaidInfos(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	var info []models.PlaidIntegration
+	db.Find(&info)
+
+	c.JSON(http.StatusOK, gin.H{"data": info})
 }
 
-// CreatePlaidInfo ... Create User
+// POST /books
+// Create new books
 func CreatePlaidInfo(c *gin.Context) {
-	var plaidInfo models.PlaidIntegration
-	c.BindJSON(&plaidInfo)
-	err := models.CreatePlaidInfo(&plaidInfo)
-	if err != nil {
-		fmt.Println(err.Error())
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, plaidInfo)
+	db := c.MustGet("db").(*gorm.DB)
+
+	// Validate input
+	var input models.CreatePlaidIntegration
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
+
+	// Create Book
+	token := models.PlaidIntegration{User: input.User, ItemID: input.ItemID, AccessToken: input.AccessToken, PaymentID: input.PaymentID}
+	db.Create(&token)
+
+	c.JSON(http.StatusOK, gin.H{"data": token})
+
 }
 
-// GetPlaidInfoByID ... Get the plaidInfo by id
-func GetPlaidInfoByID(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var plaidInfo models.PlaidIntegration
-	err := models.GetPlaidInfoByID(&plaidInfo, id)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, plaidInfo)
+// GET /books/:id
+// Find a book
+func FindPlaidInfo(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	// Get model if exist
+	var info models.PlaidIntegration
+	if err := db.Where("id = ?", c.Param("id")).First(&info).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{"data": info})
 }
 
-// UpdatePlaidInfo ... Update the plaidInfo information
-func UpdatePlaidInfo(c *gin.Context) {
-	var plaidInfo models.PlaidIntegration
-	id := c.Params.ByName("id")
-	err := models.GetPlaidInfoByID(&plaidInfo, id)
-	if err != nil {
-		c.JSON(http.StatusNotFound, plaidInfo)
-	}
-	c.BindJSON(&plaidInfo)
-	err = models.UpdatePlaidInfo(&plaidInfo, id)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, plaidInfo)
-	}
-}
-
-// DeletePlaidInfo ... Delete the plaidInfo
+// DELETE /books/:id
+// Delete a book
 func DeletePlaidInfo(c *gin.Context) {
-	var plaidInfo models.PlaidIntegration
-	id := c.Params.ByName("id")
-	err := models.DeletePlaidInfo(&plaidInfo, id)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, gin.H{"id" + id: "is deleted"})
+	db := c.MustGet("db").(*gorm.DB)
+
+	// Get model if exist
+	var info models.PlaidIntegration
+	if err := db.Where("id = ?", c.Param("id")).First(&info).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
 	}
+
+	db.Delete(&info)
+
+	c.JSON(http.StatusOK, gin.H{"data": true})
 }

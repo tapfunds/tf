@@ -3,10 +3,9 @@ package controllers
 import (
 	"tfdb/models"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-
+	"fmt"
 )
 
 // GET /books
@@ -24,16 +23,20 @@ func FindBooks(c *gin.Context) {
 // Create new books
 func CreateBook(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	title := c.PostForm("Title")
+	author := c.PostForm("Author")
 
 	// Validate input
-	var input models.CreateBookInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// var input models.CreateBookInput
+	// if err := c.ShouldBindJSON(&input); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	fmt.Println("This didnt get far", title)
 
+	// 	return
+	// }
+	fmt.Println("This did get far", title, author)
 	// Create Book
-	book := models.Book{Title: input.Author, Author: input.Author}
+	book := models.Book{Title: title, Author: author}
 	db.Create(&book)
 
 	c.JSON(http.StatusOK, gin.H{"data": book})

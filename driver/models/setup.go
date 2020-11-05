@@ -28,7 +28,6 @@ func SetupModels() *gorm.DB {
 
 	// fmt.Println("conname is\t\t", prosgret_conname)
 
-	dsn := "user=postgres password=*Grow dbname=tapfunds port=5432 sslmode=disable"
 	fmt.Println("conname is\t\t", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -39,7 +38,7 @@ func SetupModels() *gorm.DB {
 		panic("Failed to connect to database!")
 	}
 
-	db.AutoMigrate(&Book{})
+	db.AutoMigrate(&Book{}, &PlaidIntegration{})
 
 	// Initialize value
 	// m := Book{Author: "author1", Title: "title1"}
