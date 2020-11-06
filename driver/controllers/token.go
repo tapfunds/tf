@@ -23,16 +23,13 @@ func FindPlaidInfos(c *gin.Context) {
 // Create new books
 func CreatePlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	user := c.PostForm("user")
+	itemID := c.PostForm("item_id")
+	accessToken := c.PostForm("access_token")
 
-	// Validate input
-	var input models.CreatePlaidIntegration
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
+	
 	// Create Book
-	token := models.PlaidIntegration{User: input.User, ItemID: input.ItemID, AccessToken: input.AccessToken, PaymentID: input.PaymentID}
+	token := models.PlaidIntegration{User: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
 	db.Create(&token)
 
 	c.JSON(http.StatusOK, gin.H{"data": token})

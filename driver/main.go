@@ -3,11 +3,13 @@ package main
 import (
 	"tfdb/controllers"
 	"tfdb/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	db := models.SetupModels() // new
 
