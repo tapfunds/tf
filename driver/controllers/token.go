@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"tfdb/models"
 	"net/http"
+	"tfdb/models"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -27,7 +28,6 @@ func CreatePlaidInfo(c *gin.Context) {
 	itemID := c.PostForm("item_id")
 	accessToken := c.PostForm("access_token")
 
-	
 	// Create Book
 	token := models.PlaidIntegration{User: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
 	db.Create(&token)
@@ -40,14 +40,14 @@ func CreatePlaidInfo(c *gin.Context) {
 // Find a book
 func FindPlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	l := c.Param("user")
 
 	// Get model if exist
-	var info models.PlaidIntegration
-	if err := db.Where("id = ?", c.Param("id")).First(&info).Error; err != nil {
+	var info []models.PlaidIntegration
+	if err := db.Select("item_id", "access_token").Where("user <> ?", l).Find(&info).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": info})
 }
 

@@ -26,7 +26,7 @@ func main() {
 	r.POST("/tokens", controllers.CreatePlaidInfo) // create
 
 	r.GET("/books/:id", controllers.FindBook) // find by id
-	r.GET("/tokens/:id", controllers.FindPlaidInfo) // find by id
+	r.GET("/tokens/:user", controllers.FindPlaidInfo) // find by id
 
 	r.PATCH("/books/:id", controllers.UpdateBook) // update by id
 
