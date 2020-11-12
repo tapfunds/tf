@@ -2,9 +2,10 @@ package models
 
 import (
 	"fmt"
+
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"github.com/spf13/viper"
 )
 
 func SetupModels() *gorm.DB {
@@ -28,21 +29,13 @@ func SetupModels() *gorm.DB {
 
 	fmt.Println("conname is\t\t", dsn)
 
-
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	
-	
-	
+
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
 
-	db.AutoMigrate(&Book{}, &PlaidIntegration{})
-
-	// Initialize value
-	// m := Book{Author: "author1", Title: "title1"}
-
-	// db.Create(&m)
+	db.AutoMigrate(&PlaidIntegration{})
 
 	return db
 }
