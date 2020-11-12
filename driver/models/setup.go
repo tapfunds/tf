@@ -20,7 +20,7 @@ func SetupModels() *gorm.DB {
 	// viper package read .env
 	viper_user := viper.Get("DB_USER")
 	viper_password := viper.Get("DB_PASSWORD")
-	viper_db := viper.Get("DB_DBNAME")
+	viper_db := viper.Get("DB_NAME")
 	viper_host := viper.Get("DB_HOST")
 	viper_port := viper.Get("DB_PORT")
 
