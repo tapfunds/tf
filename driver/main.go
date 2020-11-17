@@ -21,7 +21,7 @@ func main() {
 
 	r.GET("/tokens", controllers.FindPlaidInfos)
 	r.POST("/tokens", controllers.CreatePlaidInfo) // create
-	r.GET("/tokens/:user", controllers.FindPlaidInfo) // find by id
+	r.POST("/token", controllers.FindPlaidInfo) // find by id
 	r.DELETE("/tokens/:id", controllers.DeletePlaidInfo) // delete by id
 
 	r.Run()

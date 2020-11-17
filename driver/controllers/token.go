@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"tfdb/models"
 
@@ -8,9 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-// FindPlaidInfo ... Get all users
-// GET /books
-// Get all books
+// FindPlaidInfos ... Get all users
+// GET /tokens
+// Get all tokens
 func FindPlaidInfos(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -20,8 +21,8 @@ func FindPlaidInfos(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": info})
 }
 
-// POST /books
-// Create new books
+// POST /token
+// Create new token
 func CreatePlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	user := c.PostForm("user")
@@ -36,23 +37,23 @@ func CreatePlaidInfo(c *gin.Context) {
 
 }
 
-// GET /books/:id
-// Find a book
+// POST /token/:id
+// Find a token
 func FindPlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	l := c.Param("user")
-
+	l := c.PostForm("user")
+	fmt.Println("l",l)
 	// Get model if exist
 	var info []models.PlaidIntegration
-	if err := db.Select("item_id", "access_token").Where("user <> ?", l).Find(&info).Error; err != nil {
+	if err := db.Select("user", "item_id", "access_token").Where("user = ?", l).First(&info).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": info})
 }
 
-// DELETE /books/:id
-// Delete a book
+// DELETE /token/:id
+// Delete a token
 func DeletePlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 

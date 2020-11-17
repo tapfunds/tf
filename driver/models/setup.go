@@ -25,9 +25,9 @@ func SetupModels() *gorm.DB {
 	viper_port := viper.Get("DB_PORT")
 
 	// https://gobyexample.com/string-formatting
-	dsn := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v sslmode=disable TimeZone=America/New_York", viper_host, viper_port, viper_user, viper_db, viper_password)
+	dsn := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", viper_host, viper_port, viper_user, viper_db, viper_password)
 
-	fmt.Println("conname is\t\t", dsn)
+	fmt.Println("conname is", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
