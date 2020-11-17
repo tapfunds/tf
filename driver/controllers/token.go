@@ -25,12 +25,12 @@ func FindPlaidInfos(c *gin.Context) {
 // Create new token
 func CreatePlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	user := c.PostForm("user")
+	user := c.PostForm("user_id")
 	itemID := c.PostForm("item_id")
 	accessToken := c.PostForm("access_token")
 
 	// Create Book
-	token := models.PlaidIntegration{User: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
+	token := models.PlaidIntegration{UserID: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
 	db.Create(&token)
 
 	c.JSON(http.StatusOK, gin.H{"data": token})
@@ -45,7 +45,7 @@ func FindPlaidInfo(c *gin.Context) {
 	fmt.Println("l",l)
 	// Get model if exist
 	var info []models.PlaidIntegration
-	if err := db.Select("user", "item_id", "access_token").Where("user = ?", l).First(&info).Error; err != nil {
+	if err := db.Select("user_id", "item_id", "access_token").Where("user_id = ?", l).First(&info).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
