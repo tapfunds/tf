@@ -41,11 +41,11 @@ func CreatePlaidInfo(c *gin.Context) {
 // Find a token
 func FindPlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	l := c.PostForm("user")
+	l := c.PostForm("user_id")
 	fmt.Println("l",l)
 	// Get model if exist
 	var info []models.PlaidIntegration
-	if err := db.Select("user_id", "item_id", "access_token").Where("user_id = ?", l).First(&info).Error; err != nil {
+	if err := db.Select("item_id", "access_token").Where("user_id = ?", l).Find(&info).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
