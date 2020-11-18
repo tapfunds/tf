@@ -42,7 +42,6 @@ func CreatePlaidInfo(c *gin.Context) {
 func FindPlaidInfo(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	l := c.PostForm("user_id")
-	fmt.Println("l",l)
 	// Get model if exist
 	var info []models.PlaidIntegration
 	if err := db.Select("item_id", "access_token").Where("user_id = ?", l).Find(&info).Error; err != nil {
