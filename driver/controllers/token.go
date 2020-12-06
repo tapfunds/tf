@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"tfdb/models"
 
@@ -29,7 +28,7 @@ func CreatePlaidInfo(c *gin.Context) {
 	itemID := c.PostForm("item_id")
 	accessToken := c.PostForm("access_token")
 
-	// Create Book
+	// Create user
 	token := models.PlaidIntegration{UserID: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
 	db.Create(&token)
 
