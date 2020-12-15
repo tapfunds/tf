@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   go:
-    container_name: tfdbdriver
+    container_name: tfdb
     env_file:
       - .env
     build:
