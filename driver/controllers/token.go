@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"tfdb/models"
-	"tfdb/auth"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
