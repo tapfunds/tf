@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"tfdb/auth"
-	"tfdb/models"
-	"tfdb/security"
-	"tfdb/utils/formaterror"
+	"github.com/tapfunds/tfapi/api/auth"
+	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tfapi/api/security"
+	"github.com/tapfunds/tfapi/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 

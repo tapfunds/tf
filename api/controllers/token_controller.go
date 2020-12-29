@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"tfdb/auth"
-	"tfdb/models"
-	"tfdb/utils/formaterror"
+	"github.com/tapfunds/tfapi/api/auth"
+	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tfapi/api/utils/formaterror"
 
 	"github.com/gin-gonic/gin"
 )
@@ -61,7 +61,7 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 	}
 
 	integration.UserID = uid //the authenticated user is the one creating the post
-
+	integration.Prepare()
 	postCreated, err := integration.SaveToken(server.DB)
 	if err != nil {
 		errList := formaterror.FormatError(err.Error())
@@ -164,7 +164,7 @@ func (server *Server) UpdateIntegration(c *gin.Context) {
 	}
 	// Start processing the request data
 	editedIntegration := models.PlaidIntegration{}
-	err = json.Unmarshal(body, &post)
+	err = json.Unmarshal(body, &editedIntegration)
 	if err != nil {
 		errList["Unmarshal_error"] = "Cannot unmarshal body"
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -173,10 +173,10 @@ func (server *Server) UpdateIntegration(c *gin.Context) {
 		})
 		return
 	}
-	editedIntegration.ID = origPost.ID //this is important to tell the model the post id to update, the other update field are set above
-	editedIntegration.UserID = origPost.UserID
+	editedIntegration.ID = integration.ID //this is important to tell the model the post id to update, the other update field are set above
+	editedIntegration.UserID = integration.UserID
 
-	integrationtUpdated, err := editedIntegration.UpdateAPost(server.DB)
+	integrationtUpdated, err := editedIntegration.UpdateAIntegration(server.DB)
 	if err != nil {
 		errList := formaterror.FormatError(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{

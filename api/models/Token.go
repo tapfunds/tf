@@ -1,23 +1,18 @@
 package models
 
 import (
-	"errors"
 	"html"
-	"log"
-	"os"
 	"strings"
 	"time"
-
 
 	"github.com/jinzhu/gorm"
 )
 
-
 // PlaidIntegration Table that stores plaid access info needed for requests to linked bank accounts
 type PlaidIntegration struct {
-	ID          uint     `gorm:"primary_key;auto_increment" json:"id"`
+	ID          uint32   `gorm:"primary_key;auto_increment" json:"id"`
 	User		User	 `json:"user"`
-	UserID      string   `json:"userid"`
+	UserID      uint32   `gorm:"not null" json:"user_id"`
 	ItemID      string   `json:"itemid"`
 	AccessToken string   `json:"accesstoken"`
 	PaymentID   string   `json:"paymentid"`
@@ -25,11 +20,19 @@ type PlaidIntegration struct {
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+func (i *PlaidIntegration) Prepare() {
+	i.User = User{}
+	i.ItemID = html.EscapeString(strings.TrimSpace(i.ItemID))
+	i.AccessToken = html.EscapeString(strings.TrimSpace(i.AccessToken))
+	i.PaymentID = html.EscapeString(strings.TrimSpace(i.PaymentID))
+	i.CreatedAt = time.Now()
+	i.UpdatedAt = time.Now()
+}
 
 func (i *PlaidIntegration) SaveToken(db*gorm.DB) (*PlaidIntegration, error) {
 
 	var err error
-	err = db.Debug().Model(&PlaidIntegration).Create(&i).Error
+	err = db.Debug().Model(&PlaidIntegration{}).Create(&i).Error
 	if err != nil {
 		return &PlaidIntegration{}, err
 	}
@@ -68,7 +71,7 @@ func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, e
 
 	err = db.Debug().Model(&PlaidIntegration{}).Where("id = ?", i.ID).Updates(PlaidIntegration{ItemID: i.ItemID, AccessToken: i.AccessToken,  PaymentID: i.PaymentID, UpdatedAt: time.Now()}).Error
 	if err != nil {
-		return &Post{}, err
+		return &PlaidIntegration{}, err
 	}
 	if i.ID != 0 {
 		err = db.Debug().Model(&User{}).Where("id = ?", i.UserID).Take(&i.User).Error
@@ -87,7 +90,7 @@ func (i *PlaidIntegration) DeleteUserIntegrations(db *gorm.DB, uid uint32) (int6
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
-
+}
 
 func (i *PlaidIntegration) DeleteAIntegration(db *gorm.DB) (int64, error) {
 

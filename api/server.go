@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"tfdb/controllers"
+	"github.com/tapfunds/tfapi/api/controllers"
 )
 
 var server = controllers.Server{}

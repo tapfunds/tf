@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"tfdb/models"
+	"github.com/tapfunds/tfapi/api/models"
 )
 
 var users = []models.User{

@@ -1,18 +1,18 @@
-package models
+package controllers
 
 import (
 	"fmt"
 	"log"
 	"net/http"
 
-	"tfdb/middlewares"
+	"github.com/tapfunds/tfapi/api/middlewares"
 
 	"github.com/gin-gonic/gin"
-	"tfdb/models"
+	"github.com/tapfunds/tfapi/api/models"
 
 	// "github.com/spf13/viper"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/jinzhu/gorm"
 )
 
 
@@ -44,7 +44,7 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	DBURL  := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
 
 
-	server.DB, err = gorm.Open(postgres.Open(DBURL), &gorm.Config{})
+	server.DB, err = gorm.Open(Dbdriver, DBURL)
 
 	if err != nil {
 		panic("Failed to connect to database!")

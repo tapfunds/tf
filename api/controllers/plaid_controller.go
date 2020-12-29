@@ -1,4 +1,4 @@
-package controllors
+package controllers
 
 
 import (
@@ -7,9 +7,6 @@ import (
 	"os"
 	"strings"
 	"time"
-	"tfdb/controllers"
-	"tfdb/models"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/plaid/plaid-go/plaid"
 )
@@ -83,7 +80,7 @@ func renderError(c *gin.Context, err error) {
 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 }
 
-func createLinkToken(c *gin.Context) {
+func (server *Server) createLinkToken(c *gin.Context) {
 	linkToken, err := linkTokenCreate(nil)
 	if err != nil {
 		renderError(c, err)
@@ -122,7 +119,7 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 	return resp.LinkToken, nil
 }
 
-func getAccessToken(c *gin.Context) {
+func (server *Server) getAccessToken(c *gin.Context) {
 	publicToken := c.PostForm("public_token")
 	var accessToken string
 	var itemID string
@@ -152,7 +149,7 @@ func getAccessToken(c *gin.Context) {
 	})
 }
 
-func auth(c *gin.Context) {
+func (server *Server) authorize(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	response, err := client.GetAuth(accessToken)
@@ -167,7 +164,7 @@ func auth(c *gin.Context) {
 	})
 }
 
-func balance(c *gin.Context) {
+func (server *Server) balance(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	response, err := client.GetBalances(accessToken)
@@ -181,7 +178,7 @@ func balance(c *gin.Context) {
 	})
 }
 
-func accounts(c *gin.Context) {
+func (server *Server) accounts(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	response, err := client.GetAccounts(accessToken)
@@ -195,7 +192,7 @@ func accounts(c *gin.Context) {
 	})
 }
 
-func item(c *gin.Context) {
+func (server *Server) item(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	response, err := client.GetItem(accessToken)
@@ -217,7 +214,7 @@ func item(c *gin.Context) {
 	})
 }
 
-func identity(c *gin.Context) {
+func (server *Server) identity(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	response, err := client.GetIdentity(accessToken)
@@ -231,7 +228,7 @@ func identity(c *gin.Context) {
 	})
 }
 
-func transactions(c *gin.Context) {
+func (server *Server) transactions(c *gin.Context) {
 	accessToken := c.PostForm("access_token")
 
 	// pull transactions for the past 30 days
@@ -254,7 +251,7 @@ func transactions(c *gin.Context) {
 
 
 // this is new , get stripe token then do some stuff with stripe api
-func transfer(c *gin.Context){
+func (server *Server) transfer(c *gin.Context){
 	accessToken := c.PostForm("access_token_institution")
 	account := c.PostForm("account")
 

@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"tfdb/fileupload"
+	"github.com/tapfunds/tfapi/api/fileupload"
 	"io/ioutil"
 	"log"
 	"net/http"	
@@ -12,10 +12,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
-	"tfdb/auth"
-	"tfdb/models"
-	"tfdb/security"
-	"tfdb/utils/formaterror"
+	"github.com/tapfunds/tfapi/api/auth"
+	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tfapi/api/security"
+	"github.com/tapfunds/tfapi/api/utils/formaterror"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
