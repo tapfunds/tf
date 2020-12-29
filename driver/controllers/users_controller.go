@@ -389,29 +389,9 @@ func (server *Server) DeleteUser(c *gin.Context) {
 	}
 
 	// Also delete the posts, likes and the comments that this user created if any:
-	comment := models.Comment{}
-	like := models.Like{}
-	post := models.Post{}
+	integration := models.PlaidIntegration{}
 
-	_, err = post.DeleteUserPosts(server.DB, uint32(uid))
-	if err != nil {
-		errList["Other_error"] = "Please try again later"
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  err,
-		})
-		return
-	}
-	_, err = comment.DeleteUserComments(server.DB, uint32(uid))
-	if err != nil {
-		errList["Other_error"] = "Please try again later"
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  err,
-		})
-		return
-	}
-	_, err = like.DeleteUserLikes(server.DB, uint32(uid))
+	_, err = integration.DeleteUserIntegrations(server.DB, uint32(uid))
 	if err != nil {
 		errList["Other_error"] = "Please try again later"
 		c.JSON(http.StatusInternalServerError, gin.H{

@@ -87,7 +87,7 @@ func (server *Server) GetUserIntegration(c *gin.Context) {
 	}
 	integration := models.PlaidIntegration{}
 
-	integration, err := post.FindUserIntegrations(server.DB, uint32(uid))
+	integrations, err := integration.FindUserIntegrations(server.DB, uint32(uid))
 	if err != nil {
 		errList["No_post"] = "No Post Found"
 		c.JSON(http.StatusNotFound, gin.H{
@@ -98,7 +98,7 @@ func (server *Server) GetUserIntegration(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
-		"response": posts,
+		"response": integrations,
 	})
 }
 
@@ -120,4 +120,88 @@ func DeletePlaidInfo(c *gin.Context) {
 	db.Delete(&info)
 
 	c.JSON(http.StatusOK, gin.H{"data": true})
+}
+func (server *Server) DeletePost(c *gin.Context) {
+
+	postID := c.Param("id")
+	// Is a valid post id given to us?
+	pid, err := strconv.ParseUint(postID, 10, 64)
+	if err != nil {
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+
+	fmt.Println("this is delete post sir")
+
+	// Is this user authenticated?
+	uid, err := auth.ExtractTokenID(c.Request)
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+	// Check if the post exist
+	post := models.Post{}
+	err = server.DB.Debug().Model(models.Post{}).Where("id = ?", pid).Take(&post).Error
+	if err != nil {
+		errList["No_post"] = "No Post Found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+	// Is the authenticated user, the owner of this post?
+	if uid != post.AuthorID {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+	// If all the conditions are met, delete the post
+	_, err = post.DeleteAPost(server.DB)
+	if err != nil {
+		errList["Other_error"] = "Please try again later"
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errList,
+		})
+		return
+	}
+	comment := models.Comment{}
+	like := models.Like{}
+
+	// Also delete the likes and the comments that this post have:
+	_, err = comment.DeletePostComments(server.DB, pid)
+	if err != nil {
+		errList["Other_error"] = "Please try again later"
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errList,
+		})
+		return
+	}
+	_, err = like.DeletePostLikes(server.DB, pid)
+	if err != nil {
+		errList["Other_error"] = "Please try again later"
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errList,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": "Post deleted",
+	})
 }

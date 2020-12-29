@@ -62,7 +62,7 @@ func (i *PlaidIntegration) FindUserIntegrations(db *gorm.DB, uid uint32) (*[]Pla
 	return &integrations, nil
 }
 
-func (i *PlaidIntegration) UpdateAItem(db *gorm.DB) (*PlaidIntegration, error) {
+func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, error) {
 
 	var err error
 
