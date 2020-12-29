@@ -13,6 +13,7 @@ FROM gcr.io/distroless/base-debian10
 
 COPY --from=build /opt/src/driver/main /
 
+go mod init github.com/qweliant/forum
 
 EXPOSE 8080
 ENTRYPOINT ["/main"]

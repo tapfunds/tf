@@ -36,9 +36,9 @@ func (s *Server) initializeRoutes() {
 		v1.POST("/transfer", middlewares.TokenAuthMiddleware(), s.transfer)
 
 		//Integration Token routes
-		v1.GET("/tokens", middlewares.TokenAuthMiddleware(),s.FindPlaidInfos)
-		v1.POST("/tokens", middlewares.TokenAuthMiddleware(),s.CreatePlaidInfo) // create
-		v1.POST("/token", middlewares.TokenAuthMiddleware(),s.FindPlaidInfo) // find by id
-		v1.DELETE("/tokens/:id", middlewares.TokenAuthMiddleware(),s.DeletePlaidInfo) // delete by id
+		v1.GET("/tokens/:id", middlewares.TokenAuthMiddleware(),s.GetUserIntegration)
+		v1.POST("/token", middlewares.TokenAuthMiddleware(),s.CreatePlaidInfo) // create
+		v1.PUT("/token", middlewares.TokenAuthMiddleware(),s.UpdateIntegration) // find by id
+		v1.DELETE("/tokens/:id", middlewares.TokenAuthMiddleware(),s.DeleteIntegration) // delete by id
 	}
 }
