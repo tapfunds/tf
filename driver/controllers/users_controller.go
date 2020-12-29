@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/victorsteven/forum/api/fileupload"
+	"tfdb/fileupload"
 	"io/ioutil"
 	"log"
 	"net/http"	

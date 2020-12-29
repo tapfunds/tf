@@ -7,51 +7,107 @@ import (
 	"gorm.io/gorm"
 )
 
-// FindPlaidInfos ... Get all users
-// GET /tokens
-// Get all tokens
-func FindPlaidInfos(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-
-	var info []models.PlaidIntegration
-	db.Find(&info)
-
-	c.JSON(http.StatusOK, gin.H{"data": info})
-}
-
 // POST /token
 // Create new token
-func CreatePlaidInfo(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	user := c.PostForm("user_id")
-	itemID := c.PostForm("item_id")
-	accessToken := c.PostForm("access_token")
+func (server *Server) CreatePlaidInfo(c *gin.Context) {
+	//clear previous error if any
+	errList = map[string]string{}
 
-	// Create user
-	token := models.PlaidIntegration{UserID: user, ItemID: itemID, AccessToken: accessToken, PaymentID: ""}
-	db.Create(&token)
-
-	c.JSON(http.StatusOK, gin.H{"data": token})
-
-}
-
-// POST /token/:id
-// Find a token
-func FindPlaidInfo(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	l := c.PostForm("user_id")
-	// Get model if exist
-	var info []models.PlaidIntegration
-	if err := db.Select("item_id", "access_token").Where("user_id = ?", l).Find(&info).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		errList["Invalid_body"] = "Unable to get request"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": info})
+
+	integration := models.PlaidIntegration{}
+	err = json.Unmarshal(body, &integration)
+	if err != nil {
+		errList["Unmarshal_error"] = "Cannot unmarshal body"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+	uid, err := auth.ExtractTokenID(c.Request)
+
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+	// check if the user exist:
+	user := models.User{}
+	err = server.DB.Debug().Model(models.User{}).Where("id = ?", uid).Take(&user).Error
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+
+	integration.UserID = uid //the authenticated user is the one creating the post
+
+	postCreated, err := integration.SaveToken(server.DB)
+	if err != nil {
+		errList := formaterror.FormatError(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errList,
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status":   http.StatusCreated,
+		"response": postCreated,
+	})
+}
+
+func (server *Server) GetUserIntegration(c *gin.Context) {
+
+	userID := c.Param("id")
+	// Is a valid user id given to us?
+	uid, err := strconv.ParseUint(userID, 10, 64)
+	if err != nil {
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+	integration := models.PlaidIntegration{}
+
+	integration, err := post.FindUserIntegrations(server.DB, uint32(uid))
+	if err != nil {
+		errList["No_post"] = "No Post Found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": posts,
+	})
 }
 
 // DELETE /token/:id
 // Delete a token
 func DeletePlaidInfo(c *gin.Context) {
+	//clear previous error if any
+	errList = map[string]string{}
+
 	db := c.MustGet("db").(*gorm.DB)
 
 	// Get model if exist
