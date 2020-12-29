@@ -19,7 +19,6 @@ type User struct {
 	Username   string    `gorm:"size:255;not null;unique" json:"username"`
 	Email      string    `gorm:"size:100;not null;unique" json:"email"`
 	Password   string    `gorm:"size:100;not null;" json:"password"`
-	AvatarPath string    `gorm:"size:255;null;" json:"avatar_path"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
@@ -43,9 +42,6 @@ func (u *User) Prepare() {
 func (u *User) AfterFind() (err error) {
 	if err != nil {
 		return err
-	}
-	if u.AvatarPath != "" {
-		u.AvatarPath = os.Getenv("DO_SPACES_URL") + u.AvatarPath
 	}
 	//dont return the user password
 	// u.Password = ""

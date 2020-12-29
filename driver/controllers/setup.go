@@ -2,40 +2,70 @@ package models
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 
-	"github.com/spf13/viper"
+	"tfdb/middlewares"
+
+	"github.com/gin-gonic/gin"
+	"tfdb/models"
+
+	// "github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func SetupModels() *gorm.DB {
 
-	//db, err := gorm.Open("sqlite3", "test.db")
+type Server struct {
+	DB     *gorm.DB
+	Router *gin.Engine
+}
 
-	// Enable VIPER to read Environment Variables
-	viper.AutomaticEnv()
+var errList = make(map[string]string)
 
-	// To get the value from the config file using key
 
-	// viper package read .env
-	viper_user := viper.Get("DB_USER")
-	viper_password := viper.Get("DB_PASSWORD")
-	viper_db := viper.Get("DB_NAME")
-	viper_host := viper.Get("DB_HOST")
-	viper_port := viper.Get("DB_PORT")
+
+func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+
+	var err error
+	// // Enable VIPER to read Environment Variables
+	// viper.AutomaticEnv()
+
+	// // To get the value from the config file using key
+
+	// // viper package read .env
+	// viper_user := viper.Get("DB_USER")
+	// viper_password := viper.Get("DB_PASSWORD")
+	// viper_db := viper.Get("DB_NAME")
+	// viper_host := viper.Get("DB_HOST")
+	// viper_port := viper.Get("DB_PORT")
 
 	// https://gobyexample.com/string-formatting
-	dsn := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", viper_host, viper_port, viper_user, viper_db, viper_password)
+	DBURL  := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
 
-	fmt.Println("conname is", dsn)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	server.DB, err = gorm.Open(postgres.Open(DBURL), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")
+		log.Fatal("This is the error connecting to postgres:", err)
+	} else {
+		fmt.Printf("We are connected to the %s database", Dbdriver)
 	}
 
-	db.AutoMigrate(&PlaidIntegration{})
+	server.DB.Debug().AutoMigrate(
+		&models.PlaidIntegration{},
+		&models.User{},
+		&models.ResetPassword{},	
+	)
 
-	return db
+
+	server.Router = gin.Default()
+	server.Router.Use(middlewares.CORSMiddleware())
+
+	server.initializeRoutes()
+}
+
+func (server *Server) Run(addr string) {
+	log.Fatal(http.ListenAndServe(addr, server.Router))
 }
