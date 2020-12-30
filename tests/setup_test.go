@@ -117,7 +117,7 @@ func seedUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func refreshUserAndPostTable() error {
+func refreshUserAndIntegrationTable() error {
 
 	err := server.DB.DropTableIfExists(&models.User{}, &models.PlaidIntegration{}).Error
 	if err != nil {
@@ -131,9 +131,10 @@ func refreshUserAndPostTable() error {
 	return nil
 }
 
-func seedOneUserAndOnePost() (models.User, models.PlaidIntegration, error) {
+func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error) {
 
 	user := models.User{
+		ID: 1,
 		Username: "HannahArendt",
 		Email:    "hannaharendt@example.com",
 		Password: "password",
@@ -155,7 +156,7 @@ func seedOneUserAndOnePost() (models.User, models.PlaidIntegration, error) {
 	return user, token, nil
 }
 
-func seedUsersAndPosts() ([]models.User, []models.PlaidIntegration, error) {
+func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error) {
 
 	var err error
 
@@ -164,11 +165,13 @@ func seedUsersAndPosts() ([]models.User, []models.PlaidIntegration, error) {
 	}
 	var users = []models.User{
 		models.User{
+			ID: 1,
 			Username: "Qwelian",
 			Email:    "qwelian@example.com",
 			Password: "password",
 		},
 		models.User{
+			ID: 2,
 			Username: "Michele",
 			Email:    "mfoucault@example.com",
 			Password: "password",
