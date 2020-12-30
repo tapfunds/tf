@@ -47,10 +47,11 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	server.DB, err = gorm.Open(Dbdriver, DBURL)
 
 	if err != nil {
-		panic("Failed to connect to database!")
 		log.Fatal("This is the error connecting to postgres:", err)
+		panic("Failed to connect to database!")
+
 	} else {
-		fmt.Printf("We are connected to the %s database", Dbdriver)
+		fmt.Printf("Connected to a %s database", Dbdriver)
 	}
 
 	server.DB.Debug().AutoMigrate(
