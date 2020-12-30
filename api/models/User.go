@@ -1,14 +1,14 @@
+
 package models
 
 import (
 	"errors"
 	"html"
 	"log"
+	"os"
 	"strings"
 	"time"
-
 	"github.com/tapfunds/tfapi/api/security"
-
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
 )
@@ -42,6 +42,9 @@ func (u *User) Prepare() {
 func (u *User) AfterFind() (err error) {
 	if err != nil {
 		return err
+	}
+	if u.AvatarPath != "" {
+		u.AvatarPath = os.Getenv("DO_SPACES_URL") + u.AvatarPath
 	}
 	//dont return the user password
 	// u.Password = ""
@@ -165,7 +168,7 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 			map[string]interface{}{
 				"password":  u.Password,
 				"email":     u.Email,
-				"update_at": time.Now(),
+				"updated_at": time.Now(),
 			},
 		)
 	}
@@ -173,7 +176,7 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"email":     u.Email,
-			"update_at": time.Now(),
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {

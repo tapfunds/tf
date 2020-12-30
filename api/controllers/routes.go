@@ -30,15 +30,15 @@ func (s *Server) initializeRoutes() {
 		v1.POST("/balance", middlewares.TokenAuthMiddleware(), s.balance)
 		v1.POST("/auth", middlewares.TokenAuthMiddleware(), s.authorize)
 		v1.POST("/accounts", middlewares.TokenAuthMiddleware(), s.accounts)
-		v1.POST("/item", middlewares.TokenAuthMiddleware(), s.item)
+		v1.POST("/plaid/item", middlewares.TokenAuthMiddleware(), s.item)
 		v1.POST("/identity", middlewares.TokenAuthMiddleware(), s.identity)
 		v1.POST("/transactions", middlewares.TokenAuthMiddleware(), s.transactions)
 		v1.POST("/transfer", middlewares.TokenAuthMiddleware(), s.transfer)
 
 		//Integration Token routes
-		v1.GET("/tokens/:id", middlewares.TokenAuthMiddleware(),s.GetUserIntegration)
-		v1.POST("/token", middlewares.TokenAuthMiddleware(),s.CreatePlaidInfo) // create
-		v1.PUT("/token", middlewares.TokenAuthMiddleware(),s.UpdateIntegration) // find by id
-		v1.DELETE("/tokens/:id", middlewares.TokenAuthMiddleware(),s.DeleteIntegration) // delete by id
+		v1.POST("/retrieveitems", middlewares.TokenAuthMiddleware(),s.GetUserIntegration)
+		v1.POST("/newitem", middlewares.TokenAuthMiddleware(),s.CreatePlaidInfo) // create
+		v1.PUT("/items/:id", middlewares.TokenAuthMiddleware(),s.UpdateIntegration) // find by id
+		v1.DELETE("/items/:id", middlewares.TokenAuthMiddleware(),s.DeleteIntegration) // delete by id
 	}
 }

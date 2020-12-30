@@ -341,6 +341,7 @@ func (server *Server) UpdateUser(c *gin.Context) {
 	})
 }
 
+
 func (server *Server) DeleteUser(c *gin.Context) {
 
 	//clear previous error if any

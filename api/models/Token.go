@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -50,7 +51,7 @@ func (i *PlaidIntegration) FindUserIntegrations(db *gorm.DB, uid uint32) (*[]Pla
 
 	var err error
 	integrations := []PlaidIntegration{}
-	err = db.Debug().Model(&PlaidIntegration{}).Where("author_id = ?", uid).Limit(100).Order("created_at desc").Find(&integrations).Error
+	err = db.Debug().Model(&PlaidIntegration{}).Where("user_id = ?", uid).Limit(100).Order("created_at desc").Find(&integrations).Error
 	if err != nil {
 		return &[]PlaidIntegration{}, err
 	}
@@ -68,6 +69,7 @@ func (i *PlaidIntegration) FindUserIntegrations(db *gorm.DB, uid uint32) (*[]Pla
 func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, error) {
 
 	var err error
+	fmt.Println(i.UserID, "USER ID")
 
 	err = db.Debug().Model(&PlaidIntegration{}).Where("id = ?", i.ID).Updates(PlaidIntegration{ItemID: i.ItemID, AccessToken: i.AccessToken,  PaymentID: i.PaymentID, UpdatedAt: time.Now()}).Error
 	if err != nil {
@@ -85,7 +87,7 @@ func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, e
 //When a user is deleted, we also delete the post that the user had
 func (i *PlaidIntegration) DeleteUserIntegrations(db *gorm.DB, uid uint32) (int64, error) {
 	integrations := []PlaidIntegration{}
-	db = db.Debug().Model(&PlaidIntegration{}).Where("author_id = ?", uid).Find(&integrations).Delete(&integrations)
+	db = db.Debug().Model(&PlaidIntegration{}).Where("user_id = ?", uid).Find(&integrations).Delete(&integrations)
 	if db.Error != nil {
 		return 0, db.Error
 	}

@@ -1,0 +1,22 @@
+version: "3.4"
+services:
+  go:
+    container_name: tfapi
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 8080:8080
+    restart: on-failure
+    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+      - .:/usr/src/app
+    networks:
+      - tapfunds
+
+
+# Networks to be created to facilitate communication between containers
+networks:
+  tapfunds:
+    driver: bridge

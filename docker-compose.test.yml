@@ -1,0 +1,12 @@
+services:
+  app_test:
+    container_name: tfapi_test
+    build:
+      context: .
+      dockerfile: ./Dockerfile.test
+    networks:
+      - tapfunds_test
+  
+networks:
+  tapfunds_test:
+    driver: bridge
