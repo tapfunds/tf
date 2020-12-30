@@ -1,6 +1,10 @@
+version: "3.4"
+
 services:
-  app_test:
+  tapfunds_test:
     container_name: tfapi_test
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./Dockerfile.test

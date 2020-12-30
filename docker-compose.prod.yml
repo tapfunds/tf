@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  app:
+    container_name: full_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile.prod
+    ports: 
+      - 9999:8888 
+    env_file:
+      - .env
+    restart: on-failure
+    environment:
+      - DOMAIN_NAME=tapfunds.net
+    networks:
+      - tapfunds
+
+# Networks to be created to facilitate communication between containers
+networks:
+  tapfunds:
+    driver: bridge
