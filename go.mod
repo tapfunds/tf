@@ -22,6 +22,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/twinj/uuid v1.0.0
 	github.com/wacul/ptr v1.0.0 // indirect
+	go.mongodb.org/mongo-driver v1.4.4 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/sys v0.0.0-20201223074533-0d417f636930 // indirect
 	golang.org/x/text v0.3.4 // indirect
