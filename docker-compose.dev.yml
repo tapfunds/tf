@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   go:
-    container_name: tfapi
+    container_name: tfapi_dev 
     env_file:
       - .env
     build:
