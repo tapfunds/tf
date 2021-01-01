@@ -94,7 +94,7 @@ func (server *Server) GetUserIntegration(c *gin.Context) {
 
 	integrations, err := integration.FindUserIntegrations(server.DB, uint32(uid))
 	if err != nil {
-		errList["No_post"] = "No Post Found"
+		errList["No_post"] = "No Plaid Credentials Found"
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": http.StatusNotFound,
 			"error":  errList,
