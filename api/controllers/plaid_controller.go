@@ -102,7 +102,7 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 			// This should correspond to a unique id for the current user.
 			ClientUserID: time.Now().String(),
 		},
-		ClientName:        "Plaid Quickstart",
+		ClientName:        "tapfunds",
 		Products:          products,
 		CountryCodes:      countryCodes,
 		Language:          "en",
@@ -110,12 +110,15 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 		PaymentInitiation: paymentInitiation,
 	}
 	resp, err := client.CreateLinkToken(configs)
+	fmt.Println("Shit not it")
+
 	if err != nil {
 		return "", &httpError{
 			errorCode: http.StatusBadRequest,
 			error:     err.Error(),
 		}
 	}
+	fmt.Println("Shit went better than it shouldve")
 	return resp.LinkToken, nil
 }
 
