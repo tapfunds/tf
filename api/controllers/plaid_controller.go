@@ -110,7 +110,6 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 		PaymentInitiation: paymentInitiation,
 	}
 	resp, err := client.CreateLinkToken(configs)
-	fmt.Println("Shit not it")
 
 	if err != nil {
 		return "", &httpError{
@@ -118,7 +117,6 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 			error:     err.Error(),
 		}
 	}
-	fmt.Println("Shit went better than it shouldve")
 	return resp.LinkToken, nil
 }
 
