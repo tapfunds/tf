@@ -16,6 +16,7 @@ require (
 	github.com/matcornic/hermes/v2 v2.1.0
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/morikuni/aec v1.0.0 // indirect
+	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
 	github.com/plaid/plaid-go v0.0.0-20201218232658-0eeb7d956529
 	github.com/sendgrid/rest v2.6.2+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.7.2+incompatible
