@@ -1,4 +1,3 @@
-
 package models
 
 import (
@@ -8,9 +7,10 @@ import (
 	"os"
 	"strings"
 	"time"
-	"github.com/tapfunds/tfapi/api/security"
+
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
+	"github.com/tapfunds/tfapi/api/security"
 )
 
 type User struct {
@@ -166,8 +166,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 
 		db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 			map[string]interface{}{
-				"password":  u.Password,
-				"email":     u.Email,
+				"password":   u.Password,
+				"email":      u.Email,
 				"updated_at": time.Now(),
 			},
 		)
@@ -175,7 +175,7 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"email":     u.Email,
+			"email":      u.Email,
 			"updated_at": time.Now(),
 		},
 	)

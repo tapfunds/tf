@@ -8,19 +8,18 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tfapi/api/security"
-
 )
 
 // PlaidIntegration Table that stores plaid access info needed for requests to linked bank accounts
 type PlaidIntegration struct {
-	ID          uint32   `gorm:"primary_key;auto_increment" json:"id"`
-	User		User	 `json:"user"`
-	UserID      uint32   `gorm:"not null" json:"user_id"`
-	ItemID      string   `json:"itemid"`
-	AccessToken string   `json:"accesstoken"`
-	PaymentID   string   `json:"paymentid"`
-	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID          uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	User        User      `json:"user"`
+	UserID      uint32    `gorm:"not null" json:"user_id"`
+	ItemID      string    `json:"itemid"`
+	AccessToken string    `json:"accesstoken"`
+	PaymentID   string    `json:"paymentid"`
+	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 func (i *PlaidIntegration) BeforeSave() error {
@@ -43,7 +42,7 @@ func (i *PlaidIntegration) Prepare() {
 	i.UpdatedAt = time.Now()
 }
 
-func (i *PlaidIntegration) SaveToken(db*gorm.DB) (*PlaidIntegration, error) {
+func (i *PlaidIntegration) SaveToken(db *gorm.DB) (*PlaidIntegration, error) {
 
 	var err error
 	err = db.Debug().Model(&PlaidIntegration{}).Create(&i).Error
@@ -84,7 +83,7 @@ func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, e
 	var err error
 	fmt.Println(i.UserID, "USER ID")
 
-	err = db.Debug().Model(&PlaidIntegration{}).Where("id = ?", i.ID).Updates(PlaidIntegration{ItemID: i.ItemID, AccessToken: i.AccessToken,  PaymentID: i.PaymentID, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&PlaidIntegration{}).Where("id = ?", i.ID).Updates(PlaidIntegration{ItemID: i.ItemID, AccessToken: i.AccessToken, PaymentID: i.PaymentID, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &PlaidIntegration{}, err
 	}
