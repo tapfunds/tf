@@ -2,6 +2,8 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: tfapi
+  labels:
+    app: tfapi
 spec:
   replicas: 2
   selector:
@@ -14,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tfapi
-          image: qweliant/tfapi
+          image: qweliant/tfapi_go
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -25,11 +27,9 @@ apiVersion: v1
 metadata:
   name: tfapi
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 8080
       targetPort: 8080
-      protocol: TCP
-      nodePort: 31001
   selector:
     app: tfapi
