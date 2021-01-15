@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tfapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tfapi
+  template:
+    metadata:
+      labels:
+        app: tfapi
+    spec:
+      containers:
+        - name: tfapi
+          image: qweliant/tfapi
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tfapi
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 31001
+  selector:
+    app: tfapi
