@@ -96,7 +96,6 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
 	products := strings.Split(PLAID_PRODUCTS, ",")
 	redirectURI := PLAID_REDIRECT_URI
-	fmt.Println(countryCodes, products, redirectURI)
 	configs := plaid.LinkTokenConfigs{
 		User: &plaid.LinkTokenUser{
 			// This should correspond to a unique id for the current user.

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -81,7 +80,6 @@ func (i *PlaidIntegration) FindUserIntegrations(db *gorm.DB, uid uint32) (*[]Pla
 func (i *PlaidIntegration) UpdateAIntegration(db *gorm.DB) (*PlaidIntegration, error) {
 
 	var err error
-	fmt.Println(i.UserID, "USER ID")
 
 	err = db.Debug().Model(&PlaidIntegration{}).Where("id = ?", i.ID).Updates(PlaidIntegration{ItemID: i.ItemID, AccessToken: i.AccessToken, PaymentID: i.PaymentID, UpdatedAt: time.Now()}).Error
 	if err != nil {
