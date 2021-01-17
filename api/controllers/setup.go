@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
+	"io/ioutil"
 	"github.com/tapfunds/tfapi/api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -24,21 +24,9 @@ type Server struct {
 var errList = make(map[string]string)
 
 
-
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 
 	var err error
-	// // Enable VIPER to read Environment Variables
-	// viper.AutomaticEnv()
-
-	// // To get the value from the config file using key
-
-	// // viper package read .env
-	// viper_user := viper.Get("DB_USER")
-	// viper_password := viper.Get("DB_PASSWORD")
-	// viper_db := viper.Get("DB_NAME")
-	// viper_host := viper.Get("DB_HOST")
-	// viper_port := viper.Get("DB_PORT")
 
 	// https://gobyexample.com/string-formatting
 	DBURL  := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
@@ -60,7 +48,6 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		&models.ResetPassword{},	
 	)
 
-
 	server.Router = gin.Default()
 	server.Router.Use(middlewares.CORSMiddleware())
 
@@ -69,4 +56,20 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 func (server *Server) Run(addr string) {
 	log.Fatal(http.ListenAndServe(addr, server.Router))
+}
+
+func (server *Server) Status(c *gin.Context){
+
+	_, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":      http.StatusBadRequest,
+			"error": "The world has falllen and we are to slumnber...",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+	})
 }

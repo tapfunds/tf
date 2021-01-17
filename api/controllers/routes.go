@@ -8,6 +8,9 @@ func (s *Server) initializeRoutes() {
 
 	v1 := s.Router.Group("/api/v1")
 	{
+		// API Status
+		v1.GET("/status", s.Status)
+
 		// Login Route
 		v1.POST("/login", s.Login)
 
