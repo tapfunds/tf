@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/tapfunds/tfapi/api/security"
 )
 
 // PlaidIntegration Table that stores plaid access info needed for requests to linked bank accounts
@@ -19,17 +18,6 @@ type PlaidIntegration struct {
 	PaymentID   string    `json:"paymentid"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-}
-
-func (i *PlaidIntegration) BeforeSave() error {
-	hashedItemID, err := security.Hash(i.ItemID)
-	hashedAccessToken, err := security.Hash(i.AccessToken)
-	if err != nil {
-		return err
-	}
-	i.ItemID = string(hashedItemID)
-	i.AccessToken = string(hashedAccessToken)
-	return nil
 }
 
 func (i *PlaidIntegration) Prepare() {

@@ -32,8 +32,9 @@ func Run() {
 	// seed.Load(server.DB)
 
 	apiPort := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
-	fmt.Printf("Listening to port %s", apiPort)
+
 
 	server.Run(apiPort)
+	fmt.Printf("Listening to port %s", apiPort)
 
 }
