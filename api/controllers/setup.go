@@ -64,7 +64,7 @@ func (server *Server) Status(c *gin.Context){
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":      http.StatusBadRequest,
-			"error": "The world has falllen and we are to slumnber...",
+			"error": "The world has falllen and we are to slumber...",
 		})
 		return
 	}
