@@ -1,12 +1,12 @@
 package controllers
 
-
 import (
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/plaid/plaid-go/plaid"
 )
@@ -33,13 +33,11 @@ func init() {
 	}
 }
 
-
 // If not testing in Sandbox, remove these four lines and instead use a publicToken obtained from Link
-var( 
-	sandboxInstitution      = "ins_109508"
-	testProducts            = []string{"auth"}
+var (
+	sandboxInstitution = "ins_109508"
+	testProducts       = []string{"auth"}
 )
-
 
 var environments = map[string]plaid.Environment{
 	"sandbox":     plaid.Sandbox,
@@ -59,8 +57,6 @@ var client = func() *plaid.Client {
 	}
 	return client
 }()
-
-
 
 type httpError struct {
 	errorCode int
@@ -88,9 +84,6 @@ func (server *Server) createLinkToken(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"link_token": linkToken})
 }
-
-
-
 
 func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpError) {
 	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
@@ -123,7 +116,7 @@ func (server *Server) getAccessToken(c *gin.Context) {
 	publicToken := c.PostForm("public_token")
 	var accessToken string
 	var itemID string
-	var institutionAccessToken string 
+	var institutionAccessToken string
 
 	// institution token for transfer. Can I just get this from the regular flow
 	products := strings.Split(PLAID_PRODUCTS, ",")
@@ -143,9 +136,9 @@ func (server *Server) getAccessToken(c *gin.Context) {
 	itemID = response.ItemID
 
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": accessToken,
-		"item_id":      itemID,
-		"access_token_institution" : institutionAccessToken,
+		"access_token":             accessToken,
+		"item_id":                  itemID,
+		"access_token_institution": institutionAccessToken,
 	})
 }
 
@@ -248,10 +241,8 @@ func (server *Server) transactions(c *gin.Context) {
 	})
 }
 
-
-
 // this is new , get stripe token then do some stuff with stripe api
-func (server *Server) transfer(c *gin.Context){
+func (server *Server) transfer(c *gin.Context) {
 	accessToken := c.PostForm("access_token_institution")
 	account := c.PostForm("account")
 
