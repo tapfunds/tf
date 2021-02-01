@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"os"
 	"github.com/tapfunds/tfapi/api/auth"
 	"github.com/tapfunds/tfapi/api/models"
 	"github.com/tapfunds/tfapi/api/utils/formaterror"
-	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
 )
 
