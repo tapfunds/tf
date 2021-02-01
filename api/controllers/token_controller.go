@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"os"
 	"github.com/tapfunds/tfapi/api/auth"
 	"github.com/tapfunds/tfapi/api/models"
 	"github.com/tapfunds/tfapi/api/utils/formaterror"
@@ -84,7 +83,7 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
     }
 
     resp, err := http.Post(
-		os.Getenv("OBJECT_MAP_HOST"), 
+		"http://localhost:1738/api/map/v1/map_item", 
 		"application/json",
 		bytes.NewBuffer(data)
 	)
