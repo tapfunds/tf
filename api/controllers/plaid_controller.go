@@ -82,6 +82,7 @@ func (server *Server) createLinkToken(c *gin.Context) {
 		renderError(c, err)
 		return
 	}
+	
 	c.JSON(http.StatusOK, gin.H{"link_token": linkToken})
 }
 
