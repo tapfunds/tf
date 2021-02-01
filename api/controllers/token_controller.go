@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
 	"github.com/tapfunds/tfapi/api/auth"
 	"github.com/tapfunds/tfapi/api/models"
 	"github.com/tapfunds/tfapi/api/utils/formaterror"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -71,26 +73,11 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 		return
 	}
 
-	// will send a message to the neo4j server with access token 
+	// will send a message to the neo4j server with access token
 	// message will contain a access token and needs to be secured
 	// it will be POST method
 	// eg http.POST("/newUserAccount", stuffthatshould be sent)
-	values := map[string]string{"user": string(integration.UserID), "accesstoken": integration.AccessToken, }
-    data, err := json.Marshal(values)
 
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    resp, err := http.Post(
-		"http://localhost:1738/api/map/v1/map_item", 
-		"application/json",
-		bytes.NewBuffer(data)
-	)
-	
-	if err != nil {
-		log.Fatal(err)
-	}
 	c.JSON(http.StatusCreated, gin.H{
 		"status":   http.StatusCreated,
 		"response": integrationCreated,
