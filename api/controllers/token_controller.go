@@ -63,7 +63,7 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 
 	integration.UserID = uid //the authenticated user is the one creating the post
 	integration.Prepare()
-	integrationCreated, err := integration.SaveToken(server.DB)
+	postCreated, err := integration.SaveToken(server.DB)
 	if err != nil {
 		errList := formaterror.FormatError(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -72,15 +72,9 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 		})
 		return
 	}
-
-	// will send a message to the neo4j server with access token
-	// message will contain a access token and needs to be secured
-	// it will be POST method
-	// eg http.POST("/newUserAccount", stuffthatshould be sent)
-
 	c.JSON(http.StatusCreated, gin.H{
 		"status":   http.StatusCreated,
-		"response": integrationCreated,
+		"response": postCreated,
 	})
 }
 
