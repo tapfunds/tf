@@ -15,7 +15,7 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --
 
 RUN mkdir -p /go/src/github.com/tapfunds/tf/objectmapper 
 RUN mkdir /build
-ADD . /go/src/github.com/tapfunds/tf/objectmapper/ 
+ADD /objectmapper /go/src/github.com/tapfunds/tf/objectmapper/ 
 WORKDIR /go/src/github.com/tapfunds/tf/objectmapper 
 
 
