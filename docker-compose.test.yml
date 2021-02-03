@@ -6,7 +6,7 @@ services:
       - .env
     build:
       context: .
-      dockerfile: ./Dockerfile.test
+      dockerfile: ./auth/Dockerfile.test
     networks:
       - tapfunds_test
   

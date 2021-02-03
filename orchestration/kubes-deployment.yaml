@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: tfapi
+spec:
+  selector:
+    app: tf
+    tier: backend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: http
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tfapi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tf
+      tier: backend
+      track: development
+  template:
+    metadata:
+      labels:
+        app: tf
+        tier: backend
+        track: development
+    spec:
+      containers:
+        - name: tfapi
+          image: qweliant/tfapi_go
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+      restartPolicy: Always

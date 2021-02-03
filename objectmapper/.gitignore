@@ -8,6 +8,10 @@
 # ...even if they are in subdirectories
 # !*
 
+# gqlgen generated files
+generated.go
+models_gen.go
+
 # Misc
 vendor/
 .DS_Store
@@ -21,4 +25,3 @@ mocks/
 # Editors
 \.vscode/
 .idea
-

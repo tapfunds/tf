@@ -1,0 +1,62 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tfclient
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
+  selector:
+    app: tf
+    tier: frontend
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tfclient
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tf
+      tier: frontend
+      track: development
+  template:
+    metadata:
+      labels:
+        app: tf
+        tier: frontend
+        track: development
+    spec:
+      containers:
+        - name: tfclient
+          image: qweliant/tfclient
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+                memory: '512Mi'
+                cpu: '200m'
+          livenessProbe:
+            httpGet:
+                path: /index.html
+                port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 1
+          readinessProbe:
+            httpGet:
+                path: /index.html
+                port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            failureThreshold: 1
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/nginx","-s","quit"]
+      restartPolicy: Always
