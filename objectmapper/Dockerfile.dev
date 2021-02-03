@@ -19,7 +19,7 @@ ADD /objectmapper /go/src/github.com/tapfunds/tf/objectmapper/
 WORKDIR /go/src/github.com/tapfunds/tf/objectmapper 
 
 
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app cmd/main.go 
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app main.go 
 
 # Create alpine runtime image
 FROM alpine:${ALPINE_VERSION} as app
