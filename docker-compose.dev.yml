@@ -28,7 +28,7 @@ services:
   goauth:
     container_name: auth_service 
     env_file:
-      - ./auth/env
+      - ./auth/.env
     build:
       context: .
       dockerfile: ./auth/Dockerfile.dev
@@ -43,7 +43,7 @@ services:
   go:
     container_name: plaid_test_service
     env_file:
-    - ./go/env
+    - ./go/.env
     build:
       context: .
       dockerfile: ./go/Dockerfile
@@ -55,7 +55,7 @@ services:
   goneo4j:
     container_name: goneo4j_map_service
     env_file:
-      - ./objectmapper/env
+      - ./objectmapper/.env
     build:
       context: .
       dockerfile: ./objectmapper/Dockerfile.dev
@@ -72,7 +72,7 @@ services:
     container_name: client_service
     stdin_open: true
     env_file:
-      - ./tfclient/env
+      - ./tfclient/.env
     build:
       context: .
       dockerfile: ./tfclient/Dockerfile.dev

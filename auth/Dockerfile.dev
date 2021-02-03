@@ -6,7 +6,7 @@ RUN apk update && apk add --no-cache git
 # Where our file will be in the docker container 
 WORKDIR /usr/src/app
 
-COPY go.mod go.sum ./
+COPY auth/go.mod auth/go.sum ./
 
 RUN go mod download 
 
