@@ -35,7 +35,7 @@ WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder //usr/src/app/main .
-COPY --from=builder //usr/src/app/.env .
+
 
 # Expose port 8888 to the outside world
 EXPOSE 8888

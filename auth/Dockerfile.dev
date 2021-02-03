@@ -4,14 +4,14 @@ FROM golang:1.15.5-alpine
 RUN apk update && apk add --no-cache git
 
 # Where our file will be in the docker container 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/
 
-COPY auth/go.mod auth/go.sum ./
-
+COPY . .
+WORKDIR /usr/src/app/auth
 RUN go mod download 
 
 # Copy the source from the current directory to the working Directory inside the container 
-COPY /auth .
+
 
 EXPOSE 8080
 
