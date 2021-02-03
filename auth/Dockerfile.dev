@@ -5,13 +5,10 @@ RUN apk update && apk add --no-cache git
 
 # Where our file will be in the docker container 
 WORKDIR /usr/src/app/
-
 COPY . .
 WORKDIR /usr/src/app/auth
+
 RUN go mod download 
-
-# Copy the source from the current directory to the working Directory inside the container 
-
 
 EXPOSE 8080
 

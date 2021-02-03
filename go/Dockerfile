@@ -1,15 +1,21 @@
-FROM  golang:1.15.5-alpine AS build
+FROM golang:1.15.5-alpine
 
-WORKDIR /opt/src
+# Install git
+RUN apk update && apk add --no-cache git
+
+# Where our file will be in the docker container 
+WORKDIR /usr/src/app/
 COPY . .
-WORKDIR /opt/src/go
+WORKDIR /usr/src/app/go
 
-RUN go get -d -v ./...
-RUN go build -o tf
-
-FROM gcr.io/distroless/base-debian10
-#FROM gcr.io/distroless/base-debian10:debug
-COPY --from=build /opt/src/go/tf /
+RUN go mod download 
 
 EXPOSE 8000
-ENTRYPOINT ["/tf"]
+
+# Install CompileDaemon which is used for hot reload each time a file is changed
+RUN go get github.com/githubnemo/CompileDaemon
+
+# The ENTRYPOINT defines the command that will be ran when the container starts up
+# The "go build" command here build from the current directory
+# We will also execute the binary so that the server starts up. CompileDaemon handles the rest - anytime any .go file changes in the directory
+ENTRYPOINT CompileDaemon -log-prefix=false -build="go build ." -command="./go"
