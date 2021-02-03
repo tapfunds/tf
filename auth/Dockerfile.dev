@@ -11,7 +11,7 @@ COPY auth/go.mod auth/go.sum ./
 RUN go mod download 
 
 # Copy the source from the current directory to the working Directory inside the container 
-COPY . .
+COPY /auth .
 
 EXPOSE 8080
 
