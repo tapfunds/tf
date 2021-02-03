@@ -3,7 +3,7 @@ version: "3.8"
 services:
   
   neo4j:
-    container_name: neo4j
+    container_name: neo4j_service
     image: neo4j:latest
     volumes:
       - ./neo4j/data:/data
@@ -26,7 +26,7 @@ services:
       - '7687:7687'
   
   goauth:
-    container_name: tfapi_dev 
+    container_name: auth_service 
     env_file:
       - ./auth/env
     build:
@@ -41,6 +41,7 @@ services:
       - tapfunds
 
   go:
+    container_name: plaid_test_service
     env_file:
     - ./go/env
     build:
@@ -52,7 +53,7 @@ services:
       - tapfunds
   
   goneo4j:
-    container_name: goneo4j
+    container_name: goneo4j_map_service
     env_file:
       - ./objectmapper/env
     build:
@@ -68,6 +69,7 @@ services:
       - neo4j
 
   client:
+    container_name: client_service
     stdin_open: true
     env_file:
       - ./tfclient/env
