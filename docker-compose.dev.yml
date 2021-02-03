@@ -58,7 +58,7 @@ services:
       - ./objectmapper/env
     build:
       context: .
-      dockerfile: ./objectmapper/Dockerfile
+      dockerfile: ./objectmapper/Dockerfile.dev
     restart: always
     networks:
       - neo4j-net
