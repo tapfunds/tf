@@ -1,9 +1,9 @@
-module github.com/plaid/quickstart
+module github.com/tapfunds/tf/go
 
-go 1.12
+go 1.15
 
 require (
-	github.com/gin-gonic/gin v1.4.0
-	github.com/joho/godotenv v1.3.0
-	github.com/plaid/plaid-go v0.0.0-20200709194030-6e8fcb95e5e9
+	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/joho/godotenv v1.3.0 // indirect
+	github.com/plaid/plaid-go v0.0.0-20210112002311-0cf0e6f0ea3e // indirect
 )
