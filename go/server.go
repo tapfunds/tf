@@ -65,7 +65,6 @@ var client = func() *plaid.Client {
 	return client
 }()
 
-
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -96,7 +95,6 @@ func main() {
 	// from step 2.
 
 	r.POST("/api/set_access_token", getAccessToken)
-	r.POST("/api/create_link_token_for_payment", createLinkTokenForPayment)
 	r.GET("/api/auth", auth)
 	r.GET("/api/accounts", accounts)
 	r.GET("/api/balance", balance)
@@ -154,46 +152,6 @@ func getAccessToken(c *gin.Context) {
 	})
 }
 
-// This functionality is only relevant for the UK Payment Initiation product.
-// Creates a link token configured for payment initiation. The payment
-// information will be associated with the link token, and will not have to be
-// passed in again when we initialize Plaid Link.
-func createLinkTokenForPayment(c *gin.Context) {
-	recipientCreateResp, err := client.CreatePaymentRecipient(
-		"Harry Potter",
-		"GB33BUKB20201555555555",
-		&plaid.PaymentRecipientAddress{
-			Street:     []string{"4 Privet Drive"},
-			City:       "Little Whinging",
-			PostalCode: "11111",
-			Country:    "GB",
-		})
-	if err != nil {
-		renderError(c, err)
-		return
-	}
-	paymentCreateResp, err := client.CreatePayment(recipientCreateResp.RecipientID, "payment-ref", plaid.PaymentAmount{
-		Currency: "GBP",
-		Value:    12.34,
-	})
-	if err != nil {
-		renderError(c, err)
-		return
-	}
-	paymentID = paymentCreateResp.PaymentID
-	fmt.Println("payment id: " + paymentID)
-
-	linkToken, tokenCreateErr := linkTokenCreate(&plaid.PaymentInitiation{
-		PaymentID: paymentID,
-	})
-	if tokenCreateErr != nil {
-		renderError(c, tokenCreateErr)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"link_token": linkToken,
-	})
-}
-
 func auth(c *gin.Context) {
 	response, err := client.GetAuth(accessToken)
 	if err != nil {
@@ -238,7 +196,8 @@ func item(c *gin.Context) {
 		return
 	}
 
-	institution, err := client.GetInstitutionByID(response.Item.InstitutionID)
+	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
+	institution, err := client.GetInstitutionByID(response.Item.InstitutionID, countryCodes)
 	if err != nil {
 		renderError(c, err)
 		return
