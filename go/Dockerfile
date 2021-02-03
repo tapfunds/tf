@@ -1,7 +1,7 @@
 FROM  golang:1.15.5-alpine AS build
 
 WORKDIR /opt/src
-COPY . .
+COPY /go .
 WORKDIR /opt/src/go
 
 RUN go get -d -v ./...
