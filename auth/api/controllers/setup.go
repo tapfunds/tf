@@ -2,17 +2,18 @@ package controllers
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"io/ioutil"
-	"github.com/tapfunds/tfapi/api/middlewares"
+
+	"github.com/tapfunds/tf/auth/api/middlewares"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tf/auth/api/models"
 
 	// "github.com/spf13/viper"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 

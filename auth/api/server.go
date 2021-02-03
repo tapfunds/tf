@@ -6,15 +6,14 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/tapfunds/tfapi/api/controllers"
+	"github.com/tapfunds/tf/auth/api/controllers"
 )
 
 var server = controllers.Server{}
 
 func init() {
 	// loads values from .env into the system
-	if err := godotenv.Load(); 
-	err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Print("sad .env file found")
 	}
 }
@@ -33,7 +32,6 @@ func Run() {
 	// seed.Load(server.DB)
 
 	apiPort := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
-
 
 	server.Run(apiPort)
 	fmt.Printf("Listening to port %s", apiPort)

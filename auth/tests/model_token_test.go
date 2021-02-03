@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/stretchr/testify/assert"
-	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tf/auth/api/models"
 )
 
 func TestFindAllIntegrations(t *testing.T) {
@@ -40,11 +40,11 @@ func TestSaveIntegration(t *testing.T) {
 		log.Fatalf("Cannot seed user %v\n", err)
 	}
 	newIntegration := models.PlaidIntegration{
-		ID:       1,
-		ItemID:    "This is the ItemID",
-		AccessToken:  "This is the AccessToken",
-		PaymentID:  "This is the PaymentID",
-		UserID: user.ID,
+		ID:          1,
+		ItemID:      "This is the ItemID",
+		AccessToken: "This is the AccessToken",
+		PaymentID:   "This is the PaymentID",
+		UserID:      user.ID,
 	}
 	savedPost, err := newIntegration.SaveToken(server.DB)
 	if err != nil {
@@ -70,18 +70,18 @@ func TestUpdateAIntegration(t *testing.T) {
 		log.Fatalf("Error Seeding table")
 	}
 	integrationUpdate := models.PlaidIntegration{
-		ID:       1,
-		ItemID:    "This is the new ItemID",
-		AccessToken:  "This is the new AccessToken",
-		PaymentID:  "This is the new PaymentID",
-		UserID: user.ID,
+		ID:          1,
+		ItemID:      "This is the new ItemID",
+		AccessToken: "This is the new AccessToken",
+		PaymentID:   "This is the new PaymentID",
+		UserID:      user.ID,
 	}
 	updatedIntegration, err := integrationUpdate.UpdateAIntegration(server.DB)
 	if err != nil {
 		t.Errorf("this is the error updating the integration: %v\n", err)
 		return
 	}
-	
+
 	assert.Equal(t, updatedIntegration.ID, integrationUpdate.ID)
 	assert.Equal(t, updatedIntegration.AccessToken, integrationUpdate.AccessToken)
 	assert.Equal(t, updatedIntegration.ItemID, integrationUpdate.ItemID)

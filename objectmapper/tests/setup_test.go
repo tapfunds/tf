@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mindstand/gogm"
-	"github.com/qweliant/neo4j/api/models"
+	"github.com/tapfunds/tf/objectmapper/api/models"
 )
 
 func Database() (*gogm.Session, error) {

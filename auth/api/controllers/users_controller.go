@@ -2,20 +2,21 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/tapfunds/tfapi/api/fileupload"
 	"io/ioutil"
 	"log"
-	"net/http"	
+	"net/http"
 	"strconv"
+
+	"github.com/tapfunds/tf/auth/api/fileupload"
 
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tapfunds/tfapi/api/auth"
-	"github.com/tapfunds/tfapi/api/models"
-	"github.com/tapfunds/tfapi/api/security"
-	"github.com/tapfunds/tfapi/api/utils/formaterror"
+	"github.com/tapfunds/tf/auth/api/auth"
+	"github.com/tapfunds/tf/auth/api/models"
+	"github.com/tapfunds/tf/auth/api/security"
+	"github.com/tapfunds/tf/auth/api/utils/formaterror"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
@@ -340,7 +341,6 @@ func (server *Server) UpdateUser(c *gin.Context) {
 		"response": updatedUser,
 	})
 }
-
 
 func (server *Server) DeleteUser(c *gin.Context) {
 

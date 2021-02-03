@@ -10,7 +10,7 @@ import (
 
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
-	"github.com/tapfunds/tfapi/api/security"
+	"github.com/tapfunds/tf/auth/api/security"
 )
 
 type User struct {

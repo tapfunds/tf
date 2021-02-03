@@ -2,14 +2,15 @@ package tests
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"testing"
 
-	"github.com/tapfunds/tfapi/api/controllers"
-	"github.com/tapfunds/tfapi/api/models"
+	"github.com/jinzhu/gorm"
+	"github.com/joho/godotenv"
+
+	"github.com/tapfunds/tf/auth/api/controllers"
+	"github.com/tapfunds/tf/auth/api/models"
 )
 
 var server = controllers.Server{}

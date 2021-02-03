@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tf/auth/api/models"
 )
 
 var users = []models.User{
@@ -22,14 +22,12 @@ var users = []models.User{
 
 var integrations = []models.PlaidIntegration{
 	models.PlaidIntegration{
-		AccessToken:   "Token 1",
-		ItemID: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		
-	
+		AccessToken: "Token 1",
+		ItemID:      "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	},
 	models.PlaidIntegration{
-		AccessToken:   "Token 2",
-		ItemID: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		AccessToken: "Token 2",
+		ItemID:      "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	},
 }
 

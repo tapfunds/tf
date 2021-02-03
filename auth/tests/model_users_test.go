@@ -4,10 +4,11 @@ import (
 	"log"
 	"testing"
 	"time"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql driver
 	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres driver
 	"github.com/stretchr/testify/assert"
-	"github.com/tapfunds/tfapi/api/models"
+	"github.com/tapfunds/tf/auth/api/models"
 )
 
 func TestFindAllUsers(t *testing.T) {

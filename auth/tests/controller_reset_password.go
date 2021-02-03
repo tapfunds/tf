@@ -3,11 +3,12 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/tapfunds/tfapi/api/mailer"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/tapfunds/tf/auth/api/mailer"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

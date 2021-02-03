@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mindstand/gogm"
 
-	"github.com/qweliant/neo4j/api/middlewares"
-	"github.com/qweliant/neo4j/api/models"
+	"github.com/tapfunds/tf/objectmapper/api/middlewares"
+	"github.com/tapfunds/tf/objectmapper/api/models"
 )
 
 type Server struct {
@@ -57,7 +57,7 @@ func (server *Server) Database(DbUser string, DbPassword string, DbHost string, 
 	server.Router.Use(middlewares.CORSMiddleware())
 
 	server.initializeRoutes()
-	
+
 	//close the session
 	defer server.DB.Close()
 }

@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/qweliant/neo4j/api/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/tapfunds/tf/objectmapper/api/models"
 )
 
 func TestFindAllBalances(t *testing.T) {
