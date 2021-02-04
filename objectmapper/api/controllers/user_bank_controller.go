@@ -50,7 +50,7 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 	data := url.Values{}
 	data.Set("access_token",accessToken)
 
-	resp, err := http.PostForm("http://go:8000/api/identity", data)
+	resp, err := http.PostForm("http://localhost:8000/api/identity", data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +59,7 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	fmt.Println(res)
+	fmt.Println(res["identity"])
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,

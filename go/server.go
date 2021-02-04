@@ -81,7 +81,7 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 func main() {
-	fmt.Printf("I MADE A CHANGE")
+
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
