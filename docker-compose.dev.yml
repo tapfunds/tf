@@ -25,20 +25,20 @@ services:
       - '7474:7474'
       - '7687:7687'
   
-  goauth:
-    container_name: auth_service 
-    env_file:
-      - ./auth/.env
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile.dev
-    ports:
-      - 8080:8080
-    restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app
-    networks:
-      - tapfunds
+  # goauth:
+  #   container_name: auth_service 
+  #   env_file:
+  #     - ./auth/.env
+  #   build:
+  #     context: .
+  #     dockerfile: ./auth/Dockerfile.dev
+  #   ports:
+  #     - 8080:8080
+  #   restart: on-failure
+  #   volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+  #     - .:/usr/src/app/auth
+  #   networks:
+  #     - tapfunds
 
   go:
     container_name: plaid_test_service
@@ -51,7 +51,7 @@ services:
     restart: on-failure 
     networks:
       - tapfunds
-  
+    
   goneo4j:
     container_name: goneo4j_map_service
     env_file:
@@ -61,26 +61,27 @@ services:
       dockerfile: ./objectmapper/Dockerfile.dev
     restart: on-failure
     networks:
-      - neo4j-net
       - tapfunds
+      - neo4j-net
+
     ports:
       - '1738:1738'
     depends_on:
       - neo4j
 
-  client:
-    container_name: client_service
-    stdin_open: true
-    env_file:
-      - ./tfclient/.env
-    build:
-      context: .
-      dockerfile: ./tfclient/Dockerfile.dev
-    ports:
-      - 80:80
-    restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app
+  # client:
+  #   container_name: client_service
+  #   stdin_open: true
+  #   env_file:
+  #     - ./tfclient/.env
+  #   build:
+  #     context: .
+  #     dockerfile: ./tfclient/Dockerfile.dev
+  #   ports:
+  #     - 80:80
+  #   restart: on-failure
+  #   volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+  #     - .:/usr/src/app/tfclient
 
 # Networks to be created to facilitate communication between containers
 networks:  

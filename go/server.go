@@ -85,7 +85,7 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
-	r.POST("/api/info", info)
+	r.GET("/api/info", info)
 
 	// For OAuth flows, the process looks as follows.
 	// 1. Create a link token with the redirectURI (as white listed at https://dashboard.plaid.com/team/api).

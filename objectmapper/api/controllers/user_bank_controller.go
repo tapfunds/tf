@@ -8,11 +8,11 @@ package controllers
 //// client will query db for user with matching ID and return:
 //// 	item model
 import (
-	"bytes"
+	"fmt"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
+	// "net/url"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,30 +47,22 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 
 	log.Printf("User:", userID, "access token:", accessToken)
 
-	//Encode the data
-	postBody, _ := json.Marshal(map[string]string{
-		"access_token": accessToken,
-	})
+	// data := url.Values{
+	// 	"name":       {"John Doe"},
+	// 	"occupation": {"gardener"},
+	// }
 
-	responseBody := bytes.NewBuffer(postBody)
+	resp, err := http.Get("http://tapfunds:8000/api/info")
 
-	//Leverage Go's HTTP Post function to make request
-	resp, err := http.Post("http://localhost:8000/api/identity", "application/json", responseBody)
-
-	//Handle Error
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
-	}
-	defer resp.Body.Close()
-
-	//Read the response body
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
-	sb := string(body)
-	log.Printf(sb)
+	var res map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	fmt.Println(res["form"])
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
