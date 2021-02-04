@@ -81,7 +81,7 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 func main() {
-
+	fmt.Printf("I MADE A CHANGE")
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
@@ -210,8 +210,8 @@ func item(c *gin.Context) {
 }
 
 func identity(c *gin.Context) {
-	accessToke := c.PostForm("access_token")
-	response, err := client.GetIdentity(accessToke)
+	accessToken := c.PostForm("access_token")
+	response, err := client.GetIdentity(accessToken)
 	if err != nil {
 		renderError(c, err)
 		return

@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	// "net/url"
+	"net/url"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,13 +47,10 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 
 	log.Printf("User:", userID, "access token:", accessToken)
 
-	// data := url.Values{
-	// 	"name":       {"John Doe"},
-	// 	"occupation": {"gardener"},
-	// }
+	data := url.Values{}
+	data.Set("access_token",accessToken)
 
-	resp, err := http.Get("http://tapfunds:8000/api/info")
-
+	resp, err := http.PostForm("http://go:8000/api/identity", data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,7 +59,7 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	fmt.Println(res["form"])
+	fmt.Println(res)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
