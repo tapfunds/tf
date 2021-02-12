@@ -40,13 +40,13 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		panic("Failed to connect to database!")
 
 	} else {
-		fmt.Printf("Connected to a %s database", Dbdriver)
+		fmt.Printf("Connected to a %s database\n", Dbdriver)
 	}
 
 	server.DB.Debug().AutoMigrate(
 		&models.PlaidIntegration{},
 		&models.User{},
-		&models.ResetPassword{},	
+		&models.ResetPassword{},
 	)
 
 	server.Router = gin.Default()
