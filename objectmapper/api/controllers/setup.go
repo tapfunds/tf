@@ -46,7 +46,7 @@ func (server *Server) Database(DbUser string, DbPassword string, DbHost string, 
 	if err != nil {
 		panic(err)
 	}
-
+	log.Println("Success initializing database")
 	//param is readonly, we're going to make stuff so we're going to do read write
 	server.DB, err = gogm.NewSession(false)
 	if err != nil {
