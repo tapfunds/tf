@@ -34,7 +34,7 @@ func (s *sendMail) SendResetPassword(ToUser string, FromAdmin string, Token stri
 	if os.Getenv("APP_ENV") == "production" {
 		forgotUrl = "https://seamflow.com/resetpassword/" + Token //this is the url of the frontend app
 	} else {
-		forgotUrl = "http://127.0.0.1:3000/resetpassword/" + Token //this is the url of the local frontend app
+		forgotUrl = "http://127.0.0.1:80/resetpassword/" + Token //this is the url of the local frontend app
 	}
 	email := hermes.Email{
 		Body: hermes.Body{
