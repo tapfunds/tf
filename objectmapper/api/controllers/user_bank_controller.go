@@ -38,7 +38,7 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 	data := url.Values{}
 	data.Set("access_token", accessToken)
 
-	resp, err := http.PostForm("go:8000/api/identity", data)
+	resp, err := http.PostForm("https://localhost:8000/api/identity", data)
 	if err != nil {
 		log.Fatal(err)
 	}
