@@ -18,37 +18,17 @@ import (
 
 
 type Server struct {
-	DB     *gorm.DB
 	Router *gin.Engine
 }
 
 var errList = make(map[string]string)
 
 
-func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func (server *Server) Initialize() {
 
 	var err error
 
 	// https://gobyexample.com/string-formatting
-	DBURL  := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
-
-
-	server.DB, err = gorm.Open(Dbdriver, DBURL)
-
-	if err != nil {
-		log.Fatal("This is the error connecting to postgres:", err)
-		panic("Failed to connect to database!")
-
-	} else {
-		fmt.Printf("Connected to a %s database\n", Dbdriver)
-	}
-
-	server.DB.Debug().AutoMigrate(
-		&models.PlaidIntegration{},
-		&models.User{},
-		&models.ResetPassword{},
-	)
-
 	server.Router = gin.Default()
 	server.Router.Use(middlewares.CORSMiddleware())
 

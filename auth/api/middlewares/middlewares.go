@@ -7,6 +7,7 @@ import (
 	"github.com/tapfunds/tf/auth/api/auth"
 )
 
+// TokenAuthMiddleware handles placement of JWT in headers
 func TokenAuthMiddleware() gin.HandlerFunc {
 	errList := make(map[string]string)
 	return func(c *gin.Context) {
@@ -24,7 +25,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-// This enables us interact with the React Frontend
+// CORSMiddleware enables us interact with the React Frontend
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
