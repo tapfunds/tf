@@ -28,18 +28,7 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 	// to build a graph object, it should flow like this for each account:
 	// get access token from context
 	// use access token to call identity endpoint
-	// instantiate user model
-	// set id to user id
-	// create empty slice of item structs
-	// make an item struct
-	// set item user to appropriate value for relationship
-	// create a empty slice of accounts
-	// make instituion struct
-	// set instituion relationship with item
-	// set institution values
-	// loop through account array
-	// unpack using njson for golang
-	// send user off to neo4j with the right depth
+	
 
 	userID := c.PostForm("user")
 	accessToken := c.PostForm("accesstoken")
