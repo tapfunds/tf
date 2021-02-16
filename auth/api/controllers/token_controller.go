@@ -72,6 +72,7 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 		})
 		return
 	}
+	
 	c.JSON(http.StatusCreated, gin.H{
 		"status":   http.StatusCreated,
 		"response": postCreated,

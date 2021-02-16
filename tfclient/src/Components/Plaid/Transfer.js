@@ -3,7 +3,7 @@ import { Button } from 'antd';
 // import qs from "qs";
 // import axios from "axios";
 
-// const balenceURL = `${process.env.REACT_APP_DEV_API_URL}/api/transfer`;
+// const balenceURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/transfer`;
 
 const Transfer = (props) => {
 

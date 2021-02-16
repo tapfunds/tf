@@ -10,14 +10,13 @@ import "./GetBalance.css";
 import { StyleSheet, css } from "aphrodite";
 
 
-const balenceURL = `${process.env.REACT_APP_DEV_API_URL}/api/v1/balance`;
-const styles = StyleSheet.create({
+const balenceURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1/balance`;
 
+const styles = StyleSheet.create({
   container: {
       display: "flex",
       flexWrap: "wrap",
   },
-
 });
 
 function Balance() {

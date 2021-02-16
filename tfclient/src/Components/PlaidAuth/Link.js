@@ -8,8 +8,8 @@ import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
 
-const tokenURL = `${process.env.REACT_APP_DEV_API_URL}/api/v1/create_link_token`;
-const sendTokenURL = `${process.env.REACT_APP_DEV_API_URL}/api/v1/set_access_token`;
+const tokenURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1/create_link_token`;
+const sendTokenURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1/set_access_token`;
 const accessTokenURL = `${process.env.REACT_APP_DEV_OBJECT_MAP_API_URL}/api/map/v1/map_item`;
 
 function Link() {

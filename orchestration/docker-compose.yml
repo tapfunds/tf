@@ -1,3 +1,5 @@
+# main compose doc that will have hosted images instead of dockerfiles
+
 version: "3.8"
 
 services:
