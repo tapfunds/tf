@@ -1,19 +1,12 @@
 package controllers
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/tapfunds/tf/auth/api/middlewares"
-
+	"github.com/tapfunds/tf/plaid/api/middlewares"
 	"github.com/gin-gonic/gin"
-	"github.com/tapfunds/tf/auth/api/models"
-
-	// "github.com/spf13/viper"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 
@@ -23,12 +16,8 @@ type Server struct {
 
 var errList = make(map[string]string)
 
-
 func (server *Server) Initialize() {
 
-	var err error
-
-	// https://gobyexample.com/string-formatting
 	server.Router = gin.Default()
 	server.Router.Use(middlewares.CORSMiddleware())
 

@@ -1,8 +1,5 @@
 package controllers
 
-import (
-	"github.com/tapfunds/tf/auth/api/middlewares"
-)
 
 func (s *Server) initializeRoutes() {
 

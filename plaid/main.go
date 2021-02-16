@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tapfunds/tf/auth/api"
+	"github.com/tapfunds/tf/plaid/api"
 )
 
 func main() {

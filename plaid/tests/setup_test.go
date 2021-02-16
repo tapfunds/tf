@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 
-	"github.com/tapfunds/tf/auth/api/controllers"
+	"github.com/tapfunds/tf/plaid/api/controllers"
 	"github.com/tapfunds/tf/auth/api/models"
 )
 
