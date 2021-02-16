@@ -5,7 +5,7 @@ FROM golang:1.15.5-alpine AS builder
 RUN apk update && apk add --no-cache git
 RUN mkdir -p /go/src/github.com/tapfunds/tf/plaid 
 RUN mkdir /build
-ADD /objectmapper /go/src/github.com/tapfunds/tf/plaid/ 
+ADD /plaid /go/src/github.com/tapfunds/tf/plaid/ 
 WORKDIR /go/src/github.com/tapfunds/tf/plaid 
 
 
