@@ -8,10 +8,11 @@ package controllers
 //// client will query db for user with matching ID and return:
 //// 	item model
 import (
-	// "io/ioutil"
+	"io/ioutil"
 	"log"
+	"fmt"
 	"net/http"
-	// "net/url"
+	"net/url"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,24 +34,28 @@ func (server *Server) CreateUserItem(c *gin.Context) {
 	userID := c.PostForm("user")
 	accessToken := c.PostForm("accesstoken")
 
-	log.Printf("User:", userID, "access token:", accessToken)
+	fmt.Printf("User:", userID, "access token:", accessToken)
 
-	// data := url.Values{}
-	// data.Set("access_token", accessToken)
+	data := url.Values{}
+	data.Set("access_token", accessToken)
 
-	// resp, err := http.PostForm("https://localhost:8080/api/identity", data)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	resp, err := http.PostForm("http://plaid:8000/api/v1/identity", data)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "Issue Calling Plaid Client",
+		})
+		return 
+	}
 
-	// defer resp.Body.Close()
-	// //Read the response body
-	// body, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// sb := string(body)
-	// log.Printf(sb)
+	defer resp.Body.Close()
+	//Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	sb := string(body)
+	log.Printf(sb)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,

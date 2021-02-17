@@ -12,6 +12,7 @@ import (
 	"github.com/tapfunds/tf/objectmapper/api/models"
 )
 
+// Server is an Object to interact with and create DB and server methods
 type Server struct {
 	DB     *gogm.Session
 	Router *gin.Engine
