@@ -27,6 +27,8 @@ services:
 
   goneo4j:
     container_name: goneo4j_map_service
+    depends_on:
+      - "neo4j"
     env_file:
       - ./objectmapper/.env
     build:
@@ -38,8 +40,6 @@ services:
       - neo4j-net
     ports:
       - '1738:1738'
-    depends_on:
-      - neo4j
 
   goauth:
     container_name: auth_service 
@@ -57,8 +57,7 @@ services:
       - tapfunds
 
   plaid:
-    container_name: 
-      plaid_service 
+    container_name: plaid_service 
     env_file:
       - ./plaid/.env
     build:

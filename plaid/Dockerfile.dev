@@ -1,22 +1,20 @@
-ARG ALPINE_VERSION=latest
+FROM golang:1.15.5-alpine
 
-FROM golang:1.15.5-alpine AS builder
-
+# Install git
 RUN apk update && apk add --no-cache git
-RUN mkdir -p /go/src/github.com/tapfunds/tf/plaid 
-RUN mkdir /build
-ADD /plaid /go/src/github.com/tapfunds/tf/plaid/ 
-WORKDIR /go/src/github.com/tapfunds/tf/plaid 
 
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app main.go 
+# Where our file will be in the docker container 
+WORKDIR /usr/src/app/
+COPY /plaid .
 
-# Create alpine runtime image
-FROM alpine:${ALPINE_VERSION} as app
-
-COPY --from=builder /app /app
-
-USER 1000
+RUN go mod download 
 
 EXPOSE 8000
 
-ENTRYPOINT ["/app"]
+# Install CompileDaemon which is used for hot reload each time a file is changed
+RUN go get github.com/githubnemo/CompileDaemon
+
+# The ENTRYPOINT defines the command that will be ran when the container starts up
+# The "go build" command here build from the current directory
+# We will also execute the binary so that the server starts up. CompileDaemon handles the rest - anytime any .go file changes in the directory
+ENTRYPOINT CompileDaemon -log-prefix=false -build="go build ." -command="./plaid"
