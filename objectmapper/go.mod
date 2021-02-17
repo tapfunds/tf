@@ -16,6 +16,7 @@ require (
 	github.com/neo4j/neo4j-go-driver/v4 v4.2.2 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tidwall/gjson v1.6.8 // indirect
+	github.com/tidwall/pretty v1.0.5 // indirect
 	github.com/ugorji/go v1.2.3 // indirect
 	github.com/vektah/gqlparser/v2 v2.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect

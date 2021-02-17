@@ -15,6 +15,7 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tapfunds/tf/objectmapper/api/models"
 )
 
 func (server *Server) CreateUserItem(c *gin.Context) {
