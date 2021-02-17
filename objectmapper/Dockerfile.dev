@@ -12,10 +12,8 @@ WORKDIR /seabolt/build
 RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --build . --target install
 
 RUN mkdir -p /go/src/github.com/tapfunds/tf/objectmapper 
-RUN mkdir /build
 ADD /objectmapper /go/src/github.com/tapfunds/tf/objectmapper/ 
-WORKDIR /go/src/github.com/tapfunds/tf/objectmapper 
-
+WORKDIR /go/src/github.com/tapfunds/tf/objectmapper
 
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app main.go 
 
