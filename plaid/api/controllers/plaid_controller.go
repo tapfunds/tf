@@ -21,18 +21,6 @@ var (
 	APP_PORT            = os.Getenv("APP_PORT")
 )
 
-func init() {
-	if PLAID_PRODUCTS == "" {
-		PLAID_PRODUCTS = "transactions"
-	}
-	if PLAID_COUNTRY_CODES == "" {
-		PLAID_COUNTRY_CODES = "US"
-	}
-	if PLAID_ENV == "" {
-		PLAID_ENV = "sandbox"
-	}
-}
-
 // If not testing in Sandbox, remove these four lines and instead use a publicToken obtained from Link
 var (
 	sandboxInstitution = "ins_109508"

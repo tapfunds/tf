@@ -4,9 +4,9 @@ services:
 
   plaid:
     container_name: 
-      plaid_service 
+      plaid_service
     env_file:
-      - ./plaid/.env
+      - ./plaid/.env 
     build:
       context: .
       dockerfile: ./plaid/Dockerfile.dev

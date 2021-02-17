@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/tapfunds/tf/plaid/api/controllers"
@@ -12,9 +11,17 @@ import (
 var server = controllers.Server{}
 
 func init() {
-	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
-		log.Print("sad .env file found")
+
+	if PLAID_PRODUCTS == "" {
+		PLAID_PRODUCTS = "transactions"
+	}
+
+	if PLAID_COUNTRY_CODES == "" {
+		PLAID_COUNTRY_CODES = "US"
+	}
+
+	if PLAID_ENV == "" {
+		PLAID_ENV = "sandbox"
 	}
 }
 
@@ -31,7 +38,7 @@ func Run() {
 	// This is for testing, when done, do well to comment
 	// seed.Load(server.DB)
 
-	apiPort := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+	apiPort := fmt.Sprintf(":%s", APP_PORT)
 
 	server.Run(apiPort)
 	fmt.Printf("Listening to port %s", apiPort)

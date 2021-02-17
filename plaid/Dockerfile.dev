@@ -8,7 +8,6 @@ RUN mkdir /build
 ADD /plaid /go/src/github.com/tapfunds/tf/plaid/ 
 WORKDIR /go/src/github.com/tapfunds/tf/plaid 
 
-
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app main.go 
 
 # Create alpine runtime image
