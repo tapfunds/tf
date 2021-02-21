@@ -1,6 +1,4 @@
-ARG ALPINE_VERSION=latest
-
-FROM golang:1.15.5-alpine AS builder
+FROM python:3.8-alpine AS builder
 
 ARG SEABOLT_VERSION=v1.7.4
 
@@ -11,19 +9,15 @@ WORKDIR /seabolt/build
 
 RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --build . --target install
 
-RUN mkdir -p /go/src/github.com/tapfunds/tf/objectmapper 
-ADD /objectmapper /go/src/github.com/tapfunds/tf/objectmapper/ 
-WORKDIR /go/src/github.com/tapfunds/tf/objectmapper
 
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags seabolt_static -o /app main.go 
-
-# Create alpine runtime image
-FROM alpine:${ALPINE_VERSION} as app
-
-COPY --from=builder /app /app
+COPY ./objectmapper/requirements/requirements.txt ./objectmapper/requirements/requirements.txt
+RUN pip3 install -r objectmapper/requirements/requirements.txt
 
 USER 1000
 
 EXPOSE 1738
 
-ENTRYPOINT ["/app"]
+
+COPY ./objectmapper /app
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "1738"]
