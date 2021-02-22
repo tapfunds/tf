@@ -27,26 +27,39 @@ async def read_root():
 
     req2 = requests.post(url="http://localhost:8000/api/v1/plaid/item", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
 
-    print(req2.json()["institution"].keys())
-    print(req2.json()["item"].keys())
     
     print("\n")
     
     lenth = len(req.json()["accounts"])
+    
+    
+    
+    # Institution node Information
+    print("Instituition ID:",req.json()["item"]["institution_id"])
+    print("Institution Name:", req2.json()["institution"]["name"])
+    print("Institution Color:", req2.json()["institution"]["primary_color"])
+    print("Institution Logo:", req2.json()["institution"]["logo"])
+    print("Institution Name:", req2.json()["institution"]["url"])
+    print("\n")
 
+    # item information
+    print("Item ID:",req.json()["item"]["item_id"])
+    
     for i in range(lenth):
-        print("Instituition ID:",req.json()["item"]["institution_id"])
-        print("Institution Name:", req2.json()["institution"]["name"])
-        print("Institution Name:", req2.json()["institution"]["primary_color"])
-        print("Institution Name:", req2.json()["institution"]["logo"])
-        print("Institution Name:", req2.json()["institution"]["url"])
-        print("Item ID:",req.json()["item"]["item_id"])
+    
+        # account ingormation
         print("Account Name:", req.json()["accounts"][i]["name"])
-        print("Account Owner Information:", req.json()["accounts"][i]["owners"])
         print("Account ID:", req.json()["accounts"][i]["account_id"])
         print("Account Subtype", req.json()["accounts"][i]["subtype"])
         print("Account Type", req.json()["accounts"][i]["type"])
-        print("Account Keys", req.json()["accounts"][i].keys())
+        
+        # owner information
+        print("Account Owner Name:", req.json()["accounts"][i]["owners"][0]["names"])
+        print("Account Owner Adress:", req.json()["accounts"][i]["owners"][0]["addresses"])
+        print("Account Owner Email:", req.json()["accounts"][i]["owners"][0]["emails"])
+        print("Account Owner Phone Number:", req.json()["accounts"][i]["owners"][0]["phone_numbers"])
+        
+        
         print("\n")
     
     return {"WIIL IT KEEL": lenth}
