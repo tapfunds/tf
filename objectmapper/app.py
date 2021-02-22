@@ -1,8 +1,12 @@
 from typing import Optional
 from fastapi import FastAPI
 import requests
+from utils.errors import check_error_exist
+
 
 app = FastAPI()
+
+
 
 @app.get("/")
 async def read_root():
@@ -10,10 +14,31 @@ async def read_root():
     # // not real 
     req = requests.post(url="http://localhost:8000/api/v1/identity", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
     
-    lenth = len(req.json()["identity"])
+    # check error and send message somewhere to let some service know
+    if check_error_exist(req.json()["item"]["error"]):
+        print(f"Address this error")
+        # send message to user or service about error 
+    else:
+        print(f"No error")
+        
+    # capture available products so we know what endpoints are valid
+    # since user does not have choice, we will ignore for now, but it may be necessary to get that info
+    # if so just ad req.json()["item"]["available_products"]
+
+    lenth = len(req.json()["accounts"])
+
     for i in range(lenth):
-        print(req.json()["identity"][i]["owners"])
+        print("Instituition Name:",req.json()["item"]["institution_id"])
+        print("Item ID:",req.json()["item"]["item_id"])
+        print("Account Name:", req.json()["accounts"][i]["name"])
+        print("Account Owner Information:", req.json()["accounts"][i]["owners"])
+        print("Account ID:", req.json()["accounts"][i]["account_id"])
+        print("Account Subtype", req.json()["accounts"][i]["subtype"])
+        print("Account Type", req.json()["accounts"][i]["type"])
+        print("Account Keys", req.json()["accounts"][i].keys())
         print("\n")
+    
+    
     return {"WIIL IT KEEL": lenth}
 
 

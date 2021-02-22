@@ -206,7 +206,8 @@ func (server *Server) identity(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"identity": response.Accounts,
+		"accounts": response.Accounts,
+		"item": response.Item,
 	})
 }
 
