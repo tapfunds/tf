@@ -37,6 +37,9 @@ async def read_root():
     for i in range(lenth):
         print("Instituition ID:",req.json()["item"]["institution_id"])
         print("Institution Name:", req2.json()["institution"]["name"])
+        print("Institution Name:", req2.json()["institution"]["primary_color"])
+        print("Institution Name:", req2.json()["institution"]["logo"])
+        print("Institution Name:", req2.json()["institution"]["url"])
         print("Item ID:",req.json()["item"]["item_id"])
         print("Account Name:", req.json()["accounts"][i]["name"])
         print("Account Owner Information:", req.json()["accounts"][i]["owners"])
