@@ -184,13 +184,14 @@ func (server *Server) item(c *gin.Context) {
 	}
 
 	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
+	options := plaid.GetInstitutionByIDOptions{
+		IncludeOptionalMetadata: true,
+		IncludeStatus          : false,
+	}	
 	institution, err := client.GetInstitutionByIDWithOptions(
 		response.Item.InstitutionID, 
 		countryCodes, 
-		plaid.GetInstitutionByIDWithOptions(
-		true,
-		false,
-	))
+		options)
 	if err != nil {
 		renderError(c, err)
 		return
