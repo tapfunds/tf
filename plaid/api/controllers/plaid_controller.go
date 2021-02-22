@@ -184,7 +184,13 @@ func (server *Server) item(c *gin.Context) {
 	}
 
 	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
-	institution, err := client.GetInstitutionByID(response.Item.InstitutionID, countryCodes)
+	institution, err := client.GetInstitutionByIDWithOptions(
+		response.Item.InstitutionID, 
+		countryCodes, 
+		plaid.GetInstitutionByIDWithOptions(
+		true,
+		false,
+	))
 	if err != nil {
 		renderError(c, err)
 		return

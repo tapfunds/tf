@@ -25,10 +25,18 @@ async def read_root():
     # since user does not have choice, we will ignore for now, but it may be necessary to get that info
     # if so just ad req.json()["item"]["available_products"]
 
+    req2 = requests.post(url="http://localhost:8000/api/v1/plaid/item", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
+
+    print(req2.json()["institution"].keys())
+    print(req2.json()["item"].keys())
+    
+    print("\n")
+    
     lenth = len(req.json()["accounts"])
 
     for i in range(lenth):
-        print("Instituition Name:",req.json()["item"]["institution_id"])
+        print("Instituition ID:",req.json()["item"]["institution_id"])
+        print("Institution Name:", req2.json()["institution"]["name"])
         print("Item ID:",req.json()["item"]["item_id"])
         print("Account Name:", req.json()["accounts"][i]["name"])
         print("Account Owner Information:", req.json()["accounts"][i]["owners"])
@@ -37,7 +45,6 @@ async def read_root():
         print("Account Type", req.json()["accounts"][i]["type"])
         print("Account Keys", req.json()["accounts"][i].keys())
         print("\n")
-    
     
     return {"WIIL IT KEEL": lenth}
 
