@@ -3,7 +3,8 @@ from fastapi import FastAPI
 import requests
 from utils.errors import check_error_exist
 
-
+# from neomodel import config
+# config.DATABASE_URL = 'bolt://neo4j:changeme@localhost:7687'  # default
 app = FastAPI()
 
 
@@ -33,6 +34,8 @@ async def read_root():
     lenth = len(req.json()["accounts"])
     
     
+    # item information
+    print("Item ID:",req.json()["item"]["item_id"])
     
     # Institution node Information
     print("Instituition ID:",req.json()["item"]["institution_id"])
@@ -41,9 +44,6 @@ async def read_root():
     print("Institution Logo:", req2.json()["institution"]["logo"])
     print("Institution Name:", req2.json()["institution"]["url"])
     print("\n")
-
-    # item information
-    print("Item ID:",req.json()["item"]["item_id"])
     
     for i in range(lenth):
     
@@ -54,11 +54,14 @@ async def read_root():
         print("Account Type", req.json()["accounts"][i]["type"])
         
         # owner information
+        # we should to some heavy lifting for account info
         print("Account Owner Name:", req.json()["accounts"][i]["owners"][0]["names"])
         print("Account Owner Adress:", req.json()["accounts"][i]["owners"][0]["addresses"])
         print("Account Owner Email:", req.json()["accounts"][i]["owners"][0]["emails"])
         print("Account Owner Phone Number:", req.json()["accounts"][i]["owners"][0]["phone_numbers"])
         
+        # best way to get balance is from endpoint for balance
+        # same with transactions
         
         print("\n")
     
