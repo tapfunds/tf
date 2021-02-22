@@ -12,7 +12,8 @@ async def read_root():
     
     lenth = len(req.json()["identity"])
     for i in range(lenth):
-        lenth
+        print(req.json()["identity"][i]["owners"])
+        print("\n")
     return {"WIIL IT KEEL": lenth}
 
 
