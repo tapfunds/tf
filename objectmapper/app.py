@@ -27,7 +27,7 @@ async def read_root():
     # if so just ad req.json()["item"]["available_products"]
 
     req2 = requests.post(url="http://localhost:8000/api/v1/plaid/item", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
-
+    # check and see if institution node with instituiton ID exist
     
     print("\n")
     
