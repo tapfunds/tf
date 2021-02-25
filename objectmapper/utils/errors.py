@@ -2,10 +2,11 @@
 
 def check_error_exist(dict):
     error = False
-    for key, val in dict.items():
-        if val == '' or val == 0:
-            continue
+    for _, val in dict.items():
+        if val != '' or val != 0:
+             error = True
+             return error
         else:
-            error = True
+            continue
     return error
 

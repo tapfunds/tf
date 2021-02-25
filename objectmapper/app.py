@@ -2,20 +2,23 @@ from typing import Optional
 from fastapi import FastAPI
 import requests
 from utils.errors import check_error_exist
+from neomodel import config
 
 # from neomodel import config
-# config.DATABASE_URL = 'bolt://neo4j:changeme@localhost:7687'  # default
+config.DATABASE_URL = 'bolt://neo4j:changeme@localhost:7687'  # default
 app = FastAPI()
 
 
 
 @app.get("/")
 async def read_root():
-
-    # // not real 
+    # user id and access token will be passed to API
+    # create user node
+    # print("User ID:{user_ID}")
+    
     req = requests.post(url="http://localhost:8000/api/v1/identity", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
     
-    # check error and send message somewhere to let some service know
+    # check identity error and send message somewhere to let some service know
     if check_error_exist(req.json()["item"]["error"]):
         print(f"Address this error")
         # send message to user or service about error 
@@ -33,10 +36,12 @@ async def read_root():
     
     lenth = len(req.json()["accounts"])
     
-    
+    # user has an array of items
+    # append item node to array at end of function before forming relationships
     # item information
     print("Item ID:",req.json()["item"]["item_id"])
     
+    # Each item belongs to an insitution node whose values never change across users
     # Institution node Information
     print("Instituition ID:",req.json()["item"]["institution_id"])
     print("Institution Name:", req2.json()["institution"]["name"])
@@ -47,6 +52,7 @@ async def read_root():
     
     for i in range(lenth):
     
+        # Belongs to item node
         # account ingormation
         print("Account Name:", req.json()["accounts"][i]["name"])
         print("Account ID:", req.json()["accounts"][i]["account_id"])
