@@ -1,76 +1,18 @@
 from typing import Optional
 from fastapi import FastAPI
-import requests
-from utils.errors import check_error_exist
 from neomodel import config
 
 # from neomodel import config
-config.DATABASE_URL = 'bolt://neo4j:changeme@localhost:7687'  # default
+config.DATABASE_URL = f"bolt://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}"
+
 app = FastAPI()
 
 
 
 @app.get("/")
 async def read_root():
-    # user id and access token will be passed to API
-    # create user node
-    # print("User ID:{user_ID}")
-    
-    req = requests.post(url="http://localhost:8000/api/v1/identity", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
-    
-    # check identity error and send message somewhere to let some service know
-    if check_error_exist(req.json()["item"]["error"]):
-        print(f"Address this error")
-        # send message to user or service about error 
-    else:
-        print(f"No error")
-        
-    # capture available products so we know what endpoints are valid
-    # since user does not have choice, we will ignore for now, but it may be necessary to get that info
-    # if so just ad req.json()["item"]["available_products"]
 
-    req2 = requests.post(url="http://localhost:8000/api/v1/plaid/item", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
-    # check and see if institution node with instituiton ID exist
     
-    print("\n")
-    
-    lenth = len(req.json()["accounts"])
-    
-    # user has an array of items
-    # append item node to array at end of function before forming relationships
-    # item information
-    print("Item ID:",req.json()["item"]["item_id"])
-    
-    # Each item belongs to an insitution node whose values never change across users
-    # Institution node Information
-    print("Instituition ID:",req.json()["item"]["institution_id"])
-    print("Institution Name:", req2.json()["institution"]["name"])
-    print("Institution Color:", req2.json()["institution"]["primary_color"])
-    print("Institution Logo:", req2.json()["institution"]["logo"])
-    print("Institution Link:", req2.json()["institution"]["url"])
-    print("\n")
-    
-    for i in range(lenth):
-    
-        # Belongs to item node
-        # account ingormation
-        print("Account Name:", req.json()["accounts"][i]["name"])
-        print("Account ID:", req.json()["accounts"][i]["account_id"])
-        print("Account Subtype", req.json()["accounts"][i]["subtype"])
-        print("Account Type", req.json()["accounts"][i]["type"])
-        
-        # owner information
-        # we should to some heavy lifting for account info
-        print("Account Owner Name:", req.json()["accounts"][i]["owners"][0]["names"])
-        print("Account Owner Adress:", req.json()["accounts"][i]["owners"][0]["addresses"])
-        print("Account Owner Email:", req.json()["accounts"][i]["owners"][0]["emails"])
-        print("Account Owner Phone Number:", req.json()["accounts"][i]["owners"][0]["phone_numbers"])
-        
-        # best way to get balance is from endpoint for balance
-        # same with transactions
-        
-        print("\n")
-    
-    return {"WIIL IT KEEL": lenth}
+    return {"Status": "Success"}
 
 
