@@ -3,20 +3,24 @@ from neomodel import StructuredNode, StringProperty, RelationshipTo, Relationshi
 
 class User(StructuredNode):
     user_id = StringProperty(unique_index=True)
-    items = RelationshipTo('Item', 'ITEM')
-
-class Item(StructuredNode):
-    name = StringProperty(unique_index=True)
-    books = RelationshipFrom('Book', 'AUTHOR')
-    books = RelationshipTo('Book', 'AUTHOR')
+    accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Institution(StructuredNode):
-    title = StringProperty(unique_index=True)
-    author = RelationshipTo('Author', 'AUTHOR')
+    id = StringProperty(unique_index=True)
+    name = StringProperty(unique_index=True)
+    color = StringProperty(unique_index=True)
+    logo = StringProperty(unique_index=True)
+    link = StringProperty(unique_index=True)
+    account = RelationshipTo('Account', 'INSTITUTION')
 
 class Account(StructuredNode):
-    name = StringProperty(unique_index=True)
-    books = RelationshipFrom('Book', 'AUTHOR')
+    account_number = StringProperty(unique_index=True)
+    account_name = StringProperty(unique_index=True)
+    type = StringProperty(unique_index=True)
+    subtype = StringProperty(unique_index=True)
+    balance = StringProperty(unique_index=True)
+    user = RelationshipFrom('User', 'USER')
+    institution = RelationshipFrom('Institution', 'INSTITUTION')
 
 class Transactions(StructuredNode):
     title = StringProperty(unique_index=True)
@@ -26,17 +30,22 @@ class Balance(StructuredNode):
     name = StringProperty(unique_index=True)
     books = RelationshipFrom('Book', 'AUTHOR')
     
-class Names(StructuredNode):
+class Name(StructuredNode):
     title = StringProperty(unique_index=True)
     author = RelationshipTo('Author', 'AUTHOR')
 
-class Owners(StructuredNode):
+class Address(StructuredNode):
     name = StringProperty(unique_index=True)
     books = RelationshipFrom('Book', 'AUTHOR')
 
-class Addresses(StructuredNode):
+class PhoneNumber(StructuredNode):
+    title = StringProperty(unique_index=True)
+    author = RelationshipTo('Author', 'AUTHOR')
+
+class Email(StructuredNode):
     name = StringProperty(unique_index=True)
     books = RelationshipFrom('Book', 'AUTHOR')
+
 
 harry_potter = Book(title='Harry potter and the..').save()
 rowling =  Author(name='J. K. Rowling').save()
