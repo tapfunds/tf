@@ -11,12 +11,12 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --
 
 WORKDIR /app
 
-COPY ./objectmapper/requirements/requirements.txt ./requirements/requirements.txt
+COPY ./objectmapper/api/requirements/requirements.txt ./requirements/requirements.txt
 RUN pip3 install -r requirements/requirements.txt
 
 USER 1000
 EXPOSE 1738
 
-COPY ./objectmapper /app
+COPY ./objectmapper/api /app
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "1738"]

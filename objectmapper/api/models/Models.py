@@ -5,19 +5,19 @@ class User(StructuredNode):
     accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Institution(StructuredNode):
-    id = StringProperty(unique_index=True)
+    id = StringProperty()
     name = StringProperty(unique_index=True)
-    color = StringProperty(unique_index=True)
-    logo = StringProperty(unique_index=True)
-    link = StringProperty(unique_index=True)
+    color = StringProperty()
+    logo = StringProperty()
+    link = StringProperty()
     account = RelationshipTo('Account', 'INSTITUTION')
 
 class Account(StructuredNode):
     account_number = StringProperty(unique_index=True)
-    account_name = StringProperty(unique_index=True)
-    type = StringProperty(unique_index=True)
-    subtype = StringProperty(unique_index=True)
-    balance = StringProperty(unique_index=True)
+    account_name = StringProperty()
+    type = StringProperty()
+    subtype = StringProperty()
+    balance = StringProperty()
     user = RelationshipFrom('User', 'ACCOUNT')
     institution = RelationshipFrom('Institution', 'INSTITUTION')
     name = RelationshipTo('Name', 'NAME')
@@ -26,15 +26,15 @@ class Account(StructuredNode):
     email = RelationshipTo('Email', 'EMAIL')
 
 class Transactions(StructuredNode):
-    merchant_name = StringProperty(unique_index=True)
-    location = StringProperty(unique_index=True)
-    amount = StringProperty(unique_index=True)
-    date = StringProperty(unique_index=True)
-    currency = StringProperty(unique_index=True)
-    payment_channel = StringProperty(unique_index=True)
-    amount = StringProperty(unique_index=True)
-    pending = StringProperty(unique_index=True)
-    name = StringProperty(unique_index=True)
+    merchant_name = StringProperty()
+    location = StringProperty()
+    amount = StringProperty()
+    date = StringProperty()
+    currency = StringProperty()
+    payment_channel = StringProperty()
+    amount = StringProperty()
+    pending = StringProperty()
+    name = StringProperty()
     institution = RelationshipFrom('Account', 'ACCOUNT')
 
 class Balance(StructuredNode):
@@ -42,19 +42,19 @@ class Balance(StructuredNode):
     account = RelationshipFrom('Account', 'BALANCE')
     
 class Name(StructuredNode):
-    name = StringProperty(unique_index=True)
+    name = StringProperty()
     account = RelationshipTo('Account', 'NAME')
 
 class Address(StructuredNode):
-    address = StringProperty(unique_index=True)
+    address = StringProperty()
     account = RelationshipFrom('Account', 'ADDRESS')
 
 class PhoneNumber(StructuredNode):
-    phone_number = StringProperty(unique_index=True)
+    phone_number = StringProperty()
     account = RelationshipTo('Account', 'PHONENUMBER')
 
 class Email(StructuredNode):
-    email = StringProperty(unique_index=True)
+    email = StringProperty()
     account = RelationshipFrom('Account', 'EMAIL')
 
 
