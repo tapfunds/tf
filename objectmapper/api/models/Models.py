@@ -56,8 +56,3 @@ class PhoneNumber(StructuredNode):
 class Email(StructuredNode):
     email = StringProperty()
     account = RelationshipFrom('Account', 'EMAIL')
-
-
-harry_potter = Book(title='Harry potter and the..').save()
-rowling =  Author(name='J. K. Rowling').save()
-harry_potter.author.connect(rowling)
