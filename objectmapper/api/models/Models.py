@@ -1,6 +1,5 @@
 from neomodel import StructuredNode, StringProperty, RelationshipTo, RelationshipFrom
 
-
 class User(StructuredNode):
     user_id = StringProperty(unique_index=True)
     accounts = RelationshipTo('Account', 'ACCOUNT')
@@ -19,32 +18,44 @@ class Account(StructuredNode):
     type = StringProperty(unique_index=True)
     subtype = StringProperty(unique_index=True)
     balance = StringProperty(unique_index=True)
-    user = RelationshipFrom('User', 'USER')
+    user = RelationshipFrom('User', 'ACCOUNT')
     institution = RelationshipFrom('Institution', 'INSTITUTION')
+    name = RelationshipTo('Name', 'NAME')
+    phone_number = RelationshipTo('PhoneNumber', 'PHONENUMBER')
+    address = RelationshipTo('Address', 'ADDRESS')
+    email = RelationshipTo('Email', 'EMAIL')
 
 class Transactions(StructuredNode):
-    title = StringProperty(unique_index=True)
-    author = RelationshipTo('Author', 'AUTHOR')
+    merchant_name = StringProperty(unique_index=True)
+    location = StringProperty(unique_index=True)
+    amount = StringProperty(unique_index=True)
+    date = StringProperty(unique_index=True)
+    currency = StringProperty(unique_index=True)
+    payment_channel = StringProperty(unique_index=True)
+    amount = StringProperty(unique_index=True)
+    pending = StringProperty(unique_index=True)
+    name = StringProperty(unique_index=True)
+    institution = RelationshipFrom('Account', 'ACCOUNT')
 
 class Balance(StructuredNode):
-    name = StringProperty(unique_index=True)
-    books = RelationshipFrom('Book', 'AUTHOR')
+    balance = StringProperty(unique_index=True)
+    account = RelationshipFrom('Account', 'BALANCE')
     
 class Name(StructuredNode):
-    title = StringProperty(unique_index=True)
-    author = RelationshipTo('Author', 'AUTHOR')
+    name = StringProperty(unique_index=True)
+    account = RelationshipTo('Account', 'NAME')
 
 class Address(StructuredNode):
-    name = StringProperty(unique_index=True)
-    books = RelationshipFrom('Book', 'AUTHOR')
+    address = StringProperty(unique_index=True)
+    account = RelationshipFrom('Account', 'ADDRESS')
 
 class PhoneNumber(StructuredNode):
-    title = StringProperty(unique_index=True)
-    author = RelationshipTo('Author', 'AUTHOR')
+    phone_number = StringProperty(unique_index=True)
+    account = RelationshipTo('Account', 'PHONENUMBER')
 
 class Email(StructuredNode):
-    name = StringProperty(unique_index=True)
-    books = RelationshipFrom('Book', 'AUTHOR')
+    email = StringProperty(unique_index=True)
+    account = RelationshipFrom('Account', 'EMAIL')
 
 
 harry_potter = Book(title='Harry potter and the..').save()
