@@ -1,5 +1,5 @@
 import requests
-from api.utils import PLAID_SERVICE
+from api.utils.constants import PLAID_SERVICE
 
 def check_error_exist(dict):
     error = False

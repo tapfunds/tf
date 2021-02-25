@@ -2,10 +2,9 @@ from typing import Optional
 from fastapi import FastAPI
 from neomodel import config
 from pydantic import BaseModel
-from api.models.Models import CreateTap
+from api.controller.neo4j_controller import CreateTap
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from api.utils import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
+from api.utils.constants import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 
 # from neomodel import config
 config.DATABASE_URL = f"bolt://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}"
@@ -24,20 +23,21 @@ origins = [
     "http://127.0.0.1:80",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-     
+    "http://localhost:7687",
+    "http://127.0.0.1:7687",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["POST","GET"],
+    allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
 
 @app.post("/")
 async def read_root(user: User):
-    
-    CreateTap(user_id=user.uid, access_token=user.access_token)    
+    print("User:", user.uid, "\n", "Access Token:", user.access_token)
+    # CreateTap(user_id=user.uid, access_token=user.access_token)
     user.output = "uccess"
     return {"Status": user.output}

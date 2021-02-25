@@ -1,7 +1,5 @@
-from api.utils.errors import check_error_exist, retrieve_identity, retrieve_institution
-from api.models import User, Institution, Account, Name, Address, PhoneNumber, Email
-
-
+from api.utils.helpers import check_error_exist, retrieve_identity, retrieve_institution
+from api.models.models import User, Institution, Account, Name, Address, PhoneNumber, Email
 
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
@@ -82,7 +80,7 @@ def CreateTap(user_ID = None, access_token = None):
         # same with transactions
         
         # connect nodes
-        #  account to owner information 
+        # account to owner information 
         
         account.name.connect(name)
         account.address.connect(address)
@@ -95,4 +93,3 @@ def CreateTap(user_ID = None, access_token = None):
         # link institution to account
         institution.accounts.connect(account)
         ("Finsinehde node creattion. Bye")
-        
