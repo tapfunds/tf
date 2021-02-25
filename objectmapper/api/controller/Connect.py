@@ -1,15 +1,8 @@
-import requests
-from api.utils.errors import check_error_exist
-from api.models import User, Institution, Account, Transactions, Balance, Name, Address, PhoneNumber, Email
+from api.utils.errors import check_error_exist, retrieve_identity, retrieve_institution
+from api.models import User, Institution, Account, Name, Address, PhoneNumber, Email
 
 
-def retrieve_identity(access_token):
-    res = requests.post(url=f"{PLAID_SERVICE}/api/v1/identity", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
-    return res
 
-def retrieve_institution(access_token):
-    res = requests.post(url=f"{PLAID_SERVICE}/api/v1/plaid/item", data={"access_token": "access-sandbox-1ebc4747-dde5-4ec0-b2ef-0c69983b9362"})
-    return res
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
 def CreateTap(user_ID = None, access_token = None):
@@ -19,7 +12,9 @@ def CreateTap(user_ID = None, access_token = None):
     # print("User ID:{user_ID}")
     
     tap_user = User(user_id = user_ID).save()
-    print("User built...\n")
+    print("user built...\n")
+
+    identity = retrieve_identity(access_token=access_token)
 
     # check identity error and send message somewhere to let some service know
     if check_error_exist(identity.json()["item"]["error"]):
@@ -28,11 +23,10 @@ def CreateTap(user_ID = None, access_token = None):
     else:
         print(f"No error\n")
         
-    # capture available products so we know what endpoints are valid
-    # since user does not have choice, we will ignore for now, but it may be necessary to get that info
-    # if so just ad identity.json()["item"]["available_products"
+    # capture available products so we know what endpoints are valid and restrict user calls with that info
+    # add identity.json()["item"]["available_products"] -needs way of effecting roles....
     
-    institution_res = retrieve_identity(access_token=access_token)
+    institution_res = retrieve_institution(access_token=access_token)
     
     # Each item belongs to an insitution node whose values never change across users
     # I need to check fpr institution in datbase or make a script to populate the DB a priori anything else
@@ -47,31 +41,58 @@ def CreateTap(user_ID = None, access_token = None):
         link= institution_res.json()["institution"]["url"], 
     ).save()
     
-    print("Institution built\n")
-    
-    identity = retrieve_identity(access_token=access_token)
+    print("institution info built\n")
     
     lenth = len(identity.json()["accounts"])
+    
     for i in range(lenth):
     
-        # Belongs to item node
+        # Belongs to accnt node
         # account ingormation
-        print("Account Name:", identity.json()["accounts"][i]["name"])
-        print("Account ID:", identity.json()["accounts"][i]["account_id"])
-        print("Account Subtype", identity.json()["accounts"][i]["subtype"])
-        print("Account Type", identity.json()["accounts"][i]["type"])
+        account = Account(
+            account_ID = identity.json()["accounts"][i]["account_id"], 
+            account_name =identity.json()["accounts"][i]["name"], 
+            subtype = identity.json()["accounts"][i]["subtype"], 
+            type = identity.json()["accounts"][i]["type"],
+        ).save()
+
         print("account info built...\n")
         
         # owner information
-        # we should to some heavy lifting for account info
-        print("Account Owner Name:", identity.json()["accounts"][i]["owners"][0]["names"])
-        print("Account Owner Adress:", identity.json()["accounts"][i]["owners"][0]["addresses"])
-        print("Account Owner Email:", identity.json()["accounts"][i]["owners"][0]["emails"])
-        print("Account Owner Phone Number:", identity.json()["accounts"][i]["owners"][0]["phone_numbers"])
-        print("account info built...\n")
+        # we should to some heavy lifting for owner info
+        name = Name(
+            name = identity.json()["accounts"][i]["owners"][0]["names"], 
+        ).save()
+        
+        address = Address(
+            address = identity.json()["accounts"][i]["owners"][0]["addresses"], 
+        ).save()
+        
+        phone_number = PhoneNumber(
+            phone = identity.json()["accounts"][i]["owners"][0]["phone_numbers"], 
+        ).save()
+        
+        email = Email(
+            email = identity.json()["accounts"][i]["owners"][0]["emails"], 
+        ).save()
+        
+        print("owner info built...\n")
         
         # best way to get balance is from endpoint for balance
         # same with transactions
         
-        print("\n")
-    pass
+        # connect nodes
+        #  account to owner information 
+        
+        account.name.connect(name)
+        account.address.connect(address)
+        account.phone_number.connect(phone_number)
+        account.email.connect(email)
+        
+        # link user to account
+        tap_user.accounts.connect(account)
+
+        # link institution to account
+        institution.accounts.connect(account)
+        ("Finsinehde node creattion. Bye")
+        

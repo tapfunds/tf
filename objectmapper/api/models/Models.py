@@ -10,19 +10,19 @@ class Institution(StructuredNode):
     color = StringProperty()
     logo = StringProperty()
     link = StringProperty()
-    account = RelationshipTo('Account', 'INSTITUTION')
+    accounts = RelationshipTo('Account', 'INSTITUTION')
 
 class Account(StructuredNode):
     account_number = StringProperty(unique_index=True)
     account_name = StringProperty()
     type = StringProperty()
     subtype = StringProperty()
-    balance = StringProperty()
+    # balance = StringProperty()
     user = RelationshipFrom('User', 'ACCOUNT')
     institution = RelationshipFrom('Institution', 'INSTITUTION')
     name = RelationshipTo('Name', 'NAME')
-    phone_number = RelationshipTo('PhoneNumber', 'PHONENUMBER')
     address = RelationshipTo('Address', 'ADDRESS')
+    phone_number = RelationshipTo('PhoneNumber', 'PHONENUMBER')
     email = RelationshipTo('Email', 'EMAIL')
 
 class Transactions(StructuredNode):
@@ -37,9 +37,9 @@ class Transactions(StructuredNode):
     name = StringProperty()
     institution = RelationshipFrom('Account', 'ACCOUNT')
 
-class Balance(StructuredNode):
-    balance = StringProperty(unique_index=True)
-    account = RelationshipFrom('Account', 'BALANCE')
+# class Balance(StructuredNode):
+#     balance = StringProperty(unique_index=True)
+#     account = RelationshipFrom('Account', 'BALANCE')
     
 class Name(StructuredNode):
     name = StringProperty()
