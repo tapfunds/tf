@@ -28,10 +28,10 @@ def CreateTap(user_ID=None, access_token=None):
 
     institution_res = retrieve_institution(access_token=access_token)
 
-    # Each item belongs to an insitution node whose values never change across users
-    # I need to check fpr institution in datbase or make a script to populate the DB a priori anything else
-    # Institution node Information
-    # put these in try blocks
+    # # Each item belongs to an insitution node whose values never change across users
+    # # I need to check fpr institution in datbase or make a script to populate the DB a priori anything else
+    # # Institution node Information
+    # # put these in try blocks
 
     
     institution = Institution(
@@ -42,7 +42,7 @@ def CreateTap(user_ID=None, access_token=None):
         link=institution_res.json()["institution"]["url"],
     ).save()
 
-    print("institution info built...\n")
+    # print("institution info built...\n")
 
     lenth = len(identity.json()["accounts"])
 
@@ -61,34 +61,50 @@ def CreateTap(user_ID=None, access_token=None):
 
         # owner information
         # we should to some heavy lifting for owner info
-        name = Name(
-            name = identity.json()["accounts"][i]["owners"][0]["names"],
-        ).save()
 
-        address = Address(
-            address = identity.json()["accounts"][i]["owners"][0]["addresses"],
-        ).save()
+        for n in identity.json()["accounts"][i]["owners"][0]["names"]:
+            print(n)
+            name = Name(
+                name = n,
+            ).save()
+            account.name.connect(name)
+        
+        for n in identity.json()["accounts"][i]["owners"][0]["addresses"]:
+            print(n["data"]['city'])
+            print(n["data"]['region'])
+            print(n["data"]['street'])
+            print(n["data"]['postal_code'])
+            print(n["data"]['country'])
+            address = Address(
+                address = identity.json()["accounts"][i]["owners"][0]["addresses"],
+            ).save()
+            account.address.connect(address)
+             
+            
+        for n in identity.json()["accounts"][i]["owners"][0]["phone_numbers"]:
+            print(n["data"])
+            phone_number = PhoneNumber(
+                phone_number = identity.json()["accounts"][i]["owners"][0]["phone_numbers"],
+            ).save()
+            account.phone_number.connect(phone_number)
+        
+        for n in identity.json()["accounts"][i]["owners"][0]["emails"]:
+            print(n["data"])
+            email = Email(
+                email = identity.json()["accounts"][i]["owners"][0]["emails"],
+            ).save()
+ 
+            account.email.connect(email)
+            
+        break         
 
-        phone_number = PhoneNumber(
-            phone_number = identity.json()["accounts"][i]["owners"][0]["phone_numbers"],
-        ).save()
+        # print("owner info built...\n")
 
-        email = Email(
-            email = identity.json()["accounts"][i]["owners"][0]["emails"],
-        ).save()
+        # # best way to get balance is from endpoint for balance
+        # # same with transactions
 
-        print("owner info built...\n")
-
-        # best way to get balance is from endpoint for balance
-        # same with transactions
-
-        # connect nodes
-        # account to owner information
-
-        account.name.connect(name)
-        account.address.connect(address)
-        account.phone_number.connect(phone_number)
-        account.email.connect(email)
+        # # connect nodes
+        # # account to owner information
 
         # link user to account
         tap_user.accounts.connect(account)
@@ -96,7 +112,6 @@ def CreateTap(user_ID=None, access_token=None):
         institution.accounts.connect(account)
 
     ("Finished node creattion. Bye")
-
 
 # returns a dict of key based info about a user
 # e.g.
@@ -109,19 +124,13 @@ def CreateTap(user_ID=None, access_token=None):
   
 }]
 """
-
-
 def ReadTap():
     pass
 
 # requires more thinking about how a user might update an account
-
-
 def UpdateTap():
     pass
 
 # requires more thinking about how a user might delete an account
-
-
 def DeleteTap():
     pass
