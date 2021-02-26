@@ -12,9 +12,9 @@ def check_error_exist(dict):
     return error
 
 def retrieve_identity(access_token):
-    res = requests.post(url=f"{PLAID_SERVICE}/api/v1/identity", data={"access_token": access_token})
+    res = requests.post(url=f"http://localhost:8000/api/v1/identity", data={"access_token": access_token})
     return res
 
 def retrieve_institution(access_token):
-    res = requests.post(url=f"{PLAID_SERVICE}/api/v1/plaid/item", data={"access_token": access_token})
+    res = requests.post(url=f"http://localhost:8000/api/v1/plaid/item", data={"access_token": access_token})
     return res
