@@ -7,14 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.utils.constants import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 
 # from neomodel import config
-config.DATABASE_URL = f"bolt://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}"
+config.DATABASE_URL = "bolt://neo4j:changeme@localhost:7687"
 
 app = FastAPI()
 
 class User(BaseModel):
-    uid: str
+    uid: str 
     access_token: str
-    output: str
+    output: Optional[str] = None
 
 origins = [
     "http://localhost",
@@ -27,17 +27,16 @@ origins = [
     "http://127.0.0.1:7687",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["POST", "GET"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["POST", "GET"],
+#     allow_headers=["*"],
+# )
 
 @app.post("/")
 async def read_root(user: User):
-    print("User:", user.uid, "\n", "Access Token:", user.access_token)
-    # CreateTap(user_id=user.uid, access_token=user.access_token)
-    user.output = "uccess"
+    CreateTap(user_ID=user.uid, access_token=user.access_token)
+    user.output = "200"
     return {"Status": user.output}
