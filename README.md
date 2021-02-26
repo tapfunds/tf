@@ -36,7 +36,7 @@
     <img src="images/logo2.svg" alt="Logo" width="500" height="500">
   </a>
 
-  <h3 align="center">Tapfunds account manager</h3>
+  <h3 align="center">Tap into your money</h3>
 
   <p align="center">
     Your hub for money transfers between personal accounts
@@ -142,7 +142,7 @@ Docker, node, python, golang, and the GCP SDK
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Hompage
+Homepage
 
 User auth
 
