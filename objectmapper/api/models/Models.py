@@ -37,9 +37,9 @@ class Transactions(StructuredNode):
     name = StringProperty()
     institution = RelationshipFrom('Account', 'ACCOUNT')
 
-# class Balance(StructuredNode):
-#     balance = StringProperty(unique_index=True)
-#     account = RelationshipFrom('Account', 'BALANCE')
+class Balance(StructuredNode):
+    balance = StringProperty(unique_index=True)
+    account = RelationshipFrom('Account', 'BALANCE')
     
 class Name(StructuredNode):
     name = StringProperty()
