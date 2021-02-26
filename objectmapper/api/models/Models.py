@@ -19,7 +19,7 @@ class Account(StructuredNode):
     subtype = StringProperty()
     # balance = StringProperty()
     user = RelationshipFrom('User', 'ACCOUNT')
-    institution = RelationshipFrom('Institution', 'INSTITUTION')
+    institution = RelationshipFrom('Institution', 'ACCOUNT')
     name = RelationshipTo('Name', 'NAME')
     address = RelationshipTo('Address', 'ADDRESS')
     phone_number = RelationshipTo('PhoneNumber', 'PHONENUMBER')

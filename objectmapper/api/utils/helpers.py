@@ -4,11 +4,11 @@ from api.utils.constants import PLAID_SERVICE
 def check_error_exist(dict):
     error = False
     for _, val in dict.items():
-        if val != '' or val != 0:
-             error = True
-             return error
+        if val == '' or val == 0:
+             continue
         else:
-            continue
+            error = True
+            return error
     return error
 
 def retrieve_identity(access_token):

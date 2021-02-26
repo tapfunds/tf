@@ -1,5 +1,5 @@
 from api.utils.helpers import check_error_exist, retrieve_identity, retrieve_institution
-from api.models.models import User, Institution, Account, Name, Address, PhoneNumber, Email
+from api.models.Models import User, Institution, Account, Name, Address, PhoneNumber, Email
 from neomodel import db
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
@@ -89,10 +89,27 @@ def CreateTap(user_ID = None, access_token = None):
         
         # link user to account
         tap_user.accounts.connect(account)
-
         # link institution to account
         institution.accounts.connect(account)
+
+
         ("Finished node creattion. Bye")
-        
+
+# returns a dict of key based info about a user
+# e.g.
+"""
+[{
+  account_id : a,
+    
+}]
+"""        
 def ReadTap():
+    pass
+
+# requires more thinking about how a user might update an account
+def UpdateTap():
+    pass
+
+# requires more thinking about how a user might delete an account
+def DeleteTap():
     pass
