@@ -5,12 +5,12 @@ class User(StructuredNode):
     accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Institution(StructuredNode):
-    id = StringProperty()
-    name = StringProperty(unique_index=True)
+    insti_id = StringProperty()
+    name = StringProperty()
     color = StringProperty()
     logo = StringProperty()
     link = StringProperty()
-    accounts = RelationshipTo('Account', 'ACCOUNT')
+    # accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Account(StructuredNode):
     account_number = StringProperty(unique_index=True)
