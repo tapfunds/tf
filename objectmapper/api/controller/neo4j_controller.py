@@ -70,7 +70,7 @@ def CreateTap(user_ID=None, access_token=None):
         ).save()
 
         phone_number = PhoneNumber(
-            phone = identity.json()["accounts"][i]["owners"][0]["phone_numbers"],
+            phone_number = identity.json()["accounts"][i]["owners"][0]["phone_numbers"],
         ).save()
 
         email = Email(

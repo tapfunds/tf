@@ -10,7 +10,7 @@ class Institution(StructuredNode):
     color = StringProperty()
     logo = StringProperty()
     link = StringProperty()
-    # accounts = RelationshipTo('Account', 'ACCOUNT')
+    accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Account(StructuredNode):
     account_number = StringProperty(unique_index=True)
