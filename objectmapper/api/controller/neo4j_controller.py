@@ -102,8 +102,11 @@ def CreateTap(user_ID=None, access_token=None):
 # e.g.
 """
 [{
-  account_id : a,
-    
+  account_id (hidden?): a,
+  account_name: b,
+  account_type: c,
+  account_subtype: d,
+  
 }]
 """
 
