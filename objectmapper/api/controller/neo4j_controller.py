@@ -63,41 +63,38 @@ def CreateTap(user_ID=None, access_token=None):
         # we should to some heavy lifting for owner info
 
         for n in identity.json()["accounts"][i]["owners"][0]["names"]:
-            print(n)
             name = Name(
                 name = n,
             ).save()
             account.name.connect(name)
         
         for n in identity.json()["accounts"][i]["owners"][0]["addresses"]:
-            print(n["data"]['city'])
-            print(n["data"]['region'])
-            print(n["data"]['street'])
-            print(n["data"]['postal_code'])
-            print(n["data"]['country'])
             address = Address(
-                address = identity.json()["accounts"][i]["owners"][0]["addresses"],
+                city = n["data"]['city'],          
+                region = n["data"]['region'],
+                street = n["data"]['street'],
+                postal_code = n["data"]['postal_code'],
+                country = n["data"]['country'],
             ).save()
             account.address.connect(address)
              
             
         for n in identity.json()["accounts"][i]["owners"][0]["phone_numbers"]:
-            print(n["data"])
             phone_number = PhoneNumber(
-                phone_number = identity.json()["accounts"][i]["owners"][0]["phone_numbers"],
+                data = n["data"],    
+                primary = n["primary"],    
+                type = n["type"],    
             ).save()
             account.phone_number.connect(phone_number)
         
         for n in identity.json()["accounts"][i]["owners"][0]["emails"]:
-            print(n["data"])
             email = Email(
-                email = identity.json()["accounts"][i]["owners"][0]["emails"],
+                data = n["data"],    
+                primary = n["primary"],    
+                type = n["type"],  
             ).save()
- 
             account.email.connect(email)
             
-        break         
-
         # print("owner info built...\n")
 
         # # best way to get balance is from endpoint for balance

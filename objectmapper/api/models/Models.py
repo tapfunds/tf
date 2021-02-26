@@ -46,13 +46,21 @@ class Name(StructuredNode):
     account = RelationshipTo('Account', 'NAME')
 
 class Address(StructuredNode):
-    address = StringProperty()
+    city = StringProperty()
+    region = StringProperty()
+    street = StringProperty()
+    postal_code = StringProperty()
+    country = StringProperty()
     account = RelationshipFrom('Account', 'ADDRESS')
 
 class PhoneNumber(StructuredNode):
-    phone_number = StringProperty()
+    data = StringProperty()
+    primary = StringProperty()
+    type = StringProperty()
     account = RelationshipTo('Account', 'PHONENUMBER')
 
 class Email(StructuredNode):
-    email = StringProperty()
+    data = StringProperty()
+    primary = StringProperty()
+    type = StringProperty()
     account = RelationshipFrom('Account', 'EMAIL')
