@@ -33,7 +33,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/qweliant/tapfunds/tf">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo2.svg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">project_title</h3>
@@ -85,7 +85,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://tapfunds.net.com)
 
 Here's a blank template to get started:
 **To avoid retyping too much info. Do a search and replace with your text editor for the following:**
@@ -94,11 +94,15 @@ Here's a blank template to get started:
 
 ### Built With
 
-* []()
-* []()
-* []()
-
-
+* [Go]()
+* [React]()
+* [Python]()
+* [Neo4j]()
+* [Postgres]()
+* [Node]()
+* [Docker]()
+* [RabbitMQ]()
+* [GCP]()
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -117,7 +121,7 @@ This is an example of how to list things you need to use the software and how to
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/qweliant/tapfunds/tf.git
    ```
 2. Install NPM packages
    ```sh
@@ -138,7 +142,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/qweliant/tapfunds/tf/issues) for a list of proposed features (and known issues).
 
 
 
@@ -165,9 +169,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - email
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/github_username/repo_name](https://github.com/qweliant/tapfunds/tf)
 
 
 
