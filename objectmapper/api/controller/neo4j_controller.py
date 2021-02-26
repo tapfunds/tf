@@ -9,7 +9,7 @@ def CreateTap(user_ID = None, access_token = None):
     # create user node
     # print("User ID:{user_ID}")
     
-    tap_user = User(user_id = user_ID).save()
+    tap_user = User(user_id = user_ID + "1").save()
     print("user built...\n")
 
     identity = retrieve_identity(access_token=access_token)
