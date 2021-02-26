@@ -1,5 +1,5 @@
 from api.utils.helpers import check_error_exist, retrieve_identity, retrieve_institution
-from api.models.models import User
+from api.models.models import User, Institution, Account, Name, Address, PhoneNumber, Email
 from neomodel import db
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
