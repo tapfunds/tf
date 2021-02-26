@@ -7,7 +7,7 @@
 ***
 ***
 *** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo_name, twitter_handle, email, project_title, project_description
+*** tapfunds, repo_name, twitter_handle, email, project_title, project_description
 -->
 
 
@@ -32,23 +32,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/qweliant/tapfunds/tf">
-    <img src="images/logo2.svg" alt="Logo" width="80" height="80">
+  <a href="https://github.com/tapfunds/tf">
+    <img src="images/logo2.svg" alt="Logo" width="500" height="500">
   </a>
 
-  <h3 align="center">project_title</h3>
+  <h3 align="center">Tapfunds account manager</h3>
 
   <p align="center">
-    project_description
+    Your hub for money transfers between personal accounts
     <br />
-    <a href="https://github.com/qweliant/tapfunds/tf"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/tapfunds/tf"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/qweliant/tapfunds/tf">View Demo</a>
+    <a href="https://github.com/tapfunds/tf">View Demo</a>
     ·
-    <a href="https://github.com/qweliant/tapfunds/tf">Report Bug</a>
+    <a href="https://github.com/tapfunds/tf/issues">Report Bug</a>
     ·
-    <a href="https://github.com/qweliant/tapfunds/tf">Request Feature</a>
+    <a href="https://github.com/tapfunds/tf">Request Feature</a>
   </p>
 </p>
 
@@ -85,11 +85,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://tapfunds.net.com)
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo_name`, `twitter_handle`, `email`, `project_title`, `project_description`
+
+The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. It should be said that MSA is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to leverage self learning to practice a high value skil. Uncoupled containerized applications are easier to build in my opinion, but require a differnet way of thinking about service deployment. I hope whoever visits this learns something benficial or can provide feedback via issues or pull request. Request environment variables via email, or use your own for local postgres development.
 
 
 ### Built With
@@ -101,8 +99,13 @@ Here's a blank template to get started:
 * [Postgres]()
 * [Node]()
 * [Docker]()
+* [Google CLoud Run]()
+
+**Not yet implemented currently using Cloud Run and REST communication**
 * [RabbitMQ]()
-* [GCP]()
+* [GKE]()
+
+
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -111,38 +114,52 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Docker, node, python, golang, and the GCP SDK
 
+* run this shell script to stand up local containers
+  ```sh
+  ./build-dev
+  ```
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/qweliant/tapfunds/tf.git
+   git clone https://github.com/tapfunds/tf.git
    ```
-2. Install NPM packages
+2. To install the auth and plaid services, cd into each folder then run 
    ```sh
-   npm install
+   go get
    ```
-
-
+3. To install the objectmapper service, cd into the folder and run 
+   ```sh
+   pip3 install requirements/requirements.txt
+   ```
+4. To install the client service, cd into the folder and run 
+   ```sh
+   yarn install
+   ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Hompage
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+User auth
 
+Account Auth
 
+Service communication
+
+CI/CD
+
+Orchestration
+
+DB models
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/qweliant/tapfunds/tf/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/tapfunds/tf/issues) for a list of proposed features (and known issues).
 
 
 
@@ -169,9 +186,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - email
+Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - qwelian@tapfunds.net
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/qweliant/tapfunds/tf)
+Project Link: [https://github.com/tapfunds/tf](https://github.com/tapfunds/tf)
 
 
 
@@ -188,15 +205,15 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/qweliant/tapfunds/tf/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/qweliant/tapfunds/tf/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/qweliant/tapfunds/tf/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/qweliant/tapfunds/tf/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/tapfunds/repo.svg?style=for-the-badge
+[contributors-url]: https://github.com/tapfunds/tf/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tapfunds/repo.svg?style=for-the-badge
+[forks-url]: https://github.com/tapfunds/tf/members
+[stars-shield]: https://img.shields.io/github/stars/tapfunds/repo.svg?style=for-the-badge
+[stars-url]: https://github.com/tapfunds/tf/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tapfunds/repo.svg?style=for-the-badge
+[issues-url]: https://github.com/tapfunds/tf/issues
+[license-shield]: https://img.shields.io/github/license/tapfunds/repo.svg?style=for-the-badge
+[license-url]: https://github.com/tapfunds/repo/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/qdt
