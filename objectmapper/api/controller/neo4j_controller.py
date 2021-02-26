@@ -41,59 +41,59 @@ def CreateTap(user_ID = None, access_token = None):
     
     print("institution info built\n")
     
-    lenth = len(identity.json()["accounts"])
+    # lenth = len(identity.json()["accounts"])
     
-    for i in range(lenth):
+    # for i in range(lenth):
     
-        # Belongs to accnt node
-        # account ingormation
-        account = Account(
-            account_ID = identity.json()["accounts"][i]["account_id"], 
-            account_name =identity.json()["accounts"][i]["name"], 
-            subtype = identity.json()["accounts"][i]["subtype"], 
-            type = identity.json()["accounts"][i]["type"],
-        ).save()
+    #     # Belongs to accnt node
+    #     # account ingormation
+    #     account = Account(
+    #         account_ID = identity.json()["accounts"][i]["account_id"], 
+    #         account_name =identity.json()["accounts"][i]["name"], 
+    #         subtype = identity.json()["accounts"][i]["subtype"], 
+    #         type = identity.json()["accounts"][i]["type"],
+    #     ).save()
 
-        print("account info built...\n")
+    #     print("account info built...\n")
         
-        # owner information
-        # we should to some heavy lifting for owner info
-        name = Name(
-            name = identity.json()["accounts"][i]["owners"][0]["names"], 
-        ).save()
+    #     # owner information
+    #     # we should to some heavy lifting for owner info
+    #     name = Name(
+    #         name = identity.json()["accounts"][i]["owners"][0]["names"], 
+    #     ).save()
         
-        address = Address(
-            address = identity.json()["accounts"][i]["owners"][0]["addresses"], 
-        ).save()
+    #     address = Address(
+    #         address = identity.json()["accounts"][i]["owners"][0]["addresses"], 
+    #     ).save()
         
-        phone_number = PhoneNumber(
-            phone = identity.json()["accounts"][i]["owners"][0]["phone_numbers"], 
-        ).save()
+    #     phone_number = PhoneNumber(
+    #         phone = identity.json()["accounts"][i]["owners"][0]["phone_numbers"], 
+    #     ).save()
         
-        email = Email(
-            email = identity.json()["accounts"][i]["owners"][0]["emails"], 
-        ).save()
+    #     email = Email(
+    #         email = identity.json()["accounts"][i]["owners"][0]["emails"], 
+    #     ).save()
         
-        print("owner info built...\n")
+    #     print("owner info built...\n")
         
-        # best way to get balance is from endpoint for balance
-        # same with transactions
+    #     # best way to get balance is from endpoint for balance
+    #     # same with transactions
         
-        # connect nodes
-        # account to owner information 
+    #     # connect nodes
+    #     # account to owner information 
         
-        account.name.connect(name)
-        account.address.connect(address)
-        account.phone_number.connect(phone_number)
-        account.email.connect(email)
+    #     account.name.connect(name)
+    #     account.address.connect(address)
+    #     account.phone_number.connect(phone_number)
+    #     account.email.connect(email)
         
-        # link user to account
-        tap_user.accounts.connect(account)
-        # link institution to account
-        institution.accounts.connect(account)
+    #     # link user to account
+    #     tap_user.accounts.connect(account)
+    #     # link institution to account
+    #     institution.accounts.connect(account)
 
 
-        ("Finished node creattion. Bye")
+    ("Finished node creattion. Bye")
 
 # returns a dict of key based info about a user
 # e.g.
