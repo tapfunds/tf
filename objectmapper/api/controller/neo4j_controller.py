@@ -121,8 +121,11 @@ def CreateTap(user_ID=None, access_token=None):
   
 }]
 """
-def ReadTap():
-    pass
+def ReadTap(user_ID=None):
+    db.set_connection("bolt://neo4j:changeme@localhost:7687")
+    data = User.nodes.get(user_id=user_ID)
+    print(data)
+    return data
 
 # requires more thinking about how a user might update an account
 def UpdateTap():
