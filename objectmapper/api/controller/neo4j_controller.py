@@ -9,10 +9,8 @@ def CreateTap(user_ID=None, access_token=None):
     db.set_connection("bolt://neo4j:changeme@localhost:7687")
     # user id and access token will be passed to API
     # create user node
-    # print("User ID:{user_ID}")
 
     tap_user = User(user_id=user_ID).save()
-    print("user built...\n")
 
     identity = retrieve_identity(access_token=access_token)
 
@@ -42,7 +40,6 @@ def CreateTap(user_ID=None, access_token=None):
         link=institution_res.json()["institution"]["url"],
     ).save()
 
-    # print("institution info built...\n")
 
     lenth = len(identity.json()["accounts"])
 
@@ -57,7 +54,6 @@ def CreateTap(user_ID=None, access_token=None):
             type = identity.json()["accounts"][i]["type"],
         ).save()
 
-        print("account info built...\n")
 
         # owner information
         # we should to some heavy lifting for owner info
@@ -95,7 +91,6 @@ def CreateTap(user_ID=None, access_token=None):
             ).save()
             account.email.connect(email)
             
-        # print("owner info built...\n")
 
         # # best way to get balance is from endpoint for balance
         # # same with transactions
@@ -108,7 +103,6 @@ def CreateTap(user_ID=None, access_token=None):
         # link institution to account
         institution.accounts.connect(account)
 
-    ("Finished node creattion. Bye")
 
 # returns a dict of key based info about a user
 # e.g.
@@ -120,6 +114,7 @@ def CreateTap(user_ID=None, access_token=None):
   account_subtype: d,
   
 }]
+Will require more thought. For now we can continue
 """
 def ReadTap(user_ID=None):
     db.set_connection("bolt://neo4j:changeme@localhost:7687")
@@ -128,9 +123,9 @@ def ReadTap(user_ID=None):
     return data, accounts
 
 # requires more thinking about how a user might update an account
-def UpdateTap():
-    pass
+def UpdateTap(user_ID=None):
+    return {"updated":"its new ish"}
 
 # requires more thinking about how a user might delete an account
-def DeleteTap():
-    pass
+def DeleteTap(user_ID=None):
+    return {"deleted":"the thrill is gone"}
