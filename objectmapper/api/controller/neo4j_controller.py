@@ -51,7 +51,7 @@ def CreateTap(user_ID=None, access_token=None):
         # Belongs to accnt node
         # account ingormation
         account = Account(
-            account_ID = identity.json()["accounts"][i]["account_id"],
+            account_id = identity.json()["accounts"][i]["account_id"],
             account_name =identity.json()["accounts"][i]["name"],
             subtype = identity.json()["accounts"][i]["subtype"],
             type = identity.json()["accounts"][i]["type"],
@@ -124,8 +124,8 @@ def CreateTap(user_ID=None, access_token=None):
 def ReadTap(user_ID=None):
     db.set_connection("bolt://neo4j:changeme@localhost:7687")
     data = User.nodes.get(user_id=user_ID)
-    print(data)
-    return data
+    accounts = data.accounts.all()
+    return data, accounts
 
 # requires more thinking about how a user might update an account
 def UpdateTap():

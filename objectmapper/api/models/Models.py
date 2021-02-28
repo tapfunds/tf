@@ -13,7 +13,7 @@ class Institution(StructuredNode):
     accounts = RelationshipTo('Account', 'ACCOUNT')
 
 class Account(StructuredNode):
-    account_number = StringProperty(unique_index=True)
+    account_id = StringProperty(unique_index=True)
     account_name = StringProperty()
     type = StringProperty()
     subtype = StringProperty()

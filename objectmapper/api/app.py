@@ -43,6 +43,13 @@ async def create_user(user: User):
 
 @app.get("/get")
 def get_user(user: User):
-    
-    # user.output = ReadTap(user_ID=user.uid)
-    return {"Status": "user.output"}
+    user.output = ReadTap(user_ID=user.uid)
+    print(user.output[0], user.output[1][0].account_id)
+    tap = {
+        "user": user.output[0].user_id,
+        "accnt_id":user.output[1][0].account_id,
+        "accnt_nm":user.output[1][0].account_name,
+        "accnt_tp":user.output[1][0].type,
+        "accnt_sb":user.output[1][0].subtype,
+    }
+    return tap
