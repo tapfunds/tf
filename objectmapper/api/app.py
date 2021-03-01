@@ -57,8 +57,8 @@ def get_user(tap: Tap):
     return tap
 
 # since a tap can not delete just one account, we will just delete all taps for a use
-@app.post("/delete")
-def create_tap(tap: Tap):
+@app.post("/update")
+def update_tap(tap: Tap):
     tap.output = UpdateTap(user_ID=tap.uid)
     return tap.output
 
