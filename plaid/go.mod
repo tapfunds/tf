@@ -37,6 +37,7 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sendgrid/sendgrid-go v3.8.0+incompatible // indirect
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/tapfunds/tf/auth v0.0.0-20210217035825-81ce7526fe26
 	github.com/ugorji/go v1.2.4 // indirect
