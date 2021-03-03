@@ -59,7 +59,7 @@ services:
       - .:/usr/src/app/
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3.8.14-management-alpine
     container_name: rabbitmq
     volumes:
       - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
@@ -68,6 +68,7 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
+
 
   neo4j:
       container_name: neo4j_service
