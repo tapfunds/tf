@@ -1,0 +1,26 @@
+# Common
+README.md
+CHANGELOG.md
+docker-compose.yml
+
+# git
+.git
+.gitattributes
+.gitignore
+
+.vscode/
+.docker
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+*.py[cod]
+*/*.py[cod]
+*/*/*.py[cod]
+*/*/*/*.py[cod]
+
+Dockerfile
+docker-compose.yml
+.dockerignore

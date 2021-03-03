@@ -17,29 +17,6 @@ services:
     ports:
       - '1738:1738'
 
-  neo4j:
-    container_name: neo4j_service
-    image: neo4j:latest
-    volumes:
-      - ./neo4j/data:/data
-      - ./neo4j/logs:/logs
-      - ./neo4j/import:/var/lib/neo4j/import
-      - ./neo4j/plugins:/plugins
-      - ./neo4j/conf:/conf
-    restart: always
-    environment:
-      - NEO4J_AUTH=neo4j/changeme
-      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
-      - NEO4J_dbms_security_procedures_whitelist=apoc.*
-      - NEO4J_apoc_import_file_enabled=true
-      - NEO4J_apoc_uuid_enabled=true
-      - NEO4JLABS_PLUGINS=["apoc"]
-    networks:
-      - neo4j-net
-    ports:
-      - '7474:7474'
-      - '7687:7687'
-
   goauth:
     container_name: auth_service 
     env_file:
@@ -80,6 +57,44 @@ services:
     restart: on-failure
     volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
       - .:/usr/src/app/
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    volumes:
+        - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+        - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+        RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+        RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+        - 5672:5672
+        - 15672:15672
+
+  neo4j:
+      container_name: neo4j_service
+      image: neo4j:latest
+      volumes:
+        - ./neo4j/data:/data
+        - ./neo4j/logs:/logs
+        - ./neo4j/import:/var/lib/neo4j/import
+        - ./neo4j/plugins:/plugins
+        - ./neo4j/conf:/conf
+      restart: always
+      environment:
+        - NEO4J_AUTH=neo4j/changeme
+        - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+        - NEO4J_dbms_security_procedures_whitelist=apoc.*
+        - NEO4J_apoc_import_file_enabled=true
+        - NEO4J_apoc_uuid_enabled=true
+        - NEO4JLABS_PLUGINS=["apoc"]
+      networks:
+        - neo4j-net
+      ports:
+        - '7474:7474'
+        - '7687:7687'
 
 # Networks to be created to facilitate communication between containers
 networks: 
