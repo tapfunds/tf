@@ -77,11 +77,11 @@ services:
       container_name: neo4j_service
       image: neo4j:latest
       volumes:
-        - ./neo4j/data:/data
-        - ./neo4j/logs:/logs
-        - ./neo4j/import:/var/lib/neo4j/import
-        - ./neo4j/plugins:/plugins
-        - ./neo4j/conf:/conf
+        - ./.docker/neo4j/data:/data
+        - ./.docker/neo4j/logs:/logs
+        - ./.docker/neo4j/import:/var/lib/neo4j/import
+        - ./.docker/neo4j/plugins:/plugins
+        - ./.docker/neo4j/conf:/conf
       restart: always
       environment:
         - NEO4J_AUTH=neo4j/changeme
