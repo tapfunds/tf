@@ -15,10 +15,6 @@ services:
     networks:
       - tapfunds
 
-version: "3.8"
-
-services:
-  
   neo4j:
     container_name: neo4j_service
     image: neo4j:latest
