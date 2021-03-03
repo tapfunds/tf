@@ -24,3 +24,5 @@ virtualenv-clone==0.5.4
 watchgod==0.6
 websockets==8.1
 wincertstore==0.2
+pika==1.2.0
+requests==2.25.1
