@@ -11,8 +11,9 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --
 
 WORKDIR /app
 
-COPY ./objectmapper/api/requirements/requirements.txt ./requirements/requirements.txt
+COPY ./objectmapper/requirements/requirements.txt ./requirements/requirements.txt
 RUN pip3 install -r requirements/requirements.txt
+RUN pip3 install neomodel requests pika
 
 USER 1000
 EXPOSE 1738
