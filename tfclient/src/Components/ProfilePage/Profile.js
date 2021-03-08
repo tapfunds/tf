@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useSelector } from "react-redux";
-
+import BankTap from "./BankTap";
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -56,7 +56,7 @@ const Profile = () => {
           </p>
         </div>
         <div>
-            Soon come
+            <BankTap/>
         </div>
       </div>
     </React.Fragment>
