@@ -24,7 +24,7 @@ const App = () => {
             <Route exact path={ROUTES.SIGN_IN} component={Login} />
             <Route exact path={ROUTES.SIGN_UP} component={Register} />
             <Route exact path={ROUTES.RESET} component={ForgotPassword} />
-            <Route exact path='/reset/token' component={ResetPassword} />
+            <Route exact path='/reset/:token' component={ResetPassword} />
             <Route component={FoF}/>
         </Switch>
       </div>
