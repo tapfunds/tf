@@ -17,14 +17,14 @@ const App = () => {
        <div>
         <Switch>
             <Route exact path={ROUTES.LANDING} component={Landing}/>
-            <Route path={ROUTES.HOME} component={Home}/>
-            <Route path={ROUTES.AUTH} component={PlaidAuth}/>
-            <Route path={ROUTES.SETTING} component={Settings}/>
-            <Route path={ROUTES.STATS} component={Stats}/>
-            <Route path={ROUTES.SIGN_IN} component={Login} />
-            <Route path={ROUTES.SIGN_UP} component={Register} />
-            <Route path={ROUTES.RESET} component={ForgotPassword} />
-            <Route path='/reset/:token' component={ResetPassword} />
+            <Route exact path={ROUTES.HOME} component={Home}/>
+            <Route exact path={ROUTES.AUTH} component={PlaidAuth}/>
+            <Route exact path={ROUTES.SETTING} component={Settings}/>
+            <Route exact path={ROUTES.STATS} component={Stats}/>
+            <Route exact path={ROUTES.SIGN_IN} component={Login} />
+            <Route exact path={ROUTES.SIGN_UP} component={Register} />
+            <Route exact path={ROUTES.RESET} component={ForgotPassword} />
+            <Route exact path='/reset/:token' component={ResetPassword} />
             <Route component={FoF}/>
         </Switch>
       </div>

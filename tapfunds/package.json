@@ -15,7 +15,7 @@
     "autoprefixer": "^9",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "history": "^5.0.0",
+    "history": "4.10.1",
     "install": "^0.13.0",
     "postcss": "^7",
     "react": "^17.0.1",
