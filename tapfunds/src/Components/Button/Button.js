@@ -4,10 +4,10 @@ import { StyleSheet,css } from "aphrodite";
 
 const styles = StyleSheet.create({
     button: {
-      background: "#48A9FF",
+      background: "white",
       border: "none",
       fontStyle: "italic",
-      color: "white",
+      color: "#48A9FF",
     }
   });
 export const CustomButton = (props) => {

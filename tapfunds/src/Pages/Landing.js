@@ -1,45 +1,49 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import {CustomButton} from "../Components/Button/Button";
+import { CustomButton } from "../Components/Button/Button";
 import { useSelector } from "react-redux";
-import Logo from "../Components/ProfilePage/Logo";
+import { TypographyThree, TypographyTwo, TypographyOne } from "../Components/ProfilePage/Logo";
 
 function Landing() {
   const currentState = useSelector((state) => state.Auth);
-  if(currentState.isAuthenticated){
-    return <Redirect to='/home' />
+  if (currentState.isAuthenticated) {
+    return <Redirect to="/home" />;
   }
   return (
     <React.Fragment>
-        <div >
-          {/* <Logo/> */}
-          <div  className="App h-screen w-full flex justify-center items-center">
-            <div style={{color:"white"}}>Transfer Money Fast</div>
-            <p style={{color:"white"}}>
-              Secure, fast, personal bank to bank transfers
-            </p>
-          </div>
+      <div>
+        <section className="App h-screen grid w-full flex-col justify-items-center ">
+          <div>
+          <TypographyOne />
 
-          <div  div  className="App h-screen w-full flex justify-center items-center bg-green-500">
-            <div >Understand Spending Habits</div>
-            <p >
-              View account trends to advise yourself on better money habits
-            </p>
           </div>
-          <div  style={{ height:"25vh"}}>
-              <div >
-              Sign up now!{" "} <br/>
+          <p style={{ color: "white" }}>
+            Secure personal bank to bank transfers
+          </p>
+        </section>
 
-              </div>
-              
-              <Link to="/login" ><CustomButton text="Tap your finances"/></Link>
-            
+        <section
+          div
+          className="App h-screen grid w-full flex-col justify-items-center bg-blue-50"
+        >
+          <div>
+          <TypographyTwo />
+
           </div>
-        </div>
-      </React.Fragment>
-
+          <p>View account trends to advise yourself on better money habits</p>
+        </section>
+        <section className="App h-screen grid w-full flex-col justify-items-center bg-#48A9FF">
+          <TypographyThree />
+          <p style={{ color: "white" }}>
+            View account balances, recent transctions, and account health of any of your accounts
+            <Link to="/login">
+            <CustomButton text="Tap your finances" />
+          </Link>
+          </p>
+        </section>
+      </div>
+    </React.Fragment>
   );
 }
-
 
 export default Landing;
