@@ -29,9 +29,9 @@ export default function Logo() {
     return (
         <ParticleImage
             src={"/transfer_money_fast.svg"}
-            width={window.innerWidth}
-            height={window.innerHeight}
-            scale={0.75}
+            width={window.innerWidth/2}
+            height={window.innerHeight/2}
+            scale={0.40}
             entropy={20}
             maxParticles={4200}
             particleOptions={particleOptions}

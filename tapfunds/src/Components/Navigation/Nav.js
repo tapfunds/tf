@@ -4,10 +4,11 @@ import * as ROUTES from "../../constants/routes";
 import { useSelector } from "react-redux";
 import './Nav.css'
 import { StyleSheet, css } from "aphrodite";
-// import Collapse from 'react-bootstrap/Collapse'
+
+
 import {
-  Navbar,
   Collapse,
+  Navbar,
   NavbarToggler,
   NavbarBrand,
   Nav,
@@ -55,10 +56,10 @@ const Navigation = () => {
   const SignedOutLinks = (
                 <React.Fragment>
                   <NavItem style={{marginRight: "20px", color: "#48A9FF"}}>
-                    <Link  className={css(styles.subtext)} to={ROUTES.SIGN_IN}>Login</Link>
+                    <Link className={css(styles.subtext)} to='/login'>Login</Link>
                   </NavItem>
                   <NavItem style={{color: "#48A9FF"}}>
-                    <Link  className={css(styles.subtext)} to={ROUTES.SIGN_UP}>Signup</Link>
+                    <Link className={css(styles.subtext)} to='/signup'>Signup</Link>
                   </NavItem>
                 </React.Fragment>
               )
