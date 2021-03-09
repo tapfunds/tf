@@ -6,9 +6,6 @@ import "./Auth.css";
 import { SignIn } from '../store/modules/auth/actions/authAction';
 import { Card,  } from "antd";
 
-
-
-
 const Login = () => {
 
   const currentState = useSelector((state) => state.Auth);

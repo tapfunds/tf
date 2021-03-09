@@ -11,7 +11,6 @@ function Landing() {
   return (
     <React.Fragment>
         <div >
-
           <div  style={{color: "white", backgroundColor:"#313030", height:"66vh"}}>
             <div >Transfer Money Fast</div>
             <p style={{color:"white"}}>
@@ -28,11 +27,8 @@ function Landing() {
           <div  style={{ height:"25vh"}}>
               <div >
               Sign up now!{" "} <br/>
-
               </div>
-              
               <Link to="/login" ><CustomButton text="Tap your finances"/></Link>
-            
           </div>
         </div>
       </React.Fragment>

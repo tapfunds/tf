@@ -8,7 +8,6 @@ export const SETTING = '/settings';
 export const STATS = '/stats';
 export const FOF = '';
 
-
 let VAR_API_ROUTE
 
 process.env.NODE_ENV === 'development'

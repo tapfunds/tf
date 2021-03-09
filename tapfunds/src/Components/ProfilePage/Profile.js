@@ -6,7 +6,6 @@ const Profile = () => {
   const currentUserState = useSelector((state) => state.Auth);
 
   const user = currentUserState.currentUser ? currentUserState.currentUser : "";
-  console.log(user);
 
   return (
     <React.Fragment>

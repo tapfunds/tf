@@ -14,7 +14,7 @@ import * as ROUTES from "../../constants/routes";
 
 const App = () => {
   return (
-       <div className="App">
+       <div>
         <Switch>
             <Route exact path={ROUTES.LANDING} component={Landing}/>
             <Route path={ROUTES.HOME} component={Home}/>
