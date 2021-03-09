@@ -11,7 +11,16 @@ const PlaidAuth = ({ props }) => {
   }
   return (
         <div>
-          Here is when auth begins
+          <h3>Tap an account</h3>
+          <p>
+            Sandbox Credentials for Plaid Link
+          </p>
+          <p>
+            username: user_good
+          </p>
+          <p>
+            password: pass_good
+          </p>
           <Link />
         </div>
 

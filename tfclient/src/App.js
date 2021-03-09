@@ -7,11 +7,11 @@ import { StyleSheet, css } from "aphrodite";
 const styles = StyleSheet.create({
 
   container: {
-    display: "flex",
-    flex: 1,
-    minHeight: "100vh",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    // display: "flex",
+    // flex: 1,
+    // minHeight: "100vh",
+    // flexDirection: "column",
+    // justifyContent: "space-between",
   }
 });
 

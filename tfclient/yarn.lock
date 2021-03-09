@@ -4996,6 +4996,11 @@ css-declaration-sorter@^4.0.1:
     postcss "^7.0.1"
     timsort "^0.3.0"
 
+css-element-queries@^1.2.1:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/css-element-queries/-/css-element-queries-1.2.3.tgz#e14940b1fcd4bf0da60ea4145d05742d7172e516"
+  integrity sha512-QK9uovYmKTsV2GXWQiMOByVNrLn2qz6m3P7vWpOR4IdD6I3iXoDw5qtgJEN3Xq7gIbdHVKvzHjdAtcl+4Arc4Q==
+
 css-has-pseudo@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/css-has-pseudo/-/css-has-pseudo-0.10.0.tgz#3c642ab34ca242c59c41a125df9105841f6966ee"
@@ -7430,6 +7435,13 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+hedron@^1.0.0-beta.12:
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/hedron/-/hedron-1.0.0-beta.12.tgz#3944afa1c74cefa5801bed4bb92261acec095c4e"
+  integrity sha512-lKHFlMUxOq9Gwx+mugkAzndHNVJpsYDqhP6i1t0TMV9QyInjIihirXcZ511LK0y95XvfPxcP4RWZQtZtTSO3Og==
+  dependencies:
+    prop-types "^15.0.0"
 
 helper-cache@^0.7.2:
   version "0.7.2"
@@ -11882,7 +11894,7 @@ prop-types-extra@^1.1.0:
     react-is "^16.3.2"
     warning "^4.0.0"
 
-prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.0.0, prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -12687,6 +12699,14 @@ react-scripts@3.4.3:
     workbox-webpack-plugin "4.3.1"
   optionalDependencies:
     fsevents "2.1.2"
+
+react-spaces@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-spaces/-/react-spaces-0.2.0.tgz#4c0ed000085043bfa1e69ab8f519c0dc937184c9"
+  integrity sha512-ioVVn/1cvm63m3U3FRqBF+GWN5klG3YjMAFIchqq0MXUCQYPTgJUl6VO3drMzrhkEhzoiJdZWW6DEvJRF+J/fA==
+  dependencies:
+    css-element-queries "^1.2.1"
+    prop-types "^15.7.2"
 
 react-spinkit@^3.0.0:
   version "3.0.0"
