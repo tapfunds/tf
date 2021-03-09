@@ -4,11 +4,10 @@ import * as ROUTES from "../../constants/routes";
 import { useSelector } from "react-redux";
 import './Nav.css'
 import { StyleSheet, css } from "aphrodite";
-
-
+// import Collapse from 'react-bootstrap/Collapse'
 import {
-  Collapse,
   Navbar,
+  Collapse,
   NavbarToggler,
   NavbarBrand,
   Nav,
