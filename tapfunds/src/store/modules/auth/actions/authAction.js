@@ -28,7 +28,6 @@ export const SignIn = (credentials) => {
     dispatch({ type: BEFORE_STATE });
     try {
       const res = await axios.post(`${API_ROUTE}/login`, credentials);
-      console.log("calling",res)
       let userData = res.data.response;
       localStorage.setItem("token", userData.token);
       localStorage.setItem("user_data", JSON.stringify(userData));
