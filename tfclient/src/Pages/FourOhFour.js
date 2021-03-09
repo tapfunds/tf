@@ -20,7 +20,7 @@ function FourOhFour() {
     <div>
       <h2 className={css(styles.textwrapper)}>You know you done messed up right...you know that dont you</h2>
         <div className={css(styles.imgwrapper)} >
-        <img src={image} alt="Bill Duke told you" />
+        <img src="./billDuke.jpg" alt="Bill Duke told you" />
 
         </div>
     </div>

@@ -3,29 +3,10 @@ import { Label, Input, FormGroup, CardHeader, CardBody, Button } from "reactstra
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect, Link } from 'react-router-dom';
 import { Card } from "antd";
-import { StyleSheet, css } from "aphrodite";
 
 import "./Auth.css";
 import { SignUp } from '../store/modules/auth/actions/authAction';
 
-const styles = StyleSheet.create({
-  button: {
-    background: "#48A9FF",
-    border: "none",
-    fontStyle: "italic",
-    color: "white",
-  },
-  subtext: {
-    color: "black",
-    padding: "10px",
-  },
-  card: {
-    width: "360px",
-    fontSize: "17px",
-    fontStyle: "italic",
-
-  },
-});
 
 const Register = () => {
 
@@ -63,7 +44,7 @@ const Register = () => {
       <div className="App" id="page-container">
 
         <div className="container Auth">
-        <Card  className={css(styles.card)}>
+        <Card >
           <CardHeader>Welcome To Tapfunds</CardHeader>
           <CardBody>
           <form onSubmit={submitUser}>
@@ -116,7 +97,7 @@ const Register = () => {
             </FormGroup>
             { currentState.isLoading ? (
               <Button
-              className={css(styles.button)}
+          
 
                 color="primary"
                 type="submit"
@@ -127,7 +108,7 @@ const Register = () => {
             </Button>
             ) : (
               <Button
-              className={css(styles.button)}
+              
 
                 color="primary"
                 type="submit"

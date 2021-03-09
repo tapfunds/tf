@@ -5,25 +5,9 @@ import { Redirect, Link } from 'react-router-dom';
 import "./Auth.css";
 import { SignIn } from '../store/modules/auth/actions/authAction';
 import { Card,  } from "antd";
-import { StyleSheet, css } from "aphrodite";
 
-const styles = StyleSheet.create({
-  button: {
-    background: "#48A9FF",
-    border: "none",
-    fontStyle: "italic",
-    color: "white",
-  },
-  subtext: {
-    color: "black",
-    padding: "10px",
-  },
-  card: {
-    width: "360px",
-    fontSize: "17px",
-    fontStyle: "italic",
-  },
-});
+
+
 
 const Login = () => {
 
@@ -59,7 +43,7 @@ const Login = () => {
     return (
       <div className="App" id="page-container">
         <div className="container Auth">
-        <Card className={css(styles.card)}>
+        <Card >
           <CardHeader>Login</CardHeader>
           <CardBody>
           <form onSubmit={submitUser}>

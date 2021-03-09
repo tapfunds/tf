@@ -5,9 +5,9 @@ import React from 'react';
 const BankTap = () => {
 
     return(
-<div>
+    <div>
     still need a card design
-</div>
+    </div>
     );
 };
 
