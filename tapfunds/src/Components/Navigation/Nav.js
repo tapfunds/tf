@@ -1,27 +1,52 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import * as ROUTES from "../../constants/routes";
-import { useSelector } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import { NavItem } from "reactstrap";
-import { Menu, Dropdown } from 'antd';
-
-const styles = StyleSheet.create({
-  subtext: {
-    color: "#48A9FF",
-    padding: "10px",
-    width: "360px",
-    fontStyle: "italic",
-    fontWeight: "bold",
-  },
-});
+import { useSelector, useDispatch } from "react-redux";
+import { Dropdown } from "antd";
+import { SignOut } from "../../store/modules/auth/actions/authAction";
 
 const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const currentState = useSelector((state) => state);
 
   const { isAuthenticated } = currentState.Auth;
+  const dispatch = useDispatch();
+  const logoutUser = () => dispatch(SignOut());
+
+  const logout = (e) => {
+    e.preventDefault();
+    logoutUser();
+  };
+
+  const si_menu = (
+    <div
+      class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="user-menu"
+    >
+      <a
+        href={ROUTES.SETTING}
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+      >
+        Profile
+      </a>
+      <a
+        href={ROUTES.SETTING}
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+      >
+        Settings
+      </a>
+      <a
+        href={ROUTES.LANDING}
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+        onClick={logout}
+      >
+        Sign Out
+      </a>
+    </div>
+  );
 
   const SignedInLinks = (
     <nav class="bg-gray-800">
@@ -85,28 +110,34 @@ const Navigation = () => {
             <div class="hidden sm:block sm:ml-6">
               <div class="flex space-x-4">
                 <a
-                  href="/"
+                  href="/home"
                   class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Dashboard
                 </a>
                 <a
-                  href="/"
+                  href="/accounts"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Team
+                  Accounts
                 </a>
                 <a
-                  href="/"
+                  href="/wallets"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Projects
+                  Crypto Wallets
                 </a>
                 <a
-                  href="/"
+                  href="/stats"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Calendar
+                  Money
+                </a>
+                <a
+                  href="/transfers"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Transfers
                 </a>
               </div>
             </div>
@@ -132,51 +163,15 @@ const Navigation = () => {
             </button>
 
             <div class="ml-3 relative">
-              <div>
-                <button
-                  type="button"
-                  class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                  id="user-menu"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                >
-                  <span class="sr-only">Open user menu</span>
+              <Dropdown overlay={si_menu} trigger={["click"]}>
+                <button type="button" id="user-menu">
                   <img
                     class="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src="./dropdown.svg"
                     alt=""
                   />
                 </button>
-              </div>
-
-              <div
-                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="user-menu"
-              >
-                <a
-                  href="/"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  Your Profile
-                </a>
-                <a
-                  href="/"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  Settings
-                </a>
-                <a
-                  href="/"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  Sign out
-                </a>
-              </div>
+              </Dropdown>
             </div>
           </div>
         </div>
@@ -221,26 +216,26 @@ const Navigation = () => {
 
   const so_menu = (
     <div
-    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-    role="menu"
-    aria-orientation="vertical"
-    aria-labelledby="user-menu"
-  >
-    <a
-      href={ROUTES.SIGN_IN}
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      role="menuitem"
+      class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="user-menu"
     >
-      Login
-    </a>
-    <a
-      href={ROUTES.SIGN_UP}
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      role="menuitem"
-    >
-      Sign Up
-    </a>
-  </div>
+      <a
+        href={ROUTES.SIGN_IN}
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+      >
+        Login
+      </a>
+      <a
+        href={ROUTES.SIGN_UP}
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+      >
+        Sign Up
+      </a>
+    </div>
   );
 
   const SignedOutLinks = (
@@ -326,15 +321,9 @@ const Navigation = () => {
             </div>
           </div>
           <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
             <div class="ml-3 relative">
- 
-              <Dropdown overlay={so_menu} trigger={['click']}>
-              <button 
-                  type="button"
-                  id="user-menu"
-
-                >
+              <Dropdown overlay={so_menu} trigger={["click"]}>
+                <button type="button" id="user-menu">
                   <img
                     class="h-8 w-8 rounded-full"
                     src="./dropdown.svg"
@@ -342,9 +331,7 @@ const Navigation = () => {
                   />
                 </button>
               </Dropdown>
-    
             </div>
-            
           </div>
         </div>
       </div>
