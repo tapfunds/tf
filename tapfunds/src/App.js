@@ -28,6 +28,7 @@ const App = () => {
         </div>
         <div >
           <Routes/>
+          
         </div>
         <div className={css(styles.footer)}>
         <FooterContainer />

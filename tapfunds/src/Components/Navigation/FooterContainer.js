@@ -13,17 +13,10 @@ const FooterContainer = () => {
         </Footer.Column>
         <Footer.Column>
         <Footer.Title>Services</Footer.Title>
-            <Footer.Link href="#">Marketing</Footer.Link>
-            <Footer.Link href="#">Consulting</Footer.Link>
-            <Footer.Link href="#">Development</Footer.Link>
-            <Footer.Link href="#">Design</Footer.Link>
-        </Footer.Column>
-        <Footer.Column>
-        <Footer.Title>Contact Us</Footer.Title>
-            <Footer.Link href="#">United States</Footer.Link>
-            <Footer.Link href="#">United Kingdom</Footer.Link>
-            <Footer.Link href="#">Australia</Footer.Link>
-            <Footer.Link href="#">Support</Footer.Link>
+            <Footer.Link href="#">Transfers</Footer.Link>
+            <Footer.Link href="#">Account Oversight</Footer.Link>
+            <Footer.Link href="#">Data Analysis</Footer.Link>
+            <Footer.Link href="#">Community Pooling</Footer.Link>
         </Footer.Column>
         <Footer.Column>
         <Footer.Title>Social</Footer.Title>
@@ -31,6 +24,12 @@ const FooterContainer = () => {
             <Footer.Link href="#">Instagram</Footer.Link>
             <Footer.Link href="#">Youtube</Footer.Link>
             <Footer.Link href="#">Twitter</Footer.Link>
+        </Footer.Column>
+        <Footer.Column>
+        <Footer.Title>Contact Us</Footer.Title>
+            <div href="#">outreach@tapfunds.net</div>
+            <div href="#">PO Box 435, Atlanta, GA, 30293</div>
+            <div href="#">423-774-9837</div>
         </Footer.Column>
     </Footer.Row>
     </Footer.Wrapper>
