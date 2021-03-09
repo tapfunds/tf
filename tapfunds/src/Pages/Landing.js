@@ -11,10 +11,11 @@ function Landing() {
   return (
     <React.Fragment>
         <div >
+
           <div  style={{color: "white", backgroundColor:"#313030", height:"66vh"}}>
             <div >Transfer Money Fast</div>
             <p style={{color:"white"}}>
-              Safely transfer funds bewteen any of your personal accounts
+              Secure, fast, personal bank to bank transfers
             </p>
           </div>
 
@@ -27,8 +28,11 @@ function Landing() {
           <div  style={{ height:"25vh"}}>
               <div >
               Sign up now!{" "} <br/>
+
               </div>
+              
               <Link to="/login" ><CustomButton text="Tap your finances"/></Link>
+            
           </div>
         </div>
       </React.Fragment>

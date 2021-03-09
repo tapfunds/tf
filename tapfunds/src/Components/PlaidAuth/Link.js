@@ -74,6 +74,7 @@ function Link() {
 
       try{
         const res = await axios(config2);
+        console.log(res)
       } catch (error) {
         console.error(error);
       }
