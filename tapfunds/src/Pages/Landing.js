@@ -13,14 +13,14 @@ function Landing() {
     <React.Fragment>
         <div >
           {/* <Logo/> */}
-          <div  style={{color: "white", backgroundColor:"#313030", height:"66vh"}}>
-            <div >Transfer Money Fast</div>
+          <div  className="App h-screen w-full flex justify-center items-center">
+            <div style={{color:"white"}}>Transfer Money Fast</div>
             <p style={{color:"white"}}>
               Secure, fast, personal bank to bank transfers
             </p>
           </div>
 
-          <div  style={{ height:"66vh"}}>
+          <div  div  className="App h-screen w-full flex justify-center items-center bg-green-500">
             <div >Understand Spending Habits</div>
             <p >
               View account trends to advise yourself on better money habits
