@@ -24,7 +24,7 @@ function Landing() {
 
         <section
           div
-          className="App h-screen grid w-full flex-col justify-items-center bg-blue-50"
+          className="App h-screen grid w-full flex-col justify-items-center bg-#48A9FF"
         >
           <div>
           <TypographyTwo />

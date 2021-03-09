@@ -49,7 +49,7 @@ const particleOptions2 = {
         // Make a particle for this pixel if blue > 50 (range 0-255)
         return pixel.b > 50;
       },
-      color: ({ x, y, image }) => "#48A9FF",
+      color: ({ x, y, image }) => "white",
       radius: () => Math.random() * 1.5 + 0.5,
       mass: () => 70,
       friction: () => 0.15,
@@ -71,7 +71,7 @@ export function TypographyTwo() {
             particleOptions={particleOptions2}
             mouseMoveForce={motionForce}
             touchMoveForce={motionForce}
-            backgroundColor="bg-green-500" />
+            backgroundColor="#48A9FF" />
     );
 }
 
