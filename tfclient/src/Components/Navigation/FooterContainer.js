@@ -5,7 +5,6 @@ import "./Footer.css"
 export const FooterContainer = () => {
   return (
     <Footer
-      className="footer"
       columns={[
         {
           title: "Tapfunds",
