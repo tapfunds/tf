@@ -318,6 +318,8 @@ const Navigation = () => {
                 </a>
                 <a
                   href="https://medium.com/@tapfunds"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Blog
