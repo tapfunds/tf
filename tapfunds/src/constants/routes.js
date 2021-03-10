@@ -24,12 +24,12 @@ process.env.NODE_ENV === 'development'
   
 
   process.env.NODE_ENV === 'development'
-  ? PLAID_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
-  : PLAID_API_ROUTE = `${process.env.REACT_APP_PROD_AUTH_API_URL}/api/v1`
+  ? PLAID_API_ROUTE = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1`
+  : PLAID_API_ROUTE = `${process.env.REACT_APP_PROD_PLAID_API_URL}/api/v1`
 
   process.env.NODE_ENV === 'development'
-  ? OBJECT_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}`
-  : OBJECT_API_ROUTE = `${process.env.REACT_APP_PROD_AUTH_API_URL}`
+  ? OBJECT_API_ROUTE = `${process.env.REACT_APP_DEV_OBJECT_API_URL}`
+  : OBJECT_API_ROUTE = `${process.env.REACT_APP_PROD_OBJECT_API_URL}`
 
 
 export const AUTH_URL = AUTH_API_ROUTE

@@ -7,10 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
+import {PLAID_URL} from "../../constants/routes";
 
-const tokenURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1/create_link_token`;
-const sendTokenURL = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1/set_access_token`;
-const accessTokenURL = `${process.env.REACT_APP_DEV_OBJECT_MAP_API_URL}`;
+const tokenURL = `${PLAID_URL}/create_link_token`;
+const sendTokenURL = `${PLAID_URL}/set_access_token`;
 
 function Link() {
   const [data, setData] = useState("");
@@ -65,19 +65,8 @@ function Link() {
         
       }
       sendToken(details)
-
-      const config2 = {
-        method: "post",
-        url: accessTokenURL,
-        data: qs.stringify({ user: AuthID, accesstoken: response.data.access_token }),
-      };
-
-      try{
-        const res = await axios(config2);
-        console.log(res)
-      } catch (error) {
-        console.error(error);
-      }
+      // sendObject({user_id: AuthID, access_token: response.data.access_token })
+  
     } catch (error) {
       console.error(error);
     }
