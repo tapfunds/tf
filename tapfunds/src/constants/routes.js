@@ -3,11 +3,14 @@ export const SIGN_UP = '/signup';
 export const SIGN_IN = '/login';
 export const HOME = '/home';
 export const AUTH = '/auth';
+export const PROFILE = '/profile';
 export const RESET = '/reset';
 export const SETTING = '/settings';
-export const STATS = '/stats';
+export const STATS = '/data';
 export const FOF = '';
-
+export const ACCOUNTS = '/accounts';
+export const WALLETS = '/wallets';
+export const TRANSFERS = '/transfers';
 let VAR_API_ROUTE
 
 process.env.NODE_ENV === 'development'
