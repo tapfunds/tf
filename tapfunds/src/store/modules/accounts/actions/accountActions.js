@@ -13,12 +13,12 @@ import {
   } from "../accountsTypes/index";
   import { history } from "../../../../utils/history";
 
-  export const fetchUserIntegrations = (id) => {
+  export const fetchUserAccounts = (id) => {
     return async (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
-        const res = await axios.get(`${OBJECT_URL}/user_integrations/${id}`);
+        const res = await axios.get(`${OBJECT_URL}/get/${id}`);
         dispatch({ type: FETCH_AUTH_ACCOUNTS, payload: res.data.response });
       } catch (err) {
   
@@ -30,12 +30,12 @@ import {
     };
   };
   
-  export const createIntegration = (createIntegration) => {
+  export const createAccountObject = (createAccount) => {
     return  (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
-        const res =  axios.post(`${OBJECT_URL}/new_integration`, createIntegration);
+        const res =  axios.post(`${OBJECT_URL}`, createAccount);
         dispatch({
           type: CREATE_ACCOUNT_SUCCESS,
           payload: res.data.response,
@@ -47,13 +47,13 @@ import {
     };
   };
   
-  export const updateIntegration = (updateDetails, updateSuccess) => {
+  export const updateAccountObject = (updateDetails, updateSuccess) => {
     return async (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
         const res = await axios.put(
-          `${OBJECT_URL}/integrations/${updateDetails.id}`,
+          `${OBJECT_URL}/update/${updateDetails.id}`,
           updateDetails
         );
         dispatch({
@@ -67,12 +67,12 @@ import {
     };
   };
   
-  export const deleteIntegration = (id) => {
+  export const deleteAccountObject = (id) => {
     return async (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
-        const res = await axios.delete(`${OBJECT_URL}/integrations/${id}`);
+        const res = await axios.delete(`${OBJECT_URL}/delete/${id}`);
         dispatch({
           type: DELETE_ACCOUNT_SUCCESS,
           payload: {
