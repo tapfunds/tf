@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
+import {createAccountObject} from "../../store/modules/accounts/actions/accountActions"
 import {PLAID_URL} from "../../constants/routes";
 
 const tokenURL = `${PLAID_URL}/create_link_token`;
@@ -46,6 +47,7 @@ function Link() {
 
   const onSuccess = useCallback(async (token, metadata) => {
     const sendToken = (integrationDetails) => dispatch(createIntegration(integrationDetails));
+    const sendObject = (accountDetails) => dispatch(createAccountObject(accountDetails));
 
     // send token to server
     const config = {
@@ -65,7 +67,8 @@ function Link() {
         
       }
       sendToken(details)
-      // sendObject({user_id: AuthID, access_token: response.data.access_token })
+      details = {user_ID: AuthID, access_token: response.data.access_token }
+      sendObject(details)
   
     } catch (error) {
       console.error(error);

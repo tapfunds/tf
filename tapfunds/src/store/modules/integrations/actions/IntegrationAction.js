@@ -31,11 +31,11 @@ export const fetchUserIntegrations = (id) => {
 };
 
 export const createIntegration = (createIntegration) => {
-  return  (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: BEFORE_STATE_INTEGRATION });
 
     try {
-      const res =  axios.post(`${AUTH_URL}/new_integration`, createIntegration);
+      const res = await axios.post(`${AUTH_URL}/new_integration`, createIntegration);
       dispatch({
         type: CREATE_INTEGRATION_SUCCESS,
         payload: res.data.response,

@@ -10,7 +10,7 @@ import {
     DELETE_ACCOUNT_ERROR,
     FETCH_AUTH_ACCOUNTS,
     FETCH_AUTH_ACCOUNTS_ERROR,
-  } from "../accountsTypes/index";
+  } from "../accountTypes/index";
   import { history } from "../../../../utils/history";
 
   export const fetchUserAccounts = (id) => {
