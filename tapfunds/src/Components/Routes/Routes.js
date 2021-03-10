@@ -6,7 +6,7 @@ import ForgotPassword from "../../Pages/ForgotPassword";
 import ResetPassword from "../../Pages/ResetPassword";
 import Landing from "../../Pages/Landing";
 import Settings from "../../Pages/Settings";
-import PlaidAuth from "../../Pages/PlaidAuth";
+import PlaidAuth from "../../Pages/PlaidAuth.tsx";
 import FoF from "../../Pages/FourOhFour";
 import PlaceHolder from "../../Pages/Placeholder.tsx";
 import { Route, Switch } from "react-router-dom";

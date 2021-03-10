@@ -4,6 +4,8 @@ import axios from "axios";
 import qs from "qs";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { CustomButton } from "../Button/Button";
+
 import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
@@ -45,6 +47,7 @@ function Link() {
     history.push(path);
   }, [history]);
 
+  
   const onSuccess = useCallback(async (token, metadata) => {
     const sendToken = (integrationDetails) => dispatch(createIntegration(integrationDetails));
     const sendObject = (accountDetails) => dispatch(createAccountObject(accountDetails));
@@ -87,9 +90,8 @@ function Link() {
   
   return (
     <div>
-      <button onClick={() => open()} disabled={!ready}>
-        Connect a bank account
-      </button>
+      <CustomButton text={"Connect a bank account"} onClick={() => open()} disabled={!ready}/>
+        
     </div>
   );
 }
