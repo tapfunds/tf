@@ -2,7 +2,11 @@ import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import { CustomButton } from "../Components/Button/Button";
 import { useSelector } from "react-redux";
-import { TypographyThree, TypographyTwo, TypographyOne } from "../Components/ProfilePage/Logo";
+import {
+  TypographyThree,
+  TypographyTwo,
+  TypographyOne,
+} from "../Components/ProfilePage/ParticleNames";
 
 function Landing() {
   const currentState = useSelector((state) => state.Auth);
@@ -14,12 +18,13 @@ function Landing() {
       <div>
         <section className="App h-screen grid w-full flex-col justify-items-center ">
           <div>
-          <TypographyOne />
-
+            <TypographyOne />
           </div>
-          <p style={{ color: "white" }}>
-            Secure personal bank to bank transfers
-          </p>
+          <img
+            style={{ width: "80%" }}
+            src="./bank_to_bank_transfers.svg"
+            alt="#"
+          />
         </section>
 
         <section
@@ -27,19 +32,28 @@ function Landing() {
           className="App h-screen grid w-full flex-col justify-items-center bg-#48A9FF"
         >
           <div>
-          <TypographyTwo />
-
+            <TypographyTwo />
           </div>
-          <p>View account trends to advise yourself on better money habits</p>
+          <img
+            style={{ width: "80%" }}
+            src="./advise_yourself_on_better_money_habits.svg"
+            alt="#"
+          />
         </section>
         <section className="App h-screen grid w-full flex-col justify-items-center bg-#48A9FF">
           <TypographyThree />
-          <p style={{ color: "white" }}>
-            View account balances, recent transctions, and account health of any of your accounts
+            
+            <img
+            style={{ width: "80%" }}
+            src="./advise_yourself_on_better_money_habits.svg"
+            alt="#"
+          />
+          <div>
             <Link to="/login">
-            <CustomButton text="Tap your finances" />
-          </Link>
-          </p>
+              <CustomButton text="Tap your finances" />
+            </Link>
+          </div>
+            
         </section>
       </div>
     </React.Fragment>

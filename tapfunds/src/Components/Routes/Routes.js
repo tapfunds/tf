@@ -23,10 +23,10 @@ const App = () => {
             <Route exact path={ROUTES.STATS} component={PlaceHolder}/>
             <Route exact path={ROUTES.SIGN_IN} component={Login} />
             <Route exact path={ROUTES.SIGN_UP} component={Register} />
-            <Route exact path={ROUTES.RESET} component={PlaceHolder} />
             <Route exact path={ROUTES.ACCOUNTS} component={PlaceHolder}/>
             <Route exact path={ROUTES.WALLETS} component={PlaceHolder} />
             <Route exact path={ROUTES.TRANSFERS} component={PlaceHolder} />
+            <Route exact path={ROUTES.ABOUT} component={PlaceHolder} />
             <Route exact path={ROUTES.RESET} component={ForgotPassword} />
             <Route exact path='/reset/:token' component={ResetPassword} />
             <Route component={FoF}/>

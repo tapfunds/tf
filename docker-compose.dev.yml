@@ -48,7 +48,7 @@ services:
     container_name: client_service
     stdin_open: true
     env_file:
-      - ./tfclient/.env
+      - ./tapfunds/.env
     build:
       context: .
       dockerfile: ./tfclient/Dockerfile.dev

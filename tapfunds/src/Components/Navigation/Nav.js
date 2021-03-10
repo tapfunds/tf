@@ -131,13 +131,19 @@ const Navigation = () => {
                   href="/data"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Money
+                  Trends
                 </a>
                 <a
                   href="/transfers"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Transfers
+                </a>
+                <a
+                  href="/auth"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Link Account
                 </a>
               </div>
             </div>
@@ -201,13 +207,19 @@ const Navigation = () => {
             href="/data"
             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >
-            Money
+            Trends
           </a>
           <a
             href="/transfers"
             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >
             Transfers
+          </a>
+          <a
+            href="/auth"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+          >
+            Link Account
           </a>
         </div>
       </div>

@@ -11,10 +11,27 @@ export const FOF = '';
 export const ACCOUNTS = '/accounts';
 export const WALLETS = '/wallets';
 export const TRANSFERS = '/transfers';
-let VAR_API_ROUTE
+export const ABOUT = '/about';
 
+let AUTH_API_ROUTE;
+let PLAID_API_ROUTE;
+let OBJECT_API_ROUTE;
+
+// Change one url to the production AP
 process.env.NODE_ENV === 'development'
-  ? VAR_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
-  : VAR_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
+  ? AUTH_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
+  : AUTH_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
   
-export default VAR_API_ROUTE
+
+  process.env.NODE_ENV === 'development'
+  ? PLAID_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
+  : PLAID_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
+
+  process.env.NODE_ENV === 'development'
+  ? OBJECT_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}`
+  : OBJECT_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}`
+
+
+export const AUTH_URL = AUTH_API_ROUTE
+export const PLAID_URL= PLAID_API_ROUTE
+export const OBKECT_URL = OBJECT_API_ROUTE
