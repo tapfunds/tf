@@ -121,10 +121,6 @@ Docker, node, python, golang, and the GCP SDK
   ```sh
   ./build-dev
   ```
-  once this is finish you will need to access the rabbitMQ container and run
-  ```sh
-  rabbitmq-plugins enable rabbitmq_management
-  ``` 
 ### Installation
 
 1. Clone the repo

@@ -4,7 +4,6 @@ from neomodel import config
 from pydantic import BaseModel
 from api.controller.neo4j_controller import CreateTap, ReadTap, DeleteTap, UpdateTap
 from fastapi.middleware.cors import CORSMiddleware
-from api.utils.constants import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 
 # from neomodel import config
 config.DATABASE_URL = "bolt://neo4j:changeme@localhost:7687"
@@ -33,7 +32,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["POST", "GET"],
+    allow_methods=["POST", "GET", "OPTIONS"],
     allow_headers=["*"],
 )
 
