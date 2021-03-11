@@ -7,8 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
-import {createAccountObject} from "../../store/modules/accounts/actions/accountActions"
-import {PLAID_URL} from "../../constants/routes";
+import {PLAID_URL, OBJECT_URL} from "../../constants/routes";
 
 const tokenURL = `${PLAID_URL}/create_link_token`;
 const sendTokenURL = `${PLAID_URL}/set_access_token`;
@@ -48,7 +47,6 @@ function Link() {
   
   const onSuccess = useCallback(async (token, metadata) => {
     const sendToken = (integrationDetails) => dispatch(createIntegration(integrationDetails));
-    const sendObject = (accountDetails) => dispatch(createAccountObject(accountDetails));
 
     // send token to server
     const config = {
@@ -68,8 +66,20 @@ function Link() {
         
       }
       sendToken(details)
-      details = {user_ID: AuthID, access_token: response.data.access_token }
-      sendObject(details)
+      
+      const config2 = {
+        method: "post",
+        url: OBJECT_URL,
+        data: qs.stringify({ uid: AuthID, access_token: response.data.access_token }),
+      };
+
+      try{
+        const res = await axios(config2);
+        console.log("Sending Object",res)
+      } catch (error) {
+        console.error("Error Sending Object", error);
+      }
+ 
   
     } catch (error) {
       console.error(error);

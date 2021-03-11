@@ -11,7 +11,8 @@ import {
     FETCH_AUTH_ACCOUNTS,
     FETCH_AUTH_ACCOUNTS_ERROR,
   } from "../accountTypes/index";
-  import { history } from "../../../../utils/history";
+
+import { history } from "../../../../utils/history";
 
   export const fetchUserAccounts = (id) => {
     return async (dispatch) => {
@@ -36,6 +37,7 @@ import {
   
       try {
         const res =  axios.post(`${OBJECT_URL}`, createAccount);
+        console.log(res)
         dispatch({
           type: CREATE_ACCOUNT_SUCCESS,
           payload: res.data.response,
