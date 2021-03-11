@@ -4,8 +4,6 @@ import axios from "axios";
 import qs from "qs";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomButton } from "../Button/Button";
-
 import {
   createIntegration
 } from "../../store/modules/integrations/actions/IntegrationAction"
@@ -90,7 +88,9 @@ function Link() {
   
   return (
     <div>
-      <CustomButton text={"Connect a bank account"} onClick={() => open()} disabled={!ready}/>
+      <button
+       class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
+      onClick={() => open()} disabled={!ready}>Connect a bank account</button>
         
     </div>
   );

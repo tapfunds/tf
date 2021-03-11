@@ -1,5 +1,4 @@
-import React, { useState, Fragment } from "react";
-// import { Button } from "antd";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import Message from "../Components/Message/Message";
@@ -14,15 +13,10 @@ import {
   Form,
   CustomInput,
   CardHeader,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
 } from "reactstrap";
 import {
   updateUserAvatar,
   updateUser,
-  deleteUser,
   SignOut,
 } from "../store/modules/auth/actions/authAction";
 import { StyleSheet, css } from "aphrodite";
@@ -45,9 +39,6 @@ const Settings = () => {
 
   const currentUserState = useSelector((state) => state.Auth);
 
-  const AuthID = currentUserState.currentUser
-    ? currentUserState.currentUser.id
-    : "";
 
   const dispatch = useDispatch();
   const logoutUser = () => dispatch(SignOut());
@@ -55,7 +46,6 @@ const Settings = () => {
     dispatch(updateUserAvatar(userDetails));
   const userUpdate = (userDetails) =>
     dispatch(updateUser(userDetails, clearInput));
-  const deleteAccount = (id) => dispatch(deleteUser(id));
 
   const [file, setFile] = useState();
   const [uploadedFile, setUploadedFile] = useState();
@@ -128,11 +118,6 @@ const Settings = () => {
       current_password: user.current_password,
       new_password: user.new_password,
     });
-  };
-
-  const shutDown = (e) => {
-    e.preventDefault();
-    deleteAccount(AuthID);
   };
 
   const logout = (e) => {
@@ -393,34 +378,6 @@ const Settings = () => {
                   </FormGroup>
               </Row>
             </CardBody>
-
-            {/* <Modal isOpen={modal} toggle={toggle}>
-              <ModalHeader toggle={toggle} className="text-center">
-                Are you sure you want to delete your account?
-              </ModalHeader>
-              <ModalBody toggle={toggle} className="text-center">
-                This will also delete your posts, likes and comments if you
-                created any.
-              </ModalBody>
-              <ModalFooter>
-                {currentUserState.isLoading ? (
-                  <button className="btn btn-danger" disabled>
-                    Deleting...
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-danger"
-                    onClick={shutDown}
-                    type="submit"
-                  >
-                    Delete
-                  </button>
-                )}
-                <Button color="warning" onClick={toggle}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </Modal> */}
           </div>
         </div>
     </div>
