@@ -65,25 +65,19 @@ function Link() {
         access_token_institution: response.data.access_token_institution
         
       }
-      sendToken(details)
-      
-      const config2 = {
-        method: "post",
-        url: OBJECT_URL,
-        data: qs.stringify({ uid: AuthID, access_token: response.data.access_token }),
-      };
 
+      sendToken(details)
       try{
-        const res = await axios(config2);
-        console.log("Sending Object",res)
+        await axios.post(OBJECT_URL , { uid: AuthID, access_token: response.data.access_token, output:"loading..." })
+        .then(res => console.log(res));
       } catch (error) {
-        console.error("Error Sending Object", error);
-      }
- 
   
+      }
     } catch (error) {
       console.error(error);
     }
+
+
     routeChange()
   }, [AuthID, user, dispatch, routeChange]);
 

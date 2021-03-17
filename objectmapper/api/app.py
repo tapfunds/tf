@@ -11,34 +11,28 @@ config.DATABASE_URL = "bolt://neo4j:changeme@localhost:7687"
 app = FastAPI()
 
 class Tap(BaseModel):
-    uid: str 
-    access_token: Optional[str] = None
-    output: Optional[str] = None
+    uid: str
+    access_token: str
+    output: str
 
 origins = [
-    "http://localhost",
-    "http://127.0.0.1",
-    "http://localhost:80",
-    "http://127.0.0.1:80",
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:7687",
-    "http://127.0.0.1:7687",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "127.0.0.1:3000",
+    "http://localhost:3000",
+    "localhost:3000",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.post("/")
 async def create_user(tap: Tap):
-    CreateTap(user_ID=tap.uid, access_token=tap.access_token)
+    CreateTap(user_ID=tap.uid, access_token=tap.access_token)    
     tap.output = "200"
     return {"Status": tap.output}
 
