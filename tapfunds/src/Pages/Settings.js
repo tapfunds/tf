@@ -126,7 +126,7 @@ const Settings = () => {
   };
   return (
     <div className={css(styles.body)}>
-      <div  class="App h-screen w-full flex justify-center  bg-yellow-50">
+      <div  className="App h-screen w-full flex justify-center  bg-yellow-50">
         <div className=" max-w-md bg-white shadow-md rounded px-8 py-8 pt-8">
             <div className="text-center">
               <CardHeader className="px-4 pb-4 text-lg block font-bold pb-2">

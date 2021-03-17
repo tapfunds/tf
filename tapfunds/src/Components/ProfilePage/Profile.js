@@ -77,14 +77,14 @@ const Profile = () => {
             <BankTap name={bank.name} color={bank.color} />
           </div>
         ))}
-        <div class=" py-6 flex-1 flex-col justify-start sm:py-9">
+        <div className=" py-6 flex-1 flex-col justify-start sm:py-9">
           <div
             style={{ width: "35%" }}
-            class="relative sm:max-w-xl sm:mx-auto "
+            className="relative sm:max-w-xl sm:mx-auto "
           >
-            <div class="absolute inset-0 shadow-lg bg-white sm:rounded-3xl"></div>
-            <div class="relative sm:p-20 px-4 pb-4">
-              <div class="max-w-md mx-auto">
+            <div className="absolute inset-0 shadow-lg bg-white sm:rounded-3xl"></div>
+            <div className="relative sm:p-20 px-4 pb-4">
+              <div className="max-w-md mx-auto">
                 <a href="/accounts">
                   <div>
                     <img src="./plus.svg" alt="uh, oh no" />
