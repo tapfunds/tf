@@ -4,7 +4,8 @@ import axios from "axios";
 import qs from "qs";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { createIntegration } from "../../store/modules/integrations/actions/IntegrationAction";
+import { createIntegration } from "../../store/modules/integrations/actions/integrationAction";
+import { createAccountObject } from "../../store/modules/accounts/actions/accountActions";
 import { PLAID_URL, OBJECT_URL } from "../../constants/routes";
 
 const tokenURL = `${PLAID_URL}/create_link_token`;
@@ -45,6 +46,8 @@ function Link() {
       const sendToken = (integrationDetails) =>
         dispatch(createIntegration(integrationDetails));
 
+      const sendAccountInfo = (accountDetails) =>
+        dispatch(createAccountObject(accountDetails));
       // send token to server
       const config = {
         method: "post",
@@ -63,14 +66,21 @@ function Link() {
         };
 
         sendToken(details);
-        try {
-          await axios
-            .post(OBJECT_URL, {
-              uid: AuthID,
-              access_token: response.data.access_token,
-              output: "loading...",
-            })
-        } catch (error) {}
+        let accountInfo = {
+          uid: AuthID,
+          access_token: response.data.access_token,
+          output: "loading...",
+        };
+        sendAccountInfo(accountInfo);
+
+        // try {
+        //   await axios
+        //     .post(OBJECT_URL, {
+        //       uid: AuthID,
+        //       access_token: response.data.access_token,
+        //       output: "loading...",
+        //     })
+        // } catch (error) {}
       } catch (error) {
         console.error(error);
       }
