@@ -4,57 +4,50 @@ import BankTap from "./BankTap";
 
 const bank_info = [
   {
+    id:"1",
     name: "Bank of America",
     color: "red",
   },
   {
+    id: "2",
     name: "Cash App",
     color: "green",
   },
   {
+    id: "3",
     name: "Chase",
     color: "blue",
   },
-  { name: "TD Bank", color: "green" },
+  { 
+    id: "4",
+    name: "TD Bank", 
+  color: "green" 
+},
   {
+    id: "5",
     name: "Bank of America",
     color: "red",
   },
   {
+    id: "6",
     name: "Cash App",
     color: "green",
   },
   {
+    id: "7",
     name: "Chase",
     color: "blue",
   },
-  { name: "TD Bank", color: "green" },
+  { 
+    id: "8",
+    name: "TD Bank", 
+    color: "green" 
+  },
   {
+    id: "9",
     name: "Bank of America",
     color: "red",
   },
-  {
-    name: "Cash App",
-    color: "green",
-  },
-  {
-    name: "Chase",
-    color: "blue",
-  },
-  { name: "TD Bank", color: "green" },
-  {
-    name: "Bank of America",
-    color: "red",
-  },
-  {
-    name: "Cash App",
-    color: "green",
-  },
-  {
-    name: "Chase",
-    color: "blue",
-  },
-  { name: "TD Bank", color: "green" },
 ];
 
 const Profile = () => {
@@ -73,7 +66,7 @@ const Profile = () => {
       </header>
       <div className="grid grid-cols-2 gap-2 bg-blue-50 ">
         {bank_info.slice(0, 5).map((bank) => (
-          <div>
+          <div key={bank.id}>
             <BankTap name={bank.name} color={bank.color} />
           </div>
         ))}
