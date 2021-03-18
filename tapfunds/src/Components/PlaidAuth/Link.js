@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createIntegration } from "../../store/modules/integrations/actions/integrationAction";
 import { createAccountObject } from "../../store/modules/accounts/actions/accountActions";
-import { PLAID_URL, OBJECT_URL } from "../../constants/routes";
+import { PLAID_URL } from "../../constants/routes";
 
 const tokenURL = `${PLAID_URL}/create_link_token`;
 const sendTokenURL = `${PLAID_URL}/set_access_token`;
