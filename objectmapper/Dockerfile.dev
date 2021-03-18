@@ -14,7 +14,7 @@ WORKDIR /app
 COPY ./objectmapper /app
 
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-RUN poetry install
+RUN poetry install --no-root
 
 USER 1000
 EXPOSE 1738
