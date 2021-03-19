@@ -58,6 +58,8 @@ const Profile = () => {
   const dispatch = useDispatch();
   const getAccountInfo = (userDetails) => dispatch(fetchUserAccounts(userDetails));
 
+  // TODO: create useEffect to handle fetch of data, limit amount of data pulled on  
+
   return (
     <React.Fragment>
       <header className="bg-white shadow">
