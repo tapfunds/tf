@@ -1,6 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useCallback, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import BankTap from "./BankTap";
+import { fetchUserAccounts } from "../../store/modules/accounts/actions/accountActions";
 
 const bank_info = [
   {
@@ -54,6 +55,8 @@ const Profile = () => {
   const currentUserState = useSelector((state) => state.Auth);
 
   const user = currentUserState.currentUser ? currentUserState.currentUser : "";
+  const dispatch = useDispatch();
+  const getAccountInfo = (userDetails) => dispatch(fetchUserAccounts(userDetails));
 
   return (
     <React.Fragment>

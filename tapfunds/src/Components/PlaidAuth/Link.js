@@ -73,14 +73,6 @@ function Link() {
         };
         sendAccountInfo(accountInfo);
 
-        // try {
-        //   await axios
-        //     .post(OBJECT_URL, {
-        //       uid: AuthID,
-        //       access_token: response.data.access_token,
-        //       output: "loading...",
-        //     })
-        // } catch (error) {}
       } catch (error) {
         console.error(error);
       }
