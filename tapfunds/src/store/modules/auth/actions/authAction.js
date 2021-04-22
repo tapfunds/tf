@@ -1,4 +1,4 @@
-import API_ROUTE from "../../../../constants/routes";
+import {AUTH_URL} from "../../../../constants/routes";
 import axios from "axios";
 import setAuthorizationToken from "../../../../utils/authorization";
 import {
@@ -27,7 +27,7 @@ export const SignIn = (credentials) => {
   return async (dispatch) => {
     dispatch({ type: BEFORE_STATE });
     try {
-      const res = await axios.post(`${API_ROUTE}/login`, credentials);
+      const res = await axios.post(`${AUTH_URL}/login`, credentials);
       let userData = res.data.response;
       localStorage.setItem("token", userData.token);
       localStorage.setItem("user_data", JSON.stringify(userData));
@@ -53,7 +53,7 @@ export const SignUp = (newUser) => {
   return async (dispatch) => {
     dispatch({ type: BEFORE_STATE });
     try {
-      await axios.post(`${API_ROUTE}/users`, newUser);
+      await axios.post(`${AUTH_URL}/users`, newUser);
       dispatch({ type: SIGNUP_SUCCESS });
       history.push("/login");
     } catch (err) {
@@ -68,7 +68,7 @@ export const updateUserAvatar = (updateUserAvatar) => {
     const { id } = getState().Auth.currentUser;
     try {
       const res = await axios.put(
-        `${API_ROUTE}/avatar/users/${id}`,
+        `${AUTH_URL}/avatar/users/${id}`,
         updateUserAvatar,
         {
           headers: {
@@ -94,7 +94,7 @@ export const updateUser = (updateUser, clearInput) => {
     const { currentUser } = getState().Auth;
     try {
       const res = await axios.put(
-        `${API_ROUTE}/users/${currentUser.id}`,
+        `${AUTH_URL}/users/${currentUser.id}`,
         updateUser
       );
       let updatedUser = res.data.response;
@@ -112,7 +112,7 @@ export const deleteUser = (id) => {
   return async (dispatch) => {
     dispatch({ type: BEFORE_STATE });
     try {
-      const res = await axios.delete(`${API_ROUTE}/users/${id}`);
+      const res = await axios.delete(`${AUTH_URL}/users/${id}`);
       let deleteMessage = res.data.response;
       dispatch({ type: DELETE_USER_SUCCESS, payload: deleteMessage });
       window.localStorage.clear(); //update the localstorage
@@ -128,7 +128,7 @@ export const ForgotPassword = (userEmail, clearInput) => {
     dispatch({ type: BEFORE_STATE });
 
     try {
-      const res = await axios.post(`${API_ROUTE}/password/forgot`, userEmail);
+      const res = await axios.post(`${AUTH_URL}/password/forgot`, userEmail);
       let passwordRequest = res.data.response;
       dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: passwordRequest });
       clearInput();
@@ -146,7 +146,7 @@ export const ResetPassword = (details, clearInput) => {
     dispatch({ type: BEFORE_STATE });
 
     try {
-      const res = await axios.post(`${API_ROUTE}/password/reset`, details);
+      const res = await axios.post(`${AUTH_URL}/password/reset`, details);
       let passwordRequest = res.data.response;
       dispatch({ type: RESET_PASSWORD_SUCCESS, payload: passwordRequest });
       clearInput();

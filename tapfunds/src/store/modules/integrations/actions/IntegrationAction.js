@@ -1,4 +1,4 @@
-import API_ROUTE from "../../../../constants/routes";
+import {AUTH_URL} from "../../../../constants/routes";
 import axios from "axios";
 import {
   BEFORE_STATE_INTEGRATION,
@@ -18,7 +18,7 @@ export const fetchUserIntegrations = (id) => {
     dispatch({ type: BEFORE_STATE_INTEGRATION });
 
     try {
-      const res = await axios.get(`${API_ROUTE}/user_integrations/${id}`);
+      const res = await axios.get(`${AUTH_URL}/user_integrations/${id}`);
       dispatch({ type: FETCH_AUTH_INTEGRATIONS, payload: res.data.response });
     } catch (err) {
 
@@ -31,11 +31,11 @@ export const fetchUserIntegrations = (id) => {
 };
 
 export const createIntegration = (createIntegration) => {
-  return  (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: BEFORE_STATE_INTEGRATION });
 
     try {
-      const res =  axios.post(`${API_ROUTE}/new_integration`, createIntegration);
+      const res = await axios.post(`${AUTH_URL}/new_integration`, createIntegration);
       dispatch({
         type: CREATE_INTEGRATION_SUCCESS,
         payload: res.data.response,
@@ -53,7 +53,7 @@ export const updateIntegration = (updateDetails, updateSuccess) => {
 
     try {
       const res = await axios.put(
-        `${API_ROUTE}/integrations/${updateDetails.id}`,
+        `${AUTH_URL}/integrations/${updateDetails.id}`,
         updateDetails
       );
       dispatch({
@@ -72,7 +72,7 @@ export const deleteIntegration = (id) => {
     dispatch({ type: BEFORE_STATE_INTEGRATION });
 
     try {
-      const res = await axios.delete(`${API_ROUTE}/integrations/${id}`);
+      const res = await axios.delete(`${AUTH_URL}/integrations/${id}`);
       dispatch({
         type: DELETE_INTEGRATION_SUCCESS,
         payload: {

@@ -2,8 +2,17 @@ import React from 'react';
 
 const PlaceHolder: React.FC = () => {
   return (
+    <React.Fragment>
+    <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 className=" text-3xl font-bold text-gray-900">
+            Feature Soon Come 
+          </h1>
+        </div>
+      </header>
     <div className="m-auto antialiased font-sans font-serif font-mono text-center">
-      <header className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
+            
+      <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
         <img src="./logo2.svg" className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
@@ -16,8 +25,9 @@ const PlaceHolder: React.FC = () => {
         >
           Learn Taiwlind with React TypeScript
         </a>
-      </header>
+      </div>
     </div>
+    </React.Fragment>
   );
 }
 

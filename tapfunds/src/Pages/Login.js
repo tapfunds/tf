@@ -9,7 +9,6 @@ import {
 } from "reactstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import "./Auth.css";
 import { SignIn } from "../store/modules/auth/actions/authAction";
 import { Card } from "antd";
 

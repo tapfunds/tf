@@ -11,7 +11,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
 import { Card } from "antd";
 
-import "./Auth.css";
 import { SignUp } from "../store/modules/auth/actions/authAction";
 
 const Register = () => {

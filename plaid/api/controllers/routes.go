@@ -16,5 +16,7 @@ func (s *Server) initializeRoutes() {
 		v1.POST("/identity", s.identity)
 		v1.POST("/transactions", s.transactions)
 		v1.POST("/transfer", s.transfer)
+		v1.POST("/set_access_token", s.getAccessToken)
+		v1.POST("/create_link_token", s.createLinkToken)
 	}
 }
