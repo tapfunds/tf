@@ -93,20 +93,21 @@ The Tapfunds service is built to expand my knowledge of multi service architectu
 ### Built With
 
 * [Go]()
-* [React]()
 * [Python]()
-* [Neo4j]()
+* [FastAPI]()
 * [Postgres]()
+* [Neo4j]()
+* [GraphQL]()
+* [Javascript]()
+* [React]()
 * [Node]()
 * [Docker]()
-* [RabbitMQ]()
 * [Google CLoud Run]()
 
 **Not yet implemented currently using Cloud Run and REST communication**
 
 * [GKE]()
-
-
+* [RabbitMQ]()
 
 <!-- GETTING STARTED -->
 ## Getting Started

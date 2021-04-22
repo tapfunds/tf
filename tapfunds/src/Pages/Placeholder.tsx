@@ -12,7 +12,7 @@ const PlaceHolder: React.FC = () => {
       </header>
     <div className="m-auto antialiased font-sans font-serif font-mono text-center">
             
-      <body className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
+      <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
         <img src="./logo2.svg" className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
@@ -25,7 +25,7 @@ const PlaceHolder: React.FC = () => {
         >
           Learn Taiwlind with React TypeScript
         </a>
-      </body>
+      </div>
     </div>
     </React.Fragment>
   );

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/plaid/plaid-go/plaid"
@@ -93,6 +94,7 @@ func linkTokenCreate(paymentInitiation *plaid.PaymentInitiation) (string, *httpE
 	resp, err := client.CreateLinkToken(configs)
 
 	if err != nil {
+		log.Println(err)
 		return "", &httpError{
 			errorCode: http.StatusBadRequest,
 			error:     err.Error(),

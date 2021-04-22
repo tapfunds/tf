@@ -32,12 +32,11 @@ import { history } from "../../../../utils/history";
   };
   
   export const createAccountObject = (createAccount) => {
-    return  (dispatch) => {
+    return async (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
-        const res =  axios.post(`${OBJECT_URL}`, createAccount);
-        console.log(res)
+        const res = await axios.post(OBJECT_URL, createAccount)
         dispatch({
           type: CREATE_ACCOUNT_SUCCESS,
           payload: res.data.response,
