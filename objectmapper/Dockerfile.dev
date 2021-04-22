@@ -1,9 +1,10 @@
-FROM python:3.8-alpine AS builder
+FROM python:3.9-alpine AS base
 
 ARG SEABOLT_VERSION=v1.7.4
 
 RUN apk add --update --no-cache cmake make g++ openssl-dev openssl-libs-static git curl pkgconfig libcap
 RUN git clone -b ${SEABOLT_VERSION} https://github.com/neo4j-drivers/seabolt.git /seabolt
+
 
 WORKDIR /seabolt/build
 
@@ -11,9 +12,11 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_LIBDIR=lib .. && cmake --
 
 WORKDIR /app
 
-COPY ./objectmapper /app
-RUN pip3 install -r requirements/requirements.txt
-RUN pip3 install neomodel 
+FROM base as builder
+     
+RUN pip install fastapi uvicorn requests neomodel graphene
+
+COPY ./objectmapper .
 
 USER 1000
 EXPOSE 1738

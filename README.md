@@ -93,20 +93,21 @@ The Tapfunds service is built to expand my knowledge of multi service architectu
 ### Built With
 
 * [Go]()
-* [React]()
 * [Python]()
-* [Neo4j]()
+* [FastAPI]()
 * [Postgres]()
+* [Neo4j]()
+* [GraphQL]()
+* [Javascript]()
+* [React]()
 * [Node]()
 * [Docker]()
-* [RabbitMQ]()
 * [Google CLoud Run]()
 
 **Not yet implemented currently using Cloud Run and REST communication**
 
 * [GKE]()
-
-
+* [RabbitMQ]()
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -121,10 +122,6 @@ Docker, node, python, golang, and the GCP SDK
   ```sh
   ./build-dev
   ```
-  once this is finish you will need to access the rabbitMQ container and run
-  ```sh
-  rabbitmq-plugins enable rabbitmq_management
-  ``` 
 ### Installation
 
 1. Clone the repo

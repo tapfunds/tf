@@ -11,7 +11,8 @@ import {
     FETCH_AUTH_ACCOUNTS,
     FETCH_AUTH_ACCOUNTS_ERROR,
   } from "../accountTypes/index";
-  import { history } from "../../../../utils/history";
+
+import { history } from "../../../../utils/history";
 
   export const fetchUserAccounts = (id) => {
     return async (dispatch) => {
@@ -31,11 +32,11 @@ import {
   };
   
   export const createAccountObject = (createAccount) => {
-    return  (dispatch) => {
+    return async (dispatch) => {
       dispatch({ type: BEFORE_STATE_ACCOUNT });
   
       try {
-        const res =  axios.post(`${OBJECT_URL}`, createAccount);
+        const res = await axios.post(OBJECT_URL, createAccount)
         dispatch({
           type: CREATE_ACCOUNT_SUCCESS,
           payload: res.data.response,
