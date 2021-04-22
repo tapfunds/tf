@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  goneo4j:
-    container_name: goneo4j_map_service
+  pyneo4j:
+    container_name: pyneo4j_map_service
     depends_on:
       - "neo4j"
     env_file:
