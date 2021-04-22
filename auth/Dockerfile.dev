@@ -5,10 +5,9 @@ RUN apk update && apk add --no-cache git
 
 # Where our file will be in the docker container 
 WORKDIR /usr/src/app/
-COPY . .
-WORKDIR /usr/src/app/auth
+COPY /auth .
 
-RUN go mod download 
+RUN go get
 
 EXPOSE 8080
 

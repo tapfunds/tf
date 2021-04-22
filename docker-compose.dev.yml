@@ -17,60 +17,60 @@ services:
     ports:
       - '1738:1738'
 
-  goauth:
-    container_name: auth_service 
-    env_file:
-      - ./auth/.env
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile.dev
-    ports:
-      - 8080:8080
-    restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app
+  # goauth:
+  #   container_name: auth_service 
+  #   env_file:
+  #     - ./auth/.env
+  #   build:
+  #     context: .
+  #     dockerfile: ./auth/Dockerfile.dev
+  #   ports:
+  #     - 8080:8080
+  #   restart: on-failure
+  #   volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+  #     - .:/usr/src/app
 
-  plaid:
-    container_name: plaid_service 
-    env_file:
-      - ./plaid/.env
-    build:
-      context: .
-      dockerfile: ./plaid/Dockerfile.dev
-    ports:
-      - 8000:8000
-    restart: 
-      on-failure
-    networks:
-      - tap
+  # plaid:
+  #   container_name: plaid_service 
+  #   env_file:
+  #     - ./plaid/.env
+  #   build:
+  #     context: .
+  #     dockerfile: ./plaid/Dockerfile.dev
+  #   ports:
+  #     - 8000:8000
+  #   restart: 
+  #     on-failure
+  #   networks:
+  #     - tap
 
-  client:
-    container_name: client_service
-    stdin_open: true
-    env_file:
-      - ./tapfunds/.env
-    build:
-      context: .
-      dockerfile: ./tapfunds/Dockerfile.dev
-    ports:
-      - 80:80
-    networks:
-      - tap
-      - neo4j-net
-    restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app/
+  # client:
+  #   container_name: client_service
+  #   stdin_open: true
+  #   env_file:
+  #     - ./tapfunds/.env
+  #   build:
+  #     context: .
+  #     dockerfile: ./tapfunds/Dockerfile.dev
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - tap
+  #     - neo4j-net
+  #   restart: on-failure
+  #   volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+  #     - .:/usr/src/app/
 
-  rabbitmq:
-    image: rabbitmq:3.8.14-management-alpine
-    container_name: rabbitmq
-    volumes:
-      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
-    ports:
-        - 5672:5672
-        - 15672:15672
+  # rabbitmq:
+  #   image: rabbitmq:3.8.14-management-alpine
+  #   container_name: rabbitmq
+  #   volumes:
+  #     - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+  #     - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+  #     - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+  #   ports:
+  #       - 5672:5672
+  #       - 15672:15672
 
 
   neo4j:

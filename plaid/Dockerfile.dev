@@ -7,7 +7,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR /usr/src/app/
 COPY /plaid .
 
-RUN go mod download 
+RUN go get
 
 EXPOSE 8000
 
