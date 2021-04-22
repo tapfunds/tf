@@ -4,7 +4,7 @@ import axios from "axios";
 import qs from "qs";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { createIntegration } from "../../store/modules/integrations/actions/integrationAction";
+import { createIntegration } from "../../store/modules/integrations/actions/IntegrationAction";
 import { createAccountObject } from "../../store/modules/accounts/actions/accountActions";
 import { PLAID_URL } from "../../constants/routes";
 
