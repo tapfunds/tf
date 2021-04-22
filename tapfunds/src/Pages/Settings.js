@@ -1,5 +1,4 @@
-import React, { useState, Fragment } from "react";
-// import { Button } from "antd";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import Message from "../Components/Message/Message";
@@ -14,15 +13,10 @@ import {
   Form,
   CustomInput,
   CardHeader,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
 } from "reactstrap";
 import {
   updateUserAvatar,
   updateUser,
-  deleteUser,
   SignOut,
 } from "../store/modules/auth/actions/authAction";
 import { StyleSheet, css } from "aphrodite";
@@ -45,9 +39,6 @@ const Settings = () => {
 
   const currentUserState = useSelector((state) => state.Auth);
 
-  const AuthID = currentUserState.currentUser
-    ? currentUserState.currentUser.id
-    : "";
 
   const dispatch = useDispatch();
   const logoutUser = () => dispatch(SignOut());
@@ -55,7 +46,6 @@ const Settings = () => {
     dispatch(updateUserAvatar(userDetails));
   const userUpdate = (userDetails) =>
     dispatch(updateUser(userDetails, clearInput));
-  const deleteAccount = (id) => dispatch(deleteUser(id));
 
   const [file, setFile] = useState();
   const [uploadedFile, setUploadedFile] = useState();
@@ -130,18 +120,13 @@ const Settings = () => {
     });
   };
 
-  const shutDown = (e) => {
-    e.preventDefault();
-    deleteAccount(AuthID);
-  };
-
   const logout = (e) => {
     e.preventDefault();
     logoutUser();
   };
   return (
     <div className={css(styles.body)}>
-      <div  class="App h-screen w-full flex justify-center  bg-yellow-50">
+      <div  className="App h-screen w-full flex justify-center  bg-yellow-50">
         <div className=" max-w-md bg-white shadow-md rounded px-8 py-8 pt-8">
             <div className="text-center">
               <CardHeader className="px-4 pb-4 text-lg block font-bold pb-2">
@@ -393,34 +378,6 @@ const Settings = () => {
                   </FormGroup>
               </Row>
             </CardBody>
-
-            {/* <Modal isOpen={modal} toggle={toggle}>
-              <ModalHeader toggle={toggle} className="text-center">
-                Are you sure you want to delete your account?
-              </ModalHeader>
-              <ModalBody toggle={toggle} className="text-center">
-                This will also delete your posts, likes and comments if you
-                created any.
-              </ModalBody>
-              <ModalFooter>
-                {currentUserState.isLoading ? (
-                  <button className="btn btn-danger" disabled>
-                    Deleting...
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-danger"
-                    onClick={shutDown}
-                    type="submit"
-                  >
-                    Delete
-                  </button>
-                )}
-                <Button color="warning" onClick={toggle}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </Modal> */}
           </div>
         </div>
     </div>
