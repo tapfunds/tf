@@ -1,0 +1,164 @@
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "tapfunds-config-0xhf"
+  namespace: "default"
+  labels:
+    app: "tapfunds"
+data:
+  REACT_APP_PROD_AUTH_API_URL: "\"\""
+  REACT_APP_PROD_PLAID_API_URL: "\"\""
+  REACT_APP_PROD_OBJECT_API_URL: "\"\""
+  DB_DRIVER: "postgres"
+  DB_USER: "erjifoebhfuymt"
+  DB_PASSWORD: "8b66ebfa42bc58b1d323b1cef95279b047223113483e600e5005c1b8393a752a"
+  DB_PORT: "5432"
+  DB_HOST: "ec2-3-228-114-251.compute-1.amazonaws.com"
+  DB_NAME: "d4d5vm2n2ngopv"
+  APP_PORT: "8000"
+  PLAID_CLIENT_ID: "5f55d18e9f6cdb0010fcb0cf"
+  PLAID_SECRET: "891a1986852d8bb4627f66ac6fe584"
+  PLAID_ENV: "sandbox"
+  PLAID_PRODUCTS: "auth,transactions"
+  PLAID_COUNTRY_CODES: "US"
+  PLAID_REDIRECT_URI: "future url of client"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "tapfunds"
+  namespace: "default"
+  labels:
+    app: "tapfunds"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "tapfunds"
+  template:
+    metadata:
+      labels:
+        app: "tapfunds"
+    spec:
+      containers:
+      - name: "client-1"
+        image: "gcr.io/tapfunds-311512/client:latest"
+        env:
+        - name: "REACT_APP_PROD_AUTH_API_URL"
+          valueFrom:
+            configMapKeyRef:
+              key: "REACT_APP_PROD_AUTH_API_URL"
+              name: "tapfunds-config-0xhf"
+        - name: "REACT_APP_PROD_PLAID_API_URL"
+          valueFrom:
+            configMapKeyRef:
+              key: "REACT_APP_PROD_PLAID_API_URL"
+              name: "tapfunds-config-0xhf"
+        - name: "REACT_APP_PROD_OBJECT_API_URL"
+          valueFrom:
+            configMapKeyRef:
+              key: "REACT_APP_PROD_OBJECT_API_URL"
+              name: "tapfunds-config-0xhf"
+      - name: "neo4j-sha256-2"
+        image: "gcr.io/tapfunds-311512/neo4j@sha256:23771a11047afac421a95e9a177fa5238f615273ecf79bf95b8ce709984c1cd1"
+      - name: "neo4jmap-sha256-3"
+        image: "gcr.io/tapfunds-311512/neo4jmap@sha256:69c1e163e4403aa47842e53d19973ea7340c0f926704c18abcd8ae2432293bab"
+      - name: "auth-sha256-4"
+        image: "gcr.io/tapfunds-311512/auth@sha256:28f3339dcee356f00e1726fdb1d745077d5c6b9d6eb5bb2f721106b4c7d32140"
+        env:
+        - name: "DB_DRIVER"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_DRIVER"
+              name: "tapfunds-config-0xhf"
+        - name: "DB_USER"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_USER"
+              name: "tapfunds-config-0xhf"
+        - name: "DB_PASSWORD"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_PASSWORD"
+              name: "tapfunds-config-0xhf"
+        - name: "DB_PORT"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_PORT"
+              name: "tapfunds-config-0xhf"
+        - name: "DB_HOST"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_HOST"
+              name: "tapfunds-config-0xhf"
+        - name: "DB_NAME"
+          valueFrom:
+            configMapKeyRef:
+              key: "DB_NAME"
+              name: "tapfunds-config-0xhf"
+        - name: "APP_PORT"
+          valueFrom:
+            configMapKeyRef:
+              key: "APP_PORT"
+              name: "tapfunds-config-0xhf"
+      - name: "plaid-sha256-5"
+        image: "gcr.io/tapfunds-311512/plaid@sha256:bf0688dd69eb960c81113ee8e7e0d89a08b43ddda27428524b932ff755a6f56f"
+        env:
+        - name: "PLAID_CLIENT_ID"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_CLIENT_ID"
+              name: "tapfunds-config-0xhf"
+        - name: "PLAID_SECRET"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_SECRET"
+              name: "tapfunds-config-0xhf"
+        - name: "PLAID_ENV"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_ENV"
+              name: "tapfunds-config-0xhf"
+        - name: "PLAID_PRODUCTS"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_PRODUCTS"
+              name: "tapfunds-config-0xhf"
+        - name: "PLAID_COUNTRY_CODES"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_COUNTRY_CODES"
+              name: "tapfunds-config-0xhf"
+        - name: "PLAID_REDIRECT_URI"
+          valueFrom:
+            configMapKeyRef:
+              key: "PLAID_REDIRECT_URI"
+              name: "tapfunds-config-0xhf"
+        - name: "APP_PORT"
+          valueFrom:
+            configMapKeyRef:
+              key: "APP_PORT"
+              name: "tapfunds-config-0xhf"
+      - name: "rabbitmq-sha256-6"
+        image: "gcr.io/tapfunds-311512/rabbitmq@sha256:1145838ff9fc33a7e98274496de6cb17c4b9e731f5634f37c3cc14168f6a8646"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "tapfunds-hpa-i3uq"
+  namespace: "default"
+  labels:
+    app: "tapfunds"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "tapfunds"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
