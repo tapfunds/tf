@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/plaid/plaid-go/plaid"
@@ -19,7 +19,7 @@ var (
 	PLAID_PRODUCTS      = os.Getenv("PLAID_PRODUCTS")
 	PLAID_COUNTRY_CODES = os.Getenv("PLAID_COUNTRY_CODES")
 	PLAID_REDIRECT_URI  = os.Getenv("PLAID_REDIRECT_URI")
-	APP_PORT            = os.Getenv("APP_PORT")
+	APP_PORT            = os.Getenv("PLAID_API_PORT")
 )
 
 // If not testing in Sandbox, remove these four lines and instead use a publicToken obtained from Link
@@ -71,7 +71,7 @@ func (server *Server) createLinkToken(c *gin.Context) {
 		renderError(c, err)
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{"link_token": linkToken})
 }
 
@@ -188,11 +188,11 @@ func (server *Server) item(c *gin.Context) {
 	countryCodes := strings.Split(PLAID_COUNTRY_CODES, ",")
 	options := plaid.GetInstitutionByIDOptions{
 		IncludeOptionalMetadata: true,
-		IncludeStatus          : false,
-	}	
+		IncludeStatus:           false,
+	}
 	institution, err := client.GetInstitutionByIDWithOptions(
-		response.Item.InstitutionID, 
-		countryCodes, 
+		response.Item.InstitutionID,
+		countryCodes,
 		options)
 	if err != nil {
 		renderError(c, err)
@@ -216,7 +216,7 @@ func (server *Server) identity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"accounts": response.Accounts,
-		"item": response.Item,
+		"item":     response.Item,
 	})
 }
 
