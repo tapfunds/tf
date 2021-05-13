@@ -1,0 +1,99 @@
+# main compose doc that will have hosted images instead of dockerfiles
+
+version: "3.8"
+
+services:
+  
+  neo4j:
+    container_name: neo4j_service
+    image: neo4j:latest
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/import:/var/lib/neo4j/import
+      - ./neo4j/plugins:/plugins
+      - ./neo4j/conf:/conf
+    restart: always
+    environment:
+      - NEO4J_AUTH=neo4j/changeme
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_security_procedures_whitelist=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_uuid_enabled=true
+      - NEO4JLABS_PLUGINS=["apoc"]
+    networks:
+      - neo4j-net
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+
+  goneo4j:
+    container_name: goneo4j_map_service
+    env_file:
+      - ./objectmapper/.env
+    build:
+      context: .
+      dockerfile: ./objectmapper/Dockerfile.dev
+    restart: on-failure
+    networks:
+      - tapfunds
+      - neo4j-net
+    ports:
+      - '1738:1738'
+    depends_on:
+      - neo4j
+
+  goauth:
+    container_name: auth_service 
+    env_file:
+      - ./auth/.env
+    build:
+      context: .
+      dockerfile: ./auth/Dockerfile.dev
+    ports:
+      - 8080:8080
+    restart: on-failure
+    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+      - .:/usr/src/app
+    networks:
+      - tapfunds
+
+  plaid:
+    container_name: 
+      plaid_service 
+    env_file:
+      - ./plaid/.env
+    build:
+      context: .
+      dockerfile: ./plaid/Dockerfile.dev
+    ports:
+      - 8000:8000
+    restart: 
+      on-failure
+    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+      - .:/usr/src/app
+    networks:
+      - tapfunds
+
+  client:
+    container_name: client_service
+    stdin_open: true
+    env_file:
+      - ./tfclient/.env
+    build:
+      context: .
+      dockerfile: ./tfclient/Dockerfile.dev
+    ports:
+      - 80:80
+    restart: on-failure
+    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
+      - .:/usr/src/app/
+    networks:
+      - tapfunds
+
+# Networks to be created to facilitate communication between containers
+networks:  
+  neo4j-net:
+    driver: 'bridge'
+  tapfunds:
+    driver: bridge
