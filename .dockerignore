@@ -24,3 +24,4 @@ __pycache__/
 Dockerfile
 docker-compose.yml
 .dockerignore
+devOps/

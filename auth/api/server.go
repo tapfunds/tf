@@ -31,7 +31,7 @@ func Run() {
 	// This is for testing, when done, do well to comment
 	// seed.Load(server.DB)
 
-	apiPort := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+	apiPort := fmt.Sprintf(":%s", os.Getenv("AUTH_API_PORT"))
 
 	server.Run(apiPort)
 	fmt.Printf("Listening to port %s", apiPort)

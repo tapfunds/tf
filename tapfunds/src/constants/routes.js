@@ -13,25 +13,8 @@ export const WALLETS = '/wallets';
 export const TRANSFERS = '/transfers';
 export const ABOUT = '/about';
 
-let AUTH_API_ROUTE;
-let PLAID_API_ROUTE;
-let OBJECT_API_ROUTE;
+console.log(process.env.NODE_ENV)
 
-// Change one url to the production AP
-process.env.NODE_ENV === 'development'
-  ? AUTH_API_ROUTE = `${process.env.REACT_APP_DEV_AUTH_API_URL}/api/v1`
-  : AUTH_API_ROUTE = `${process.env.REACT_APP_PROD_AUTH_API_URL}/api/v1`
-  
-
-  process.env.NODE_ENV === 'development'
-  ? PLAID_API_ROUTE = `${process.env.REACT_APP_DEV_PLAID_API_URL}/api/v1`
-  : PLAID_API_ROUTE = `${process.env.REACT_APP_PROD_PLAID_API_URL}/api/v1`
-
-  process.env.NODE_ENV === 'development'
-  ? OBJECT_API_ROUTE = `${process.env.REACT_APP_DEV_OBJECT_API_URL}/`
-  : OBJECT_API_ROUTE = `${process.env.REACT_APP_PROD_OBJECT_API_URL}/`
-
-
-export const AUTH_URL = AUTH_API_ROUTE
-export const PLAID_URL= PLAID_API_ROUTE
-export const OBJECT_URL = OBJECT_API_ROUTE
+export const AUTH_URL = `${process.env.REACT_APP_AUTH_API_URL}/api/v1`
+export const PLAID_URL= `${process.env.REACT_APP_PLAID_API_URL}/api/v1`
+export const OBJECT_URL = `${process.env.REACT_APP_OBJECT_API_URL}/`
