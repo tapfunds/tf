@@ -18,8 +18,11 @@ class Tap(BaseModel):
 origins = [
     "http://localhost:3000",
     "127.0.0.1:3000",
-    "http://localhost:3000",
     "localhost:3000",
+    "http://localhost:80",
+    "127.0.0.1:80",
+    "localhost:80",
+    
 ]
 
 app.add_middleware(
