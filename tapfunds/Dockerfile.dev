@@ -9,11 +9,11 @@ WORKDIR /app
 # add the node_modules folder to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 # copy package.json file to /app directory for installation prep
-COPY ./tapfunds/package.json /app/
+COPY ./package.json /app/
 # install dependencies
 RUN yarn --silent
 # copy everything to /app directory
-COPY /tapfunds /app
+COPY . /app
 
 # build the app 
 RUN yarn build
