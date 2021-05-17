@@ -21,6 +21,7 @@ mocks/
 *.log
 *.jar
 *.env
+*.envrc
 
 # Editors
 \.vscode/

@@ -1,12 +1,12 @@
 from api.utils.helpers import check_error_exist, retrieve_identity, retrieve_institution
 from api.models.Models import User, Institution, Account, Name, Address, PhoneNumber, Email
-from neomodel import db
+# from neomodel import db
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
 
 
 def CreateTap(user_ID=None, access_token=None):
-    db.set_connection("bolt://neo4j:changeme@localhost:7687")
+    # db.set_connection("bolt://neo4j:changeme@localhost:7687")
     # user id and access token will be passed to API
     # create user node
 
@@ -115,7 +115,7 @@ def CreateTap(user_ID=None, access_token=None):
 Will require more thought. For now we can continue
 """
 def ReadTap(user_ID=None):
-    db.set_connection("bolt://neo4j:changeme@localhost:7687")
+    # db.set_connection("bolt://neo4j:changeme@localhost:7687")
     data = User.nodes.get(user_id=user_ID)
     
     # list of account models
