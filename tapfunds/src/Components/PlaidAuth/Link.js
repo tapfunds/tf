@@ -5,13 +5,17 @@ import qs from "qs";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createIntegration } from "../../store/modules/integrations/actions/IntegrationAction";
-import { createAccountObject } from "../../store/modules/accounts/actions/accountActions";
+import { createAccountObject } from "../../store/modules/bank/actions/bankActions";
 import { PLAID_URL } from "../../constants/routes";
 
+// urls for authentication with Plaid
 const tokenURL = `${PLAID_URL}/create_link_token`;
 const sendTokenURL = `${PLAID_URL}/set_access_token`;
 
+// in charge of the auth flow
 function Link() {
+
+  // 
   const [data, setData] = useState("");
   const currentUserState = useSelector((state) => state.Auth);
   const AuthID = currentUserState.currentUser
@@ -22,6 +26,7 @@ function Link() {
   const dispatch = useDispatch();
 
   const fetchToken = useCallback(async () => {
+
     const config = {
       method: "post",
       url: tokenURL,
@@ -71,6 +76,7 @@ function Link() {
           access_token: response.data.access_token,
           output: "loading...",
         };
+
         sendAccountInfo(accountInfo);
 
       } catch (error) {

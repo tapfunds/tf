@@ -8,6 +8,8 @@ import { Redirect } from "react-router-dom";
 
 const Home = () => {
   const currentUserState = useSelector((state) => state.Auth);
+  console.log(process.env.NODE_ENV)
+
   //incase someone visits the route manually
   if (!currentUserState.isAuthenticated) {
     return <Redirect to="/login" />;

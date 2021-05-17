@@ -120,7 +120,7 @@ def ReadTap(user_ID=None):
     db.set_connection("bolt://neo4j:changeme@localhost:7687")
     data = User.nodes.get(user_id=user_ID)
     accounts = data.accounts.all()
-    return data, accounts
+    return accounts
 
 # requires more thinking about how a user might update an account
 def UpdateTap(user_ID=None):
