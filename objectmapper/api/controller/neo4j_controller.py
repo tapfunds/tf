@@ -30,8 +30,6 @@ def CreateTap(user_ID=None, access_token=None):
     # # I need to check fpr institution in datbase or make a script to populate the DB a priori anything else
     # # Institution node Information
     # # put these in try blocks
-
-    
     institution = Institution(
         insti_id=institution_res.json()["item"]["institution_id"],
         name=institution_res.json()["institution"]["name"],
@@ -119,10 +117,11 @@ Will require more thought. For now we can continue
 def ReadTap(user_ID=None):
     db.set_connection("bolt://neo4j:changeme@localhost:7687")
     data = User.nodes.get(user_id=user_ID)
+    
+    # list of account models
     accounts = data.accounts.all()
     
     # ? need to get institution information
-        
     
     return accounts
 
