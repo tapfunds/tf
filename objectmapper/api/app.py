@@ -43,10 +43,10 @@ def get_user(tap: Tap):
     tap.output = ReadTap(user_ID=tap.uid)
     print("\n\n", tap.output, "\n\n")
     tap = {
-        "accnt_id":tap.output[1][0].account_id,
-        "accnt_nm":tap.output[1][0].account_name,
-        "accnt_tp":tap.output[1][0].type,
-        "accnt_sb":tap.output[1][0].subtype,
+        "accnt_id" : "tap.output[1][0].account_id",
+        "accnt_nm" : "tap.output[1][0].account_name",
+        "accnt_tp" : "tap.output[1][0].type",
+        "accnt_sb" : "tap.output[1][0].subtype",
     }
     return tap
 
