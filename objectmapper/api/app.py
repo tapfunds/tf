@@ -7,9 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 # from neomodel import config
-# config.DATABASE_URL = os.environ["NEO4J_BOLT_URL"]
-
-print(os.environ)
+config.DATABASE_URL = os.environ["NEO4J_BOLT_URL"]
 
 app = FastAPI()
 
