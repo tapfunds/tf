@@ -11,7 +11,7 @@ const PlaidAuth = () => {
   const currentUserState = useSelector(userAuth);
   //incase someone visits the route manually
   if (!currentUserState) {
-    return <Redirect to="/login" />;
+    return <Redirect to="/login"/>;
   }
   return (
     <div className="App h-screen w-full flex flex-col justify-center items-center bg-blue-50">

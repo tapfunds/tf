@@ -1,30 +1,30 @@
 import {OBJECT_URL} from "../../../../constants/routes";
 import axios from "axios";
 import {
-    BEFORE_STATE_ACCOUNT,
-    CREATE_ACCOUNT_SUCCESS,
-    CREATE_ACCOUNT_ERROR,
-    UPDATE_ACCOUNT_SUCCESS,
-    UPDATE_ACCOUNT_ERROR,
-    DELETE_ACCOUNT_SUCCESS,
-    DELETE_ACCOUNT_ERROR,
-    FETCH_AUTH_ACCOUNTS,
-    FETCH_AUTH_ACCOUNTS_ERROR,
-  } from "../accountTypes/index";
+    BEFORE_STATE_BANK,
+    CREATE_BANK_SUCCESS,
+    CREATE_BANK_ERROR,
+    UPDATE_BANK_SUCCESS,
+    UPDATE_BANK_ERROR,
+    DELETE_BANK_SUCCESS,
+    DELETE_BANK_ERROR,
+    FETCH_AUTH_BANK,
+    FETCH_AUTH_BANK_ERROR,
+  } from "../bankTypes/index";
 
 import { history } from "../../../../utils/history";
 
   export const fetchUserAccounts = (id) => {
     return async (dispatch) => {
-      dispatch({ type: BEFORE_STATE_ACCOUNT });
+      dispatch({ type: BEFORE_STATE_BANK });
   
       try {
         const res = await axios.get(`${OBJECT_URL}/get/${id}`);
-        dispatch({ type: FETCH_AUTH_ACCOUNTS, payload: res.data.response });
+        dispatch({ type: FETCH_AUTH_BANK, payload: res.data.response });
       } catch (err) {
   
         dispatch({
-          type: FETCH_AUTH_ACCOUNTS_ERROR,
+          type: FETCH_AUTH_BANK_ERROR,
           payload: err.response,
         });
       }
@@ -33,24 +33,24 @@ import { history } from "../../../../utils/history";
   
   export const createAccountObject = (createAccount) => {
     return async (dispatch) => {
-      dispatch({ type: BEFORE_STATE_ACCOUNT });
+      dispatch({ type: BEFORE_STATE_BANK });
   
       try {
         const res = await axios.post(OBJECT_URL, createAccount)
         dispatch({
-          type: CREATE_ACCOUNT_SUCCESS,
+          type: CREATE_BANK_SUCCESS,
           payload: res.data.response,
         });
         history.push("/home");
       } catch (err) {
-        dispatch({ type: CREATE_ACCOUNT_ERROR, payload: err.response });
+        dispatch({ type: CREATE_BANK_ERROR, payload: err.response });
       }
     };
   };
   
   export const updateAccountObject = (updateDetails, updateSuccess) => {
     return async (dispatch) => {
-      dispatch({ type: BEFORE_STATE_ACCOUNT });
+      dispatch({ type: BEFORE_STATE_BANK });
   
       try {
         const res = await axios.put(
@@ -58,24 +58,24 @@ import { history } from "../../../../utils/history";
           updateDetails
         );
         dispatch({
-          type: UPDATE_ACCOUNT_SUCCESS,
+          type: UPDATE_BANK_SUCCESS,
           payload: res.data.response,
         });
         updateSuccess();
       } catch (err) {
-        dispatch({ type: UPDATE_ACCOUNT_ERROR, payload: err.response });
+        dispatch({ type: UPDATE_BANK_ERROR, payload: err.response });
       }
     };
   };
   
   export const deleteAccountObject = (id) => {
     return async (dispatch) => {
-      dispatch({ type: BEFORE_STATE_ACCOUNT });
+      dispatch({ type: BEFORE_STATE_BANK });
   
       try {
         const res = await axios.delete(`${OBJECT_URL}/delete/${id}`);
         dispatch({
-          type: DELETE_ACCOUNT_SUCCESS,
+          type: DELETE_BANK_SUCCESS,
           payload: {
             deletedID: id,
             message: res.data.response,
@@ -83,7 +83,7 @@ import { history } from "../../../../utils/history";
         });
         history.push("/home");
       } catch (err) {
-        dispatch({ type: DELETE_ACCOUNT_ERROR, payload: err.response.data.error });
+        dispatch({ type: DELETE_BANK_ERROR, payload: err.response.data.error });
       }
     };
   };

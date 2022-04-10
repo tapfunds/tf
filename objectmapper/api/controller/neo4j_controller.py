@@ -1,12 +1,12 @@
 from api.utils.helpers import check_error_exist, retrieve_identity, retrieve_institution
 from api.models.Models import User, Institution, Account, Name, Address, PhoneNumber, Email
-from neomodel import db
+# from neomodel import db
 
 # Taps are unique to a item, meaning we've tapped the accounts at the authorized insatituion
 
 
 def CreateTap(user_ID=None, access_token=None):
-    db.set_connection("bolt://neo4j:changeme@localhost:7687")
+    # db.set_connection("bolt://neo4j:changeme@localhost:7687")
     # user id and access token will be passed to API
     # create user node
 
@@ -30,8 +30,6 @@ def CreateTap(user_ID=None, access_token=None):
     # # I need to check fpr institution in datbase or make a script to populate the DB a priori anything else
     # # Institution node Information
     # # put these in try blocks
-
-    
     institution = Institution(
         insti_id=institution_res.json()["item"]["institution_id"],
         name=institution_res.json()["institution"]["name"],
@@ -117,10 +115,15 @@ def CreateTap(user_ID=None, access_token=None):
 Will require more thought. For now we can continue
 """
 def ReadTap(user_ID=None):
-    db.set_connection("bolt://neo4j:changeme@localhost:7687")
+    # db.set_connection("bolt://neo4j:changeme@localhost:7687")
     data = User.nodes.get(user_id=user_ID)
+    
+    # list of account models
     accounts = data.accounts.all()
-    return data, accounts
+    
+    # ? need to get institution information
+    
+    return accounts
 
 # requires more thinking about how a user might update an account
 def UpdateTap(user_ID=None):

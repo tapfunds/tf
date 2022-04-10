@@ -1,18 +1,18 @@
 import {
-BEFORE_STATE_ACCOUNT,
-FETCH_ACCOUNTS,
-FETCH_ACCOUNTS_ERROR,
-GET_ACCOUNT_SUCCESS,
-GET_ACCOUNT_ERROR,
-CREATE_ACCOUNT_SUCCESS,
-CREATE_ACCOUNT_ERROR,
-UPDATE_ACCOUNT_SUCCESS,
-UPDATE_ACCOUNT_ERROR,
-DELETE_ACCOUNT_SUCCESS,
-DELETE_ACCOUNT_ERROR,
-FETCH_AUTH_ACCOUNTS,
-FETCH_AUTH_ACCOUNTS_ERROR,
-} from "../accountTypes/index";
+BEFORE_STATE_BANK,
+FETCH_BANK,
+FETCH_BANK_ERROR,
+GET_BANK_SUCCESS,
+GET_BANK_ERROR,
+CREATE_BANK_SUCCESS,
+CREATE_BANK_ERROR,
+UPDATE_BANK_SUCCESS,
+UPDATE_BANK_ERROR,
+DELETE_BANK_SUCCESS,
+DELETE_BANK_ERROR,
+FETCH_AUTH_BANK,
+FETCH_AUTH_BANK_ERROR,
+} from "../bankTypes/index";
 
 export const initState = {
     accounts: [],
@@ -25,41 +25,41 @@ export const initState = {
 export const accountReducer = (state = initState, action) => {
     const { payload, type } = action;
     switch (type) {
-      case BEFORE_STATE_ACCOUNT:
+      case BEFORE_STATE_BANK:
         return {
           ...state,
           accountsError: null,
           isLoading: true,
         };
-      case FETCH_ACCOUNTS:
+      case FETCH_BANK:
         return {
           ...state,
           accounts: payload,
           isLoading: false,
         };
   
-      case FETCH_ACCOUNTS_ERROR:
+      case FETCH_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,
           isLoading: false,
         };
   
-      case FETCH_AUTH_ACCOUNTS:
+      case FETCH_AUTH_BANK:
         return {
           ...state,
           authIntegrations: payload,
           isLoading: false,
         };
   
-      case FETCH_AUTH_ACCOUNTS_ERROR:
+      case FETCH_AUTH_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,
           isLoading: false,
         };
   
-      case GET_ACCOUNT_SUCCESS:
+      case GET_BANK_SUCCESS:
         return {
           ...state,
           account: payload,
@@ -67,14 +67,14 @@ export const accountReducer = (state = initState, action) => {
           isLoading: false,
         };
   
-      case GET_ACCOUNT_ERROR:
+      case GET_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,
           isLoading: false,
         };
   
-      case CREATE_ACCOUNT_SUCCESS:
+      case CREATE_BANK_SUCCESS:
         return {
           ...state,
           accounts: [payload, ...state.accounts],
@@ -83,14 +83,14 @@ export const accountReducer = (state = initState, action) => {
           isLoading: false,
         };
   
-      case CREATE_ACCOUNT_ERROR:
+      case CREATE_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,
           isLoading: false,
         };
   
-      case UPDATE_ACCOUNT_SUCCESS:
+      case UPDATE_BANK_SUCCESS:
         return {
           ...state,
           accounts: state.accounts.map((account) =>
@@ -108,14 +108,14 @@ export const accountReducer = (state = initState, action) => {
           isLoading: false,
         };
   
-      case UPDATE_ACCOUNT_ERROR:
+      case UPDATE_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,
           isLoading: false,
         };
   
-      case DELETE_ACCOUNT_SUCCESS:
+      case DELETE_BANK_SUCCESS:
         return {
           ...state,
           accounts: state.accounts.filter((account) => account.id !== payload.deletedID),
@@ -126,7 +126,7 @@ export const accountReducer = (state = initState, action) => {
           isLoading: false,
         };
   
-      case DELETE_ACCOUNT_ERROR:
+      case DELETE_BANK_ERROR:
         return {
           ...state,
           accountsError: payload,

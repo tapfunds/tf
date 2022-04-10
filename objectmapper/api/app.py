@@ -4,22 +4,25 @@ from neomodel import config
 from pydantic import BaseModel
 from api.controller.neo4j_controller import CreateTap, ReadTap, DeleteTap, UpdateTap
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 # from neomodel import config
-config.DATABASE_URL = "bolt://neo4j:changeme@localhost:7687"
+config.DATABASE_URL = os.environ["NEO4J_BOLT_URL"]
 
 app = FastAPI()
 
 class Tap(BaseModel):
     uid: str
-    access_token: str
-    output: str
+    access_token: Optional[str] = None
+    output: Optional[str] = None
 
 origins = [
     "http://localhost:3000",
     "127.0.0.1:3000",
-    "http://localhost:3000",
     "localhost:3000",
+    "http://localhost:80",
+    "127.0.0.1:80",
+    "localhost:80",
 ]
 
 app.add_middleware(
@@ -39,13 +42,12 @@ async def create_user(tap: Tap):
 @app.get("/get")
 def get_user(tap: Tap):
     tap.output = ReadTap(user_ID=tap.uid)
-    print(tap.output[0], tap.output[1][0].account_id)
+    print("\n\n", tap.output, "\n\n")
     tap = {
-        "tap": tap.output[0].user_id,
-        "accnt_id":tap.output[1][0].account_id,
-        "accnt_nm":tap.output[1][0].account_name,
-        "accnt_tp":tap.output[1][0].type,
-        "accnt_sb":tap.output[1][0].subtype,
+        "accnt_id" : "tap.output[1][0].account_id",
+        "accnt_nm" : "tap.output[1][0].account_name",
+        "accnt_tp" : "tap.output[1][0].type",
+        "accnt_sb" : "tap.output[1][0].subtype",
     }
     return tap
 
