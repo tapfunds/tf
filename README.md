@@ -203,7 +203,7 @@ Project Link: [https://github.com/tapfunds/tf](https://github.com/tapfunds/tf)
 [forks-url]: https://github.com/tapfunds/tf/members
 [stars-shield]: https://img.shields.io/github/stars/tapfunds/repo.svg?style=for-the-badge
 [stars-url]: https://github.com/tapfunds/tf/stargazers
-[issues-shield]: https://img.shields.io/github/issues/tapfunds/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/tapfunds/tf/issues/repo.svg?style=for-the-badge
 [issues-url]: https://github.com/tapfunds/tf/issues
 [license-shield]: https://img.shields.io/github/license/tapfunds/repo.svg?style=for-the-badge
 [license-url]: https://github.com/tapfunds/repo/blob/master/LICENSE.txt
