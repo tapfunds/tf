@@ -17,13 +17,14 @@ const Login = () => {
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div>
-            <Image
-              className="mx-auto h-12 w-auto"
-              src="/logo.svg"
-              alt="Tapfunds Logo"
-              width={200}
-              height={200}
-            />
+            <div className="text-center py-auto">
+              <Image
+                src="/logo.svg"
+                alt="Tapfunds Logo"
+                width={200}
+                height={200}
+              />
+            </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Sign in to your account
             </h2>
@@ -31,7 +32,7 @@ const Login = () => {
               Or{" "}
               <Link href="/signup">
                 <a className="font-medium text-tf-blue-dark hover:text-tf-blue">
-                   tap in with a new account
+                  tap in with a new account
                 </a>
               </Link>
             </p>
