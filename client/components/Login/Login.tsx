@@ -17,7 +17,7 @@ const Login = () => {
         <div className="max-w-md w-full space-y-8">
           <div>
             <Image
-              className=""
+              className="mx-auto h-12 w-auto"
               src="/logo.svg"
               alt="Tapfunds Logo"
               width={200}
@@ -32,7 +32,7 @@ const Login = () => {
                 href="#"
                 className="font-medium text-tf-blue-dark hover:text-tf-blue"
               >
-                tap in with a new account
+                start tapping in with a new account
               </a>
             </p>
           </div>
@@ -98,11 +98,11 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-tf-blue hover:bg-tf-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tf-blue"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-tf-blue-dark hover:bg-tf-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tf-blue"
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                   <LockClosedIcon
-                    className="h-5 w-5 text-tf-darker group-hover:text-tf-blue-dark"
+                    className="h-5 w-5 text-tf-blue group-hover:text-tf-blue-light"
                     aria-hidden="true"
                   />
                 </span>
