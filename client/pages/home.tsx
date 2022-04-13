@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import BankCard from "../components/Card/Bank";
 import Image from "next/image";
+import Head from "next/head";
 
 interface Bank {
   id: string;
@@ -11,7 +12,7 @@ const bank_info: Bank[] = [
   {
     id: "1",
     name: "Bank of America",
-    color: "red",
+    color: "#ef4444",
   },
   {
     id: "2",
@@ -30,40 +31,43 @@ const bank_info: Bank[] = [
   },
   {
     id: "5",
-    name: "Bank of America",
+    name: "Chime",
     color: "red",
   },
   {
     id: "6",
-    name: "Cash App",
+    name: "Varo",
     color: "green",
   },
   {
     id: "7",
-    name: "Chase",
+    name: "Credit One",
     color: "blue",
   },
   {
     id: "8",
-    name: "TD Bank",
+    name: "Greenwood Bank",
     color: "green",
   },
   {
     id: "9",
-    name: "Bank of America",
+    name: "Robins",
     color: "red",
   },
 ];
 const Home: NextPage = () => {
   return (
     <div>
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className=" text-3xl font-bold text-gray-900">Hello, X!</h1>
-        </div>
-      </header>
+      <Head>
+        <title>Tapfunds</title>
+        <meta name="description" content="Modern Banking Solution" />
+        <link rel="icon" href="/icon.png" />
+      </Head>
+      <div className="bg-white shadow max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 className=" text-3xl font-bold text-gray-900">Hello, X!</h1>
+      </div>
       <div className="grid grid-cols-2 gap-2 bg-blue-50 ">
-        {bank_info.slice(0, 5).map((bank) => (
+        {bank_info.map((bank) => (
           <div key={bank.id}>
             <BankCard name={bank.name} color={bank.color} />
           </div>
