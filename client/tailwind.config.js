@@ -7,8 +7,11 @@ module.exports = {
     extend: {
       colors: {
         "tf-blue": "#48A9FF",
+        "blue-light": "##83c5ff",
+        "tf-blue-dark": "#1893ff",
+        "tf-blue-darker": "##0c77d5",
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

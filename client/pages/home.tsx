@@ -56,7 +56,7 @@ const bank_info: Bank[] = [
     color: "#f8fafc",
   },
 ];
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   return (
     <div>
       <Head>
@@ -85,4 +85,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;

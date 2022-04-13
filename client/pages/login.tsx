@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
-
-const Login: NextPage = () => {
-  return <div> This will tell you to login or sign up</div>;
+import { Login } from "../components";
+const LoginPage: NextPage = () => {
+  return <Login />;
 };
 
-export default Login;
+export default LoginPage;

@@ -21,7 +21,7 @@ const Button = (props: Props) => {
   );
 };
 
-const Landing: NextPage = () => {
+const LandingPage: NextPage = () => {
   return (
     <div className={styles.container}>
       <Header />
@@ -57,4 +57,4 @@ const Landing: NextPage = () => {
   );
 };
 
-export default Landing;
+export default LandingPage;
