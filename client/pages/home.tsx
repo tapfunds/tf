@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { BankCard } from "../components";
 import Image from "next/image";
 import Head from "next/head";
+import Link from "next/link";
 
 interface Bank {
   id: string;
@@ -12,47 +13,47 @@ const bank_info: Bank[] = [
   {
     id: "1",
     name: "Bank of America",
-    color: "#ef4444",
+    color: "#be123c",
   },
   {
     id: "2",
     name: "Cash App",
-    color: "green",
+    color: "#22c55e",
   },
   {
     id: "3",
     name: "Chase",
-    color: "blue",
+    color: "#27272a",
   },
   {
     id: "4",
     name: "TD Bank",
-    color: "green",
+    color: "#16a34a",
   },
   {
     id: "5",
     name: "Chime",
-    color: "red",
+    color: "#4ade80",
   },
   {
     id: "6",
     name: "Varo",
-    color: "green",
+    color: "#9333ea",
   },
   {
     id: "7",
     name: "Credit One",
-    color: "blue",
+    color: "#0ea5e9",
   },
   {
     id: "8",
     name: "Greenwood Bank",
-    color: "green",
+    color: "#134e4a",
   },
   {
     id: "9",
     name: "Robins",
-    color: "red",
+    color: "#f8fafc",
   },
 ];
 const Home: NextPage = () => {
@@ -73,11 +74,11 @@ const Home: NextPage = () => {
           </div>
         ))}
         <div className="py-6 flex-1 flex-col justify-start sm:py-9 relative sm:max-w-xl sm:mx-auto ">
-          <a href="/accounts">
+          <Link href="/link">
             <div>
               <Image src="/plus.svg" alt="Plus Sign" width={100} height={100} />
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

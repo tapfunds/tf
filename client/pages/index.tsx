@@ -1,10 +1,25 @@
 import type { NextPage } from "next";
 
 import Image from "next/image";
+import Link from "next/link";
 
-import { Button, Header } from "../components";
+import { Header } from "../components";
 
 import styles from "../styles/Home.module.css";
+
+type Props = {
+  text: string;
+  linkTo: string;
+};
+
+const Button = (props: Props) => {
+  const { text, linkTo } = props;
+  return (
+    <button className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-tf-blue">
+      <Link href={linkTo}>{text}</Link>
+    </button>
+  );
+};
 
 const Landing: NextPage = () => {
   return (
