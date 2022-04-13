@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
-
+import { Signup } from "../components";
 const SignupPage: NextPage = () => {
-  return <div> This will tell you sign up or login</div>;
+  return <Signup />;
 };
 
 export default SignupPage;
