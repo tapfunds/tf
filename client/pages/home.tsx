@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import BankCard from "../components/Card/Bank";
+import { BankCard } from "../components";
 import Image from "next/image";
 import Head from "next/head";
 

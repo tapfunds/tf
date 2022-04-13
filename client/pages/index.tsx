@@ -1,26 +1,15 @@
 import type { NextPage } from "next";
 
-import Head from "next/head";
 import Image from "next/image";
+
+import { Button, Header } from "../components";
+
 import styles from "../styles/Home.module.css";
 
-type Props = {
-  text: string;
-};
-
-const Button = (props: Props) => {
-  const { text } = props;
-  return <button className=" bg-tf-blue">{text}</button>;
-};
-
-const Home: NextPage = () => {
+const Landing: NextPage = () => {
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Tapfunds</title>
-        <meta name="description" content="Modern Banking Solution" />
-        <link rel="icon" href="/icon.png" />
-      </Head>
+      <Header />
 
       <main className={styles.main}>
         <h1 className={styles.title}>
@@ -33,7 +22,7 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <Button text="Tap Your Funds" />
+          <Button text="Tap in" linkTo={"/login"} />
         </div>
       </main>
 
@@ -53,4 +42,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Landing;
