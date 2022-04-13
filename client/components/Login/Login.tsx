@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { LockClosedIcon } from "@heroicons/react/solid";
 
@@ -28,12 +29,11 @@ const Login = () => {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               Or{" "}
-              <a
-                href="#"
-                className="font-medium text-tf-blue-dark hover:text-tf-blue"
-              >
-                start tapping in with a new account
-              </a>
+              <Link href="/signup">
+                <a className="font-medium text-tf-blue-dark hover:text-tf-blue">
+                   tap in with a new account
+                </a>
+              </Link>
             </p>
           </div>
           <form className="mt-8 space-y-6" action="#" method="POST">

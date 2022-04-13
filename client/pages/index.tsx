@@ -16,7 +16,9 @@ const Button = (props: Props) => {
   const { text, linkTo } = props;
   return (
     <button className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-tf-blue">
-      <Link href={linkTo}>{text}</Link>
+      <Link href={linkTo}>
+        <a>{text}</a>
+      </Link>
     </button>
   );
 };

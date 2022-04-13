@@ -75,9 +75,9 @@ const HomePage: NextPage = () => {
         ))}
         <div className="py-6 flex-1 flex-col justify-start sm:py-9 relative sm:max-w-xl sm:mx-auto ">
           <Link href="/link">
-            <div>
+            <a>
               <Image src="/plus.svg" alt="Plus Sign" width={100} height={100} />
-            </div>
+            </a>
           </Link>
         </div>
       </div>
