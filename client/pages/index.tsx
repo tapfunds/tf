@@ -8,9 +8,9 @@ type Props = {
   text: string;
 };
 
-const CustomButton = (props: Props) => {
+const Button = (props: Props) => {
   const { text } = props;
-  return <button className="rounded-t-lg bg-slate-400">{text}</button>;
+  return <button className=" bg-tf-blue">{text}</button>;
 };
 
 const Home: NextPage = () => {
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <CustomButton text="Tap Your Funds" />
+          <Button text="Tap Your Funds" />
         </div>
       </main>
 
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
         >
           Powered by{" "}
           <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image src="/logo.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
