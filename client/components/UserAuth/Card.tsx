@@ -25,7 +25,7 @@ const Card = (props: Props) => {
           <div>
             <div className="text-center py-auto">
               <Image
-                src="/logo.svg"
+                src="/images/logo.svg"
                 alt="Tapfunds Logo"
                 width={200}
                 height={200}
