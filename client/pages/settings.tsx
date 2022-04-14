@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
-
+import { Settings } from "../components";
 const SettingsPage: NextPage = () => {
-  return <div> This will tell you about your settings</div>;
+  return <Settings />;
 };
 
 export default SettingsPage;

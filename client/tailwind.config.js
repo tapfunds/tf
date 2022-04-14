@@ -10,6 +10,7 @@ module.exports = {
         "tf-blue-light": "#83c5ff",
         "tf-blue-dark": "#1893ff",
         "tf-blue-darker": "#0c77d5",
+        "tf-blue-lighter": "#bee1ff",
       },
     },
   },
