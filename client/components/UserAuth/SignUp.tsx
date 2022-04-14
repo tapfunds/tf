@@ -7,7 +7,7 @@ const Signup = () => {
       <>
         <input type="hidden" name="remember" defaultValue="true" />
         <div className="rounded-md shadow-sm -space-y-px">
-          <div>
+          <div className="py-4">
             <label htmlFor="email-address" className="sr-only">
               Email address
             </label>
@@ -21,7 +21,7 @@ const Signup = () => {
               placeholder="Email address"
             />
           </div>
-          <div>
+          <div className="py-2">
             <label htmlFor="firstname" className="sr-only">
               First Name
             </label>
@@ -34,7 +34,7 @@ const Signup = () => {
               placeholder="First Name"
             />
           </div>
-          <div>
+          <div className="py-2">
             <label htmlFor="firstname" className="sr-only">
               Last Name
             </label>
@@ -47,7 +47,7 @@ const Signup = () => {
               placeholder="Last Name"
             />
           </div>
-          <div>
+          <div className="py-2">
             <label htmlFor="password" className="sr-only">
               Password
             </label>
@@ -61,7 +61,7 @@ const Signup = () => {
               placeholder="Password"
             />
           </div>
-          <div>
+          <div className="py-2">
             <label htmlFor="password" className="sr-only">
               Verify Password
             </label>

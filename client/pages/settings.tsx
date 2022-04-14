@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
-import { Settings } from "../components";
+import { SettingsNav } from "../components";
 const SettingsPage: NextPage = () => {
-  return <Settings />;
+  return <SettingsNav />;
 };
 
 export default SettingsPage;
