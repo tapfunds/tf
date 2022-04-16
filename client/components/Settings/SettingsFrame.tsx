@@ -51,7 +51,7 @@ const SettingsFrame = (props: Props) => {
   return (
     <>
       <div className="flex flex-row min-h-full">
-        <header className="bg-white shadow">{renderNav()}</header>
+        <header >{renderNav()}</header>
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             {pageContent}
