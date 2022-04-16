@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
+import { SettingsProfile } from "../../containers";
 
-const SettingsProfile: NextPage = () => {
-  return <>Ha ha ha</>
+const ProfilePage: NextPage = () => {
+  return <SettingsProfile />;
 };
 
-export default SettingsProfile;
+export default ProfilePage;

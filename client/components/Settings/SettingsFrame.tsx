@@ -2,17 +2,17 @@ import { ReactNode } from "react";
 import Link from "next/link";
 
 const navigation = [
-  { name: "Profile", href: "#", current: true },
-  { name: "Integrations", href: "#", current: false },
-  { name: "Statements", href: "#", current: false },
+  { name: "Profile", href: "/settings/profile", current: true },
+  { name: "Integrations", href: "/settings/integrations", current: false },
+  { name: "Statements", href: "/settings/statements", current: false },
 ];
 
 type Props = {
-  Page: ReactNode;
+  pageContent: ReactNode;
 };
 
-const SettingsContainer = () => {
-
+const SettingsFrame = (props: Props) => {
+  const { pageContent } = props;
   function renderNav() {
     return (
       <div
@@ -58,6 +58,7 @@ const SettingsContainer = () => {
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             {/* Replace with your content */}
+            {pageContent}
             <div className="px-4 py-6 sm:px-0">
               <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
             </div>
@@ -69,4 +70,4 @@ const SettingsContainer = () => {
   );
 };
 
-export default SettingsContainer;
+export default SettingsFrame;
