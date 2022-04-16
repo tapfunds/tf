@@ -15,10 +15,7 @@ const SettingsFrame = (props: Props) => {
   const { pageContent } = props;
   function renderNav() {
     return (
-      <div
-        className="w-60 h-full shadow-md bg-white absolute"
-        id="settings-nav"
-      >
+      <div className="w-60 h-full shadow-md bg-white" id="settings-nav">
         <div className="pt-4 pb-2 px-6 flex items-center ">
           <a href="#!">
             <div className="flex items-center">
@@ -53,16 +50,11 @@ const SettingsFrame = (props: Props) => {
 
   return (
     <>
-      <div className="min-h-full">
+      <div className="flex flex-row min-h-full">
         <header className="bg-white shadow">{renderNav()}</header>
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            {/* Replace with your content */}
             {pageContent}
-            <div className="px-4 py-6 sm:px-0">
-              <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-            </div>
-            {/* /End replace */}
           </div>
         </main>
       </div>

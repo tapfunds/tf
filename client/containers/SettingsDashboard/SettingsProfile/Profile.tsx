@@ -1,8 +1,8 @@
 import { SettingsFrame } from "../../../components";
-
+import ProfileContent from "./ProfileContent";
 const Profile = () => {
   function renderProfile() {
-    return <div>Users Profile</div>;
+    return <ProfileContent />;
   }
   function renderSettingsFrame() {
     return <SettingsFrame pageContent={renderProfile()} />;
