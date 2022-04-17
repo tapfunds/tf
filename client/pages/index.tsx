@@ -26,7 +26,7 @@ const Button = (props: Props) => {
 const LandingPage: NextPage = () => {
   return (
     <div className={styles.container}>
-      <Header />
+      <Header headerText="Tapfunds"/>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
@@ -46,7 +46,7 @@ const LandingPage: NextPage = () => {
         >
           Powered by{" "}
           <span className={styles.logo}>
-            <Image src="/logo.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image src="/images/logo.svg" alt="Tapfunds Logo" width={72} height={16} />
           </span>
         </a>
       </footer>

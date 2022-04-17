@@ -1,11 +1,16 @@
 import Head from "next/head";
 
-const Header = () => {
+type Props = {
+  headerText: string;
+};
+
+const Header = (props: Props) => {
+  const { headerText } = props;
   return (
     <Head>
-      <title>Tapfunds</title>
+      <title>{headerText}</title>
       <meta name="description" content="Modern Banking Solution" />
-      <link rel="icon" href="/icon.png" />
+      <link rel="icon" href="/images/icon.png" />
     </Head>
   );
 };

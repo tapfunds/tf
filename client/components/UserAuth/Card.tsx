@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { LockClosedIcon } from "@heroicons/react/solid";
 import { ReactNode } from "react";
 
 type Props = {
