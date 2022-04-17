@@ -1,83 +1,131 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+    AnnotationIcon,
+    GlobeAltIcon,
+    LightningBoltIcon,
+    ScaleIcon,
+} from "@heroicons/react/outline";
 
 type ButtonProps = {
-  text: string;
-  linkTo: string;
-  className: string;
+    text: string;
+    linkTo: string;
+    className: string;
 };
 
 const Button = (props: ButtonProps) => {
-  const { text, linkTo, className } = props;
-  return (
-    <button className={className}>
-      <Link href={linkTo}>
-        <a>{text}</a>
-      </Link>
-    </button>
-  );
+    const { text, linkTo, className } = props;
+    return (
+        <button className={className}>
+            <Link href={linkTo}>
+                <a>{text}</a>
+            </Link>
+        </button>
+    );
 };
 
-const HeroSection = () => {
-  return (
-    <div className="relative bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-          <svg
-            className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
-            fill="currentColor"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <polygon points="50,0 100,0 50,100 0,100" />
-          </svg>
+const features = [
+    {
+        name: "Competitive exchange rates",
+        description:
+            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+        icon: GlobeAltIcon,
+    },
+    {
+        name: "No hidden fees",
+        description:
+            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+        icon: ScaleIcon,
+    },
+    {
+        name: "Transfers are instant",
+        description:
+            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+        icon: LightningBoltIcon,
+    },
+    {
+        name: "Mobile notifications",
+        description:
+            "Set notifications on to receive account alerts via SMS or email.",
+        icon: AnnotationIcon,
+    },
+];
 
-          <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-            <div className="sm:text-center lg:text-left">
-              <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                <span className="block xl:inline">Data to enrich your</span>{" "}
-                <span className="block text-indigo-600 xl:inline">
-                  online business
-                </span>
-              </h1>
-              <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-                lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
-                fugiat aliqua.
-              </p>
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                <div className="rounded-md shadow">
-                  <Button
-                    text="Tap in"
-                    linkTo={"/login"}
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-tf-blue hover:bg-tf-blue-dark md:py-4 md:text-lg md:px-10"
-                  />
+const HeroSection = () => {
+    return (
+        <div className="py-12 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="lg:text-center">
+                    <div className="text-base">
+                        <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl mb-9">
+                            <span className="xl:inline">All of your accounts</span>{" "}
+                            <span className="text-tf-blue-dark xl:inline">one place</span>
+                        </h1>
+                    </div>
+                    <h2 className="text-base text-tf-blue-dark font-semibold tracking-wide uppercase">
+                        Transactions
+                    </h2>
+                    <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        A better way to view money
+                    </p>
+                    <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                        Observe all of your bank accounts. Regardless of if it&apos;s an
+                        IRA, savings, crypto, or money market account. If it can be linked
+                        you can view, manage, observe spending trends, and send transfers.
+                        All in one place.
+                    </p>
                 </div>
-                <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <a
-                    href="#"
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
-                  >
-                    Live demo
-                  </a>
+
+                <div className="mt-10">
+                    <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+                        {features.map((feature) => (
+                            <div key={feature.name} className="relative">
+                                <dt>
+                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-tf-blue-dark text-white">
+                                        <feature.icon className="h-6 w-6" aria-hidden="true" />
+                                    </div>
+                                    <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
+                                        {feature.name}
+                                    </p>
+                                </dt>
+                                <dd className="mt-2 ml-16 text-base text-gray-500">
+                                    {feature.description}
+                                </dd>
+                            </div>
+                        ))}
+                    </dl>
                 </div>
-              </div>
             </div>
-          </main>
+
+            <div className="bg-gray-50 mt-9">
+                <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        <span className="block">Ready to tap in?</span>
+                        <span className="block text-tf-blue-dark">
+                            Start your free account today.
+                        </span>
+                    </h2>
+                    <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+                        <div className="inline-flex rounded-md shadow">
+                            <Button
+                                text="Tap in"
+                                linkTo={"/signup"}
+                                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-tf-blue-dark hover:bg-tf-blue-darker md:py-4 md:text-lg md:px-10"
+                            />
+                        </div>
+                        <div className="ml-3 inline-flex rounded-md shadow">
+                            <a
+                                href="#"
+                                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-tf-blue-dark bg-white hover:bg-indigo-50"
+                            >
+                                Learn more
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-        <Image
-          className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-          src="/images/international-youth-day-illustration_by_freepick.jpg"
-          alt=""
-          height={100}
-          width={100}
-        />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default HeroSection;
