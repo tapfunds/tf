@@ -1,5 +1,6 @@
+"use client";
+
 import { NextPage } from "next";
-import Head from "next/head";
 import { useState } from "react";
 
 interface Bank {
@@ -40,12 +41,6 @@ const HomePage: NextPage = () => {
 
   return (
     <div>
-      <Head>
-        <title>Tapfunds</title>
-        <meta name="description" content="Modern Banking Solution" />
-        <link rel="icon" href="/icon.png" />
-      </Head>
-
       <div className="bg-white shadow max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900">Hello, X!</h1>
       </div>

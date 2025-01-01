@@ -2,31 +2,19 @@ import { ReactNode } from "react";
 import Link from "next/link";
 
 const navigation = [
-  { name: "Profile", href: "/settings/profile", current: true },
+  { name: "Profile", href: "/settings/profile", current: false },
   { name: "Integrations", href: "/settings/integrations", current: false },
   { name: "Statements", href: "/settings/statements", current: false },
 ];
 
-type Props = {
-  pageContent: ReactNode;
-};
-
-const SettingsFrame = (props: Props) => {
-  const { pageContent } = props;
+export default function SettingsLayout({ children }: { children: ReactNode }) {
   function renderNav() {
     return (
-      <div
-        className="w-60 h-full shadow-md bg-white flex flex-col"
-        id="settings-nav"
-      >
+      <div className="w-60 h-full shadow-md bg-white flex flex-col">
         <div className="pt-4 pb-2 px-6 flex items-center">
-          <Link href="#!" passHref={true}>
-            <div className="flex items-center">
-              <div className="grow ml-3">
-                <p className="text-xl font-semibold text-tf-blue-dark">
-                  Settings
-                </p>
-              </div>
+          <Link href="/settings" passHref>
+            <div className="text-xl font-semibold text-tf-blue-dark">
+              Settings
             </div>
           </Link>
         </div>
@@ -36,8 +24,6 @@ const SettingsFrame = (props: Props) => {
               <li className="relative">
                 <Link
                   href={item.href}
-                  data-mdb-ripple="true"
-                  data-mdb-ripple-color="dark"
                   className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-tf-blue text-ellipsis whitespace-nowrap rounded hover:text-tf-blue-light hover:bg-sky-100 transition duration-300 ease-in-out"
                 >
                   {item.name}
@@ -51,17 +37,9 @@ const SettingsFrame = (props: Props) => {
   }
 
   return (
-    <div className="flex flex-row min-h-full">
+    <div className="flex min-h-screen">
       <header>{renderNav()}</header>
-      <main>
-        <div className="flex flex-col min-h-screen">
-          <div className="flex-grow">
-            <div className="py-6 px-4">{pageContent}</div>
-          </div>
-        </div>
-      </main>
+      <main className="flex-grow m-5">{children}</main>
     </div>
   );
-};
-
-export default SettingsFrame;
+}
