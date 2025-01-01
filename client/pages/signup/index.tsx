@@ -1,7 +1,8 @@
-import Card from "./Card";
+import type { NextPage } from "next";
 import Link from "next/link";
+import Card from "../components/Card";
 
-const Signup = () => {
+const SignupPage: NextPage = () => {
   function renderFormContent() {
     return (
       <>
@@ -115,4 +116,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupPage;

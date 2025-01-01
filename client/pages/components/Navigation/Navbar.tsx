@@ -1,6 +1,17 @@
 import { useState, Fragment } from "react";
 import Image from "next/image";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import Link from "next/link";
+import { BellIcon } from "@heroicons/react/24/solid";
 
 // Define types for user and navigation items
 interface NavigationItem {
@@ -15,17 +26,18 @@ interface UserNavigationItem {
 }
 
 const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
+  name: "Harold Melvin",
+  email: "Harold@example.com",
   imageUrl: "/images/icon.png",
 };
 
 const navigation: NavigationItem[] = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-  { name: "Reports", href: "#", current: false },
+  { name: "Overview", href: "/home", current: true }, // Overall financial trends and insights
+  { name: "Transactions", href: "/transactions", current: false }, // Detailed transaction history
+  { name: "Transfer Funds", href: "/transfer", current: false }, // Move money between accounts
+  { name: "Group Management", href: "/groups", current: false }, // Manage shared finances or group accounts
+  { name: "Budgeting", href: "/budgeting", current: false }, // Set and track budgets
+  { name: "Settings", href: "/settings", current: false }, // Account settings and preferences
 ];
 
 const userNavigation: UserNavigationItem[] = [
@@ -61,7 +73,7 @@ const Navbar = () => {
                   <div className="hidden md:block">
                     <div className="ml-10 flex items-baseline space-x-4">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
                           href={item.href}
                           className={classNames(
@@ -73,25 +85,17 @@ const Navbar = () => {
                           aria-current={item.current ? "page" : undefined}
                         >
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-4 flex items-center md:ml-6">
-                    <button
-                      type="button"
-                      className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      Hello
-                    </button>
-
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                       <div>
-                        <Menu.Button className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <MenuButton className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                           <span className="sr-only">Open user menu</span>
                           <Image
                             className="h-8 w-8 rounded-full"
@@ -100,7 +104,7 @@ const Navbar = () => {
                             height={50}
                             width={50}
                           />
-                        </Menu.Button>
+                        </MenuButton>
                       </div>
                       <Transition
                         as={Fragment}
@@ -111,9 +115,9 @@ const Navbar = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <MenuItems className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {userNavigation.map((item) => (
-                            <Menu.Item key={item.name}>
+                            <MenuItem key={item.name}>
                               {({ active }) => (
                                 <a
                                   href={item.href}
@@ -125,27 +129,27 @@ const Navbar = () => {
                                   {item.name}
                                 </a>
                               )}
-                            </Menu.Item>
+                            </MenuItem>
                           ))}
-                        </Menu.Items>
+                        </MenuItems>
                       </Transition>
                     </Menu>
                   </div>
                 </div>
                 <div className="-mr-2 flex md:hidden">
                   {/* Mobile menu button */}
-                  <Disclosure.Button className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                  <DisclosureButton className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span className="sr-only">Open main menu</span>
                     {open ? <>X</> : <>| | |</>}
-                  </Disclosure.Button>
+                  </DisclosureButton>
                 </div>
               </div>
             </div>
 
-            <Disclosure.Panel className="md:hidden">
+            <DisclosurePanel className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navigation.map((item) => (
-                  <Disclosure.Button
+                  <DisclosureButton
                     key={item.name}
                     as="a"
                     href={item.href}
@@ -158,7 +162,7 @@ const Navbar = () => {
                     aria-current={item.current ? "page" : undefined}
                   >
                     {item.name}
-                  </Disclosure.Button>
+                  </DisclosureButton>
                 ))}
               </div>
               <div className="pt-4 pb-3 border-t border-gray-700">
@@ -185,23 +189,23 @@ const Navbar = () => {
                     className="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                   >
                     <span className="sr-only">View notifications</span>
-                    <>Bell Icon</>
+                    <BellIcon />
                   </button>
                 </div>
                 <div className="mt-3 px-2 space-y-1">
                   {userNavigation.map((item) => (
-                    <Disclosure.Button
+                    <DisclosureButton
                       key={item.name}
                       as="a"
                       href={item.href}
                       className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
                     >
                       {item.name}
-                    </Disclosure.Button>
+                    </DisclosureButton>
                   ))}
                 </div>
               </div>
-            </Disclosure.Panel>
+            </DisclosurePanel>
           </div>
         )}
       </Disclosure>

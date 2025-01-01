@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
 
-import { LandingContainer } from "../containers";
-
 import styles from "../styles/Home.module.css";
+import HeroSection from "./HeroSection";
+import Header from "./Header";
 
 const LandingPage: NextPage = () => {
   return (
     <div className={styles.container}>
-      <LandingContainer/>
+      <Header headerText="Tapfunds" />
+      <HeroSection />
     </div>
   );
 };

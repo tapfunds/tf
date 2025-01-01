@@ -10,8 +10,6 @@
 *** tapfunds, repo_name, twitter_handle, email, project_title, project_description
 -->
 
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -20,14 +18,13 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -36,10 +33,10 @@
     <img src="images/logo2.svg" alt="Logo" width="500" height="500">
   </a>
 
-  <h3 align="center">Tap into your money</h3>
+  <h3 align="center">Tap into your funds</h3>
 
   <p align="center">
-    Your hub for money transfers between personal accounts
+    Your hub for money awareness
     <br />
     <a href="https://github.com/tapfunds/tf"><strong>Explore the docs »</strong></a>
     <br />
@@ -51,8 +48,6 @@
     <a href="https://github.com/tapfunds/tf">Request Feature</a>
   </p>
 </p>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -81,31 +76,32 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. Multi service architecture is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to practice a high value skill. Decoupled containerized applications are easier to build in my opinion, but require a different way of thinking about application deployment. I hope whoever visits this learns something benficial or will provide feedback via issues or pull request. Request environment variables via email, or use your own for local development.
 
-
 ### Built With
 
-* [Go]()
-* [Python]()
-* [FastAPI]()
-* [Postgres]()
-* [Neo4j]()
-* [GraphQL]()
-* [Javascript]()
-* [React]()
-* [Node]()
-* [Docker]()
-* [Google CLoud Run]()
+- [Go]()
+- [Python]()
+- [FastAPI]()
+- [Postgres]()
+- [Neo4j]()
+- [GraphQL]()
+- [Javascript]()
+- [React]()
+- [Node]()
+- [Docker]()
+- [Google CLoud Run]()
 
 **Not yet implemented currently using Cloud Run and REST communication**
 
-* [GKE]()
-* [RabbitMQ]()
+- [GKE]()
+- [RabbitMQ]()
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
@@ -114,48 +110,50 @@ To get a local copy up and running follow these simple steps.
 
 Docker, node, python, golang, and the GCP SDK
 
-* run this shell script to stand up local containers
+- run this shell script to stand up local containers
+
   ```sh
   ./build-dev
   ```
+
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/tapfunds/tf.git
    ```
-2. To install the auth and plaid services, cd into each folder then run 
+
+2. To install the auth and plaid services, cd into each folder then run
+
    ```sh
    go get
    ```
-3. To install the objectmapper service, cd into the folder and run 
+
+3. To install the objectmapper service, cd into the folder and run
+
    ```sh
    pip3 install requirements/requirements.txt
    ```
-4. To install the client service, cd into the folder and run 
+
+4. To install the client service, cd into the folder and run
+
    ```sh
    yarn install
    ```
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
-Docker
-
-CI/CD
-
-Orchestration
-
-DB
-
 <!-- ROADMAP -->
+
 ## Roadmap
 
 See the [open issues](https://github.com/tapfunds/tf/issues) for a list of proposed features (and known issues).
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -166,37 +164,26 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - qwelian@tapfunds.net
+Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - <qwelian@tapfunds.net>
 
 Project Link: [https://github.com/tapfunds/tf](https://github.com/tapfunds/tf)
 
 
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* []()
-* []()
-* []()
-
-
-https://github.com/tapfunds/tf/blob/main/LICENSE
-
+<https://github.com/tapfunds/tf/blob/main/LICENSE>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/tapfunds/tf.svg?style=for-the-badge
 [contributors-url]: https://github.com/tapfunds/tf/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/tapfunds/tf.svg?style=for-the-badge

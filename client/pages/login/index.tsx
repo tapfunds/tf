@@ -1,7 +1,8 @@
+import type { NextPage } from "next";
 import Link from "next/link";
-import Card from "./Card";
+import Card from "../components/Card";
 
-const Login = () => {
+const LoginPage: NextPage = () => {
   function renderSignUpRedirect() {
     return (
       <p className="mt-2 text-center text-sm text-gray-600">
@@ -95,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
