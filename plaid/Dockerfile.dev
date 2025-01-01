@@ -1,20 +1,27 @@
-FROM golang:1.15.5-alpine
+# Use the latest stable Go version with alpine for a lightweight image
+FROM golang:1.23-alpine
 
-# Install git
-RUN apk update && apk add --no-cache git
+# Install git and other development dependencies
+RUN apk update && apk add --no-cache git build-base bash
 
-# Where our file will be in the docker container 
+# Set working directory inside the container
 WORKDIR /usr/src/plaid/
-COPY /plaid .
 
-RUN go get
+# Copy only the necessary files first (optimize caching)
+COPY go.mod go.sum ./
+RUN go mod download
 
+# Copy the rest of the application code
+COPY . .
+
+# Install CompileDaemon for hot reloading
+RUN go install github.com/githubnemo/CompileDaemon@latest
+
+# Expose the port used by the application
 EXPOSE 8000
 
-# Install CompileDaemon which is used for hot reload each time a file is changed
-RUN go get github.com/githubnemo/CompileDaemon
+# Use environment variables for development builds
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-# The ENTRYPOINT defines the command that will be ran when the container starts up
-# The "go build" command here build from the current directory
-# We will also execute the binary so that the server starts up. CompileDaemon handles the rest - anytime any .go file changes in the directory
-ENTRYPOINT CompileDaemon -log-prefix=false -build="go build ." -command="./plaid"
+# Command for CompileDaemon to handle hot reloads
+ENTRYPOINT ["CompileDaemon", "-log-prefix=false", "-build=go build .", "-command=./plaid"]

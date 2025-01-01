@@ -1,103 +1,79 @@
-version: "3.9"
-
 services:
-  pyneo4j:
-    container_name: pyneo4j_map_service
-    depends_on:
-      - "neo4j"
-    env_file:
-      - ./objectmapper/.env
-    build:
-      context: .
-      dockerfile: ./objectmapper/Dockerfile.dev
-    restart: on-failure
-    networks:
-      - tap
-      - neo4j-net
-    ports:
-      - '1738:1738'
-
-  goauth:
-    container_name: auth_service 
+  auth:
+    container_name: auth
     env_file:
       - ./auth/.env
     build:
-      context: .
-      dockerfile: ./auth/Dockerfile.dev
+      context: ./auth
+      dockerfile: Dockerfile.dev
     ports:
       - 8080:8080
     restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app
+    volumes:
+      - ./auth:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - dev
+    command: nodemon server.js
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   plaid:
-    container_name: plaid_service 
+    container_name: plaid_service
     env_file:
       - ./plaid/.env
     build:
-      context: .
-      dockerfile: ./plaid/Dockerfile.dev
+      context: ./plaid
+      dockerfile: Dockerfile.dev
     ports:
       - 8000:8000
-    restart: 
-      on-failure
-    networks:
-      - tap
-
-  client:
-    container_name: client_service
-    stdin_open: true
-    env_file:
-      - ./tapfunds/.env
-    build:
-      context: .
-      dockerfile: ./tapfunds/Dockerfile.dev
-    ports:
-      - 80:80
-    networks:
-      - tap
-      - neo4j-net
     restart: on-failure
-    volumes:              # without this volume mapping to the directory of our project, live reloading wont happen
-      - .:/usr/src/app/
+    volumes:
+      - ./plaid:/usr/src/app
+    networks:
+      - dev
+    depends_on:
+      - auth
+  client:
+    container_name: client
+    env_file:
+      - ./client/.env
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - dev
+    command: yarn dev
+    depends_on:
+      - auth
+      - plaid
 
-  # rabbitmq:
-  #   image: rabbitmq:3.8.14-management-alpine
-  #   container_name: rabbitmq
-  #   volumes:
-  #     - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-  #     - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-  #     - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
-  #   ports:
-  #       - 5672:5672
-  #       - 15672:15672
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dev_db
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - dev
 
-  neo4j:
-      container_name: neo4j_service
-      image: neo4j:latest
-      volumes:
-        - ./.docker/neo4j/data:/data
-        - ./.docker/neo4j/logs:/logs
-        - ./.docker/neo4j/import:/var/lib/neo4j/import
-        - ./.docker/neo4j/plugins:/plugins
-        - ./.docker/neo4j/conf:/conf
-      restart: always
-      environment:
-        - NEO4J_AUTH=neo4j/changeme
-        - NEO4J_dbms_security_procedures_unrestricted=apoc.*
-        - NEO4J_dbms_security_procedures_whitelist=apoc.*
-        - NEO4J_apoc_import_file_enabled=true
-        - NEO4J_apoc_uuid_enabled=true
-        - NEO4JLABS_PLUGINS=["apoc"]
-      networks:
-        - neo4j-net
-      ports:
-        - '7474:7474'
-        - '7687:7687'
+networks:
+  dev:
+    driver: bridge
 
-# Networks to be created to facilitate communication between containers
-networks: 
-  tap:
-    driver: 'bridge'
-  neo4j-net:
-    driver: 'bridge'
+volumes:
+  db-data:
