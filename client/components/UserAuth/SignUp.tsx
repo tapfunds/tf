@@ -85,18 +85,20 @@ const Signup = () => {
       <div className="flex items-center justify-between">
         <div className="text-sm">
           Have an account?{" "}
-          <Link href="/login">
-            <a className="font-medium text-tf-blue-dark hover:text-tf-blue">
+          <Link
+            href="/login"
+            className="font-medium text-tf-blue-dark hover:text-tf-blue"
+          >
             login
-            </a>
           </Link>
         </div>
 
         <div className="text-sm">
-          <Link href="#">
-            <a className="font-medium text-tf-blue-dark hover:text-tf-blue">
-              Forgot your password?
-            </a>
+          <Link
+            href="#"
+            className="font-medium text-tf-blue-dark hover:text-tf-blue"
+          >
+            Forgot your password?
           </Link>
         </div>
       </div>

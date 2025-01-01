@@ -1,28 +1,40 @@
 import { useState, Fragment } from "react";
 import Image from "next/image";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+
+// Define types for user and navigation items
+interface NavigationItem {
+  name: string;
+  href: string;
+  current: boolean;
+}
+
+interface UserNavigationItem {
+  name: string;
+  href: string;
+}
 
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
-  imageUrl:
-    "/images/icon.png",
+  imageUrl: "/images/icon.png",
 };
-const navigation = [
+
+const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "#", current: true },
   { name: "Team", href: "#", current: false },
   { name: "Projects", href: "#", current: false },
   { name: "Calendar", href: "#", current: false },
   { name: "Reports", href: "#", current: false },
 ];
-const userNavigation = [
+
+const userNavigation: UserNavigationItem[] = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
 
-function classNames(...classes: any[]) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -42,8 +54,8 @@ const Navbar = () => {
                       className="h-8 w-8"
                       src="/images/logo.svg"
                       alt="Workflow"
-                      height={100}
-                      width={100}
+                      height={32}
+                      width={32}
                     />
                   </div>
                   <div className="hidden md:block">
@@ -73,7 +85,7 @@ const Navbar = () => {
                       className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                     >
                       <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                      Hello
                     </button>
 
                     {/* Profile dropdown */}
@@ -124,11 +136,7 @@ const Navbar = () => {
                   {/* Mobile menu button */}
                   <Disclosure.Button className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <MenuIcon className="block h-6 w-6" aria-hidden="true" />
-                    )}
+                    {open ? <>X</> : <>| | |</>}
                   </Disclosure.Button>
                 </div>
               </div>
@@ -160,8 +168,8 @@ const Navbar = () => {
                       className="h-10 w-10 rounded-full"
                       src={user.imageUrl}
                       alt=""
-                      height={90}
-                      width={90}
+                      height={40}
+                      width={40}
                     />
                   </div>
                   <div className="ml-3">
@@ -177,7 +185,7 @@ const Navbar = () => {
                     className="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                   >
                     <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    <>Bell Icon</>
                   </button>
                 </div>
                 <div className="mt-3 px-2 space-y-1">

@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  AnnotationIcon,
-  LightningBoltIcon,
-  TrendingUpIcon,
-} from "@heroicons/react/solid";
 import usd from "cryptocurrency-icons/svg/white/usd.svg";
 import React from "react";
+import {
+  ArrowTrendingUpIcon,
+  BoltIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/solid";
 
 type ButtonProps = {
   text: string;
@@ -17,11 +17,9 @@ type ButtonProps = {
 const Button = (props: ButtonProps) => {
   const { text, linkTo, className } = props;
   return (
-    <button className={className}>
-      <Link href={linkTo}>
-        <a>{text}</a>
-      </Link>
-    </button>
+    <Link href={linkTo} passHref={true}>
+      <button className={className}>{text}</button>
+    </Link>
   );
 };
 
@@ -36,9 +34,8 @@ function ImageIcon(props: IconProps) {
 const features = [
   {
     name: "Monitor money trends",
-    description:
-      "Monitor high level in your accounts. Community driven data ",
-    icon: <ImageIcon icon={TrendingUpIcon} />,
+    description: "Monitor high level in your accounts. Community driven data ",
+    icon: <ImageIcon icon={ArrowTrendingUpIcon} />,
   },
   {
     name: "Link accounts",
@@ -48,15 +45,14 @@ const features = [
   },
   {
     name: "Transfers are instant",
-    description:
-      "Transfer funds from any account to any account easily.",
-    icon: <ImageIcon icon={LightningBoltIcon} />,
+    description: "Transfer funds from any account to any account easily.",
+    icon: <ImageIcon icon={BoltIcon} />,
   },
   {
     name: "Mobile notifications",
     description:
       "Set notifications on to receive account alerts via SMS or email.",
-    icon: <ImageIcon icon={AnnotationIcon} />,
+    icon: <ImageIcon icon={ExclamationCircleIcon} />,
   },
 ];
 

@@ -6,10 +6,11 @@ const Login = () => {
     return (
       <p className="mt-2 text-center text-sm text-gray-600">
         Or{" "}
-        <Link href="/signup">
-          <a className="font-medium text-tf-blue-dark hover:text-tf-blue">
-            tap in with a new account
-          </a>
+        <Link
+          href="/signup"
+          className="font-medium text-tf-blue-dark hover:text-tf-blue"
+        >
+          tap in with a new account
         </Link>
       </p>
     );
