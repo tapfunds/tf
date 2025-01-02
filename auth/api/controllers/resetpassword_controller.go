@@ -11,7 +11,7 @@ import (
 	"github.com/tapfunds/tf/auth/api/mailer"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/security"
-	"github.com/tapfunds/tf/auth/api/utils/formaterror"
+	"github.com/tapfunds/tf/auth/api/utils/errors"
 )
 
 func (server *Server) ForgotPassword(c *gin.Context) {
@@ -67,7 +67,7 @@ func (server *Server) ForgotPassword(c *gin.Context) {
 
 	resetDetails, err := resetPassword.SaveDatails(server.DB)
 	if err != nil {
-		errList = formaterror.FormatError(err.Error())
+		errList = errors.FormatError(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": http.StatusInternalServerError,
 			"error":  errList,

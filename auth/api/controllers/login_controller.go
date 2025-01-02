@@ -1,93 +1,87 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tapfunds/tf/auth/api/auth"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/security"
-	"github.com/tapfunds/tf/auth/api/utils/formaterror"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/tapfunds/tf/auth/api/utils/errors"
 )
 
+// Handles the HTTP request, parses and validates input, and calls SignIn.
 func (server *Server) Login(c *gin.Context) {
-
-	//clear previous error if any
-	errList = map[string]string{}
-
-	body, err := io.ReadAll(c.Request.Body)
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status":      http.StatusUnprocessableEntity,
-			"first error": "Unable to get request",
-		})
+	var loginRequest models.User
+	if err := c.ShouldBindJSON(&loginRequest); err != nil {
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid JSON body"})
 		return
 	}
-	user := models.User{}
-	err = json.Unmarshal(body, &user)
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  "Cannot unmarshal body",
-		})
-		return
-	}
-	user.Prepare()
-	errorMessages := user.Validate("login")
+
+	// Prepare and validate user
+	loginRequest.Prepare()
+	errorMessages := loginRequest.Validate("login")
 	if len(errorMessages) > 0 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errorMessages,
-		})
+		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages)
 		return
 	}
-	userData, err := server.SignIn(user.Email, user.Password)
+
+	var user models.User
+	if err := server.DB.Debug().Where("email = ?", loginRequest.Email).Take(&user).Error; err != nil {
+		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
+		return
+	}
+
+	if err := security.VerifyPassword(user.Password, loginRequest.Password); err != nil {
+		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
+		return
+	}
+
+	token, err := auth.CreateToken(user.ID)
 	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  formattedError,
-		})
+		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Token_error": "Failed to generate token"})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusOK,
-		"response": userData,
+		"status": http.StatusOK,
+		"response": map[string]interface{}{
+			"token":       token,
+			"id":          user.ID,
+			"email":       user.Email,
+			"avatar_path": user.AvatarPath,
+			"username":    user.Username,
+		},
 	})
 }
 
-func (server *Server) SignIn(email, password string) (map[string]interface{}, error) {
+// Authenticates the user and returns token data.
+// func (server *Server) SignIn(email, password string) (map[string]interface{}, error) {
+// 	var user models.User
 
-	var err error
+// 	// Fetch user by email
+// 	if err := server.DB.Debug().Where("email = ?", email).Take(&user).Error; err != nil {
+// 		return nil, fmt.Errorf("user not found: %w", err)
+// 	}
 
-	userData := make(map[string]interface{})
+// 	// Verify password
+// 	if err := security.VerifyPassword(user.Password, password); err != nil {
+// 		return nil, fmt.Errorf("invalid password: %w", err)
+// 	}
 
-	user := models.User{}
+// 	// Generate token
+// 	token, err := auth.CreateToken(user.ID)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("token creation failed: %w", err)
+// 	}
+// 	// Prepare response
+// 	userData := map[string]interface{}{
+// 		"token":       token,
+// 		"id":          user.ID,
+// 		"email":       user.Email,
+// 		"avatar_path": user.AvatarPath,
+// 		"username":    user.Username,
+// 	}
 
-	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
-	if err != nil {
-		fmt.Println("this is the error getting the user: ", err)
-		return nil, err
-	}
-	err = security.VerifyPassword(user.Password, password)
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		fmt.Println("this is the error hashing the password: ", err)
-		return nil, err
-	}
-	token, err := auth.CreateToken(user.ID)
-	if err != nil {
-		fmt.Println("this is the error creating the token: ", err)
-		return nil, err
-	}
-	userData["token"] = token
-	userData["id"] = user.ID
-	userData["email"] = user.Email
-	userData["avatar_path"] = user.AvatarPath
-	userData["username"] = user.Username
-
-	return userData, nil
-}
+// 	return userData, nil
+// }

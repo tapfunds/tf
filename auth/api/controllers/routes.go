@@ -4,35 +4,44 @@ import (
 	"github.com/tapfunds/tf/auth/api/middlewares"
 )
 
+const (
+	AuthBasePath         = "/auth"
+	UsersBasePath        = "/users"
+	IntegrationsBasePath = "/integrations"
+)
+
 func (s *Server) initializeRoutes() {
-
 	v1 := s.Router.Group("/api/v1")
+
+	// Auth Routes: Handles user authentication and password resets.
+	auth := v1.Group(AuthBasePath)
 	{
-		// API Status
-		v1.GET("/status", s.Status)
-
-		// Login Route
-		v1.POST("/login", s.Login)
-
-		// Reset password:
-		v1.POST("/password/forgot", s.ForgotPassword)
-		v1.POST("/password/reset", s.ResetPassword)
-
-		//Users routes
-		v1.POST("/users", s.CreateUser)
-
-		// The user of the app have no business getting all the users.
-		// v1.GET("/users", s.GetUsers)
-		// v1.GET("/users/:id", s.GetUser)
-		v1.PUT("/users/:id", middlewares.TokenAuthMiddleware(), s.UpdateUser)
-		v1.PUT("/avatar/users/:id", middlewares.TokenAuthMiddleware(), s.UpdateAvatar)
-		v1.DELETE("/users/:id", middlewares.TokenAuthMiddleware(), s.DeleteUser)
-
-
-		//Integration Token routes
-		v1.GET("/user_integrations/:id", middlewares.TokenAuthMiddleware(), s.GetUserIntegration)
-		v1.POST("/new_integration", middlewares.TokenAuthMiddleware(), s.CreatePlaidInfo)      // create
-		v1.PUT("/integrations/:id", middlewares.TokenAuthMiddleware(), s.UpdateIntegration)    // find by id
-		v1.DELETE("/integrations/:id", middlewares.TokenAuthMiddleware(), s.DeleteIntegration) // delete by id
+		auth.POST("/login", s.Login)
+		auth.POST("/password/forgot", s.ForgotPassword)
+		auth.POST("/password/reset", s.ResetPassword)
 	}
+
+	// User Routes: Manages user data and profiles
+	users := v1.Group(UsersBasePath)
+	users.Use(middlewares.TokenAuthMiddleware())
+	{
+		users.GET("/:id", s.GetUser)
+		users.POST("/create", s.CreateUser)
+		users.PUT("/:id", s.UpdateUser)
+		users.PUT("/avatar/:id", s.UpdateAvatar)
+		users.DELETE(":id", s.DeleteUser)
+	}
+
+	// Integration Routes: Handles user integrations and tokens
+	integrations := v1.Group(IntegrationsBasePath)
+	integrations.Use(middlewares.TokenAuthMiddleware())
+	{
+		integrations.GET("/:id", s.GetUserIntegration)
+		integrations.POST("/new", s.CreatePlaidInfo)
+		integrations.PUT("/:id", s.UpdateIntegration)
+		integrations.DELETE("/:id", s.DeleteIntegration)
+	}
+
+	// Status Route: General health check endpoint
+	v1.GET("/status", s.Status)
 }

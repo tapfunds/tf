@@ -1,7 +1,9 @@
-package formaterror
+package errors
 
 import (
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 var errorMessages = make(map[string]string)
@@ -43,4 +45,21 @@ func FormatError(errString string) map[string]string {
 	}
 
 	return nil
+}
+
+func HandleError(c *gin.Context, statusCode int, errorMessage map[string]string) {
+	c.JSON(statusCode, gin.H{
+		"status": statusCode,
+		"error":  errorMessage,
+	})
+}
+
+type CustomError struct {
+	Key     string
+	Message string
+}
+
+// Implement the Error method
+func (e *CustomError) Error() string {
+	return e.Message
 }

@@ -9,14 +9,12 @@ import (
 
 // TokenAuthMiddleware handles placement of JWT in headers
 func TokenAuthMiddleware() gin.HandlerFunc {
-	errList := make(map[string]string)
 	return func(c *gin.Context) {
 		err := auth.TokenValid(c.Request)
 		if err != nil {
-			errList["unauthorized"] = "Unauthorized"
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": http.StatusUnauthorized,
-				"error":  errList,
+				"error":  err.Error(),
 			})
 			c.Abort()
 			return
@@ -25,7 +23,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-// CORSMiddleware enables us interact with the React Frontend
+// CORSMiddleware enables us interact with the NextJS Frontend
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -34,7 +32,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, PATCH, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			c.AbortWithStatus(http.StatusNoContent) // 204 status code for OPTIONS
 			return
 		}
 		c.Next()

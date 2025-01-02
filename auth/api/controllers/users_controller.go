@@ -3,69 +3,42 @@ package controllers
 import (
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/fileupload"
+	"github.com/tapfunds/tf/auth/api/utils/errors"
 
 	"github.com/joho/godotenv"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tapfunds/tf/auth/api/auth"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/security"
-	"github.com/tapfunds/tf/auth/api/utils/formaterror"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
-
-	//clear previous error if any
-	errList = map[string]string{}
-
-	body, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		errList["Invalid_body"] = "Unable to get request"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Invalid_body": "Unable to get request"})
 		return
 	}
 
-	user := models.User{}
-
-	err = json.Unmarshal(body, &user)
-	if err != nil {
-		errList["Unmarshal_error"] = "Cannot unmarshal body"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
 	user.Prepare()
 	errorMessages := user.Validate("")
 	if len(errorMessages) > 0 {
-		errList = errorMessages
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages)
 		return
 	}
+
 	userCreated, err := user.SaveUser(server.DB)
 	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		errList = formattedError
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusInternalServerError, errors.FormatError(err.Error()))
 		return
 	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"status":   http.StatusCreated,
 		"response": userCreated,
@@ -95,30 +68,17 @@ func (server *Server) GetUsers(c *gin.Context) {
 }
 
 func (server *Server) GetUser(c *gin.Context) {
-
-	//clear previous error if any
-	errList = map[string]string{}
-
 	userID := c.Param("id")
-
 	uid, err := strconv.ParseUint(userID, 10, 32)
 	if err != nil {
-		errList["Invalid_request"] = "Invalid Request"
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
 		return
 	}
 	user := models.User{}
 
 	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
 	if err != nil {
-		errList["No_user"] = "No User Found"
-		c.JSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_user": "No User Found"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -203,208 +163,155 @@ func (server *Server) UpdateAvatar(c *gin.Context) {
 }
 
 func (server *Server) UpdateUser(c *gin.Context) {
-
-	//clear previous error if any
-	errList = map[string]string{}
-
 	userID := c.Param("id")
+
 	// Check if the user id is valid
 	uid, err := strconv.ParseUint(userID, 10, 32)
 	if err != nil {
-		errList["Invalid_request"] = "Invalid Request"
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
 		return
 	}
+
 	// Get user id from the token for valid tokens
 	tokenID, err := auth.ExtractTokenID(c.Request)
-	if err != nil {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
-		return
-	}
-	// If the id is not the authenticated user id
-	if tokenID != 0 && tokenID != uint32(uid) {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
-		return
-	}
-	// Start processing the request
-	body, err := io.ReadAll(c.Request.Body)
-	if err != nil {
-		errList["Invalid_body"] = "Unable to get request"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
-	requestBody := map[string]string{}
-	err = json.Unmarshal(body, &requestBody)
-	if err != nil {
-		errList["Unmarshal_error"] = "Cannot unmarshal body"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
-	// Check for previous details
-	formerUser := models.User{}
-	err = server.DB.Debug().Model(models.User{}).Where("id = ?", uid).Take(&formerUser).Error
-	if err != nil {
-		errList["User_invalid"] = "The user is does not exist"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
+	if err != nil || tokenID == 0 || tokenID != uint32(uid) {
+		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
 		return
 	}
 
-	newUser := models.User{}
+	// read request body
+	requestBody, err := parseRequestBody(c)
+	if err != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Invalid_body": "Unable to get request"})
+		return
+	}
 
-	//When current password has content.
-	if requestBody["current_password"] == "" && requestBody["new_password"] != "" {
-		errList["Empty_current"] = "Please Provide current password"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
+	// get user by id
+	formerUser, err := findUserByID(server.DB, uid)
+	if err != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"User_invalid": "The user does not exist"})
 		return
 	}
-	if requestBody["current_password"] != "" && requestBody["new_password"] == "" {
-		errList["Empty_new"] = "Please Provide new password"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
-	if requestBody["current_password"] != "" && requestBody["new_password"] != "" {
-		//Also check if the new password
-		if len(requestBody["new_password"]) < 6 {
-			errList["Invalid_password"] = "Password should be atleast 6 characters"
-			c.JSON(http.StatusUnprocessableEntity, gin.H{
-				"status": http.StatusUnprocessableEntity,
-				"error":  errList,
-			})
-			return
+
+	// Handle updates
+	updatedUser, err := handlePasswordUpdateAndOtherFields(formerUser, requestBody)
+	if err != nil {
+		if customErr, ok := err.(*errors.CustomError); ok {
+			errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{customErr.Key: customErr.Message})
+		} else {
+			errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Unexpected_error": err.Error()})
 		}
-		//if they do, check that the former password is correct
-		err = security.VerifyPassword(formerUser.Password, requestBody["current_password"])
-		if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-			errList["Password_mismatch"] = "The password not correct"
-			c.JSON(http.StatusUnprocessableEntity, gin.H{
-				"status": http.StatusUnprocessableEntity,
-				"error":  errList,
-			})
-			return
-		}
-		//update both the password and the email
-		newUser.Username = formerUser.Username //remember, you cannot update the username
-		newUser.Email = requestBody["email"]
-		newUser.Password = requestBody["new_password"]
+		return
 	}
 
-	//The password fields not entered, so update only the email
-	newUser.Username = formerUser.Username
-	newUser.Email = requestBody["email"]
-
-	newUser.Prepare()
-	errorMessages := newUser.Validate("update")
+	updatedUser.Prepare()
+	errorMessages := updatedUser.Validate("update")
 	if len(errorMessages) > 0 {
-		errList = errorMessages
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Validation_error": "Validation failed"})
 		return
 	}
-	updatedUser, err := newUser.UpdateAUser(server.DB, uint32(uid))
+
+	finalUser, err := updatedUser.UpdateAUser(server.DB, uint32(uid))
 	if err != nil {
-		errList := formaterror.FormatError(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Update_failed": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
-		"response": updatedUser,
+		"response": finalUser,
 	})
 }
 
 func (server *Server) DeleteUser(c *gin.Context) {
 
-	//clear previous error if any
-	errList = map[string]string{}
-	var tokenID uint32
+	// Extract and validate user ID from URL
 	userID := c.Param("id")
-	// Check if the user id is valid
 	uid, err := strconv.ParseUint(userID, 10, 32)
 	if err != nil {
-		errList["Invalid_request"] = "Invalid Request"
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errList,
-		})
-		return
-	}
-	// Get user id from the token for valid tokens
-	tokenID, err = auth.ExtractTokenID(c.Request)
-	if err != nil {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
-		return
-	}
-	// If the id is not the authenticated user id
-	if tokenID != 0 && tokenID != uint32(uid) {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
 		return
 	}
 
+	// Extract user ID from token
+	tokenID, err := auth.ExtractTokenID(c.Request)
+	if err != nil || tokenID == 0 || tokenID != uint32(uid) {
+		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
+		return
+	}
+
+	// Delete the user
 	user := models.User{}
-	_, err = user.DeleteAUser(server.DB, uint32(uid))
-	if err != nil {
-		errList["Other_error"] = "Please try again later"
-		c.JSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
-			"error":  errList,
-		})
+	if _, err := user.DeleteAUser(server.DB, uint32(uid)); err != nil {
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"Delete_error": "User could not be deleted"})
 		return
 	}
 
-	// Also delete the posts, likes and the comments that this user created if any:
+	// Delete related integrations
 	integration := models.PlaidIntegration{}
-
-	_, err = integration.DeleteUserIntegrations(server.DB, uint32(uid))
-	if err != nil {
-		errList["Other_error"] = "Please try again later"
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  err,
-		})
+	if err := integration.Delete(server.DB); err != nil {
+		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Delete_error": "Failed to delete user integrations"})
 		return
 	}
 
+	// Successful deletion response
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
-		"response": "User deleted",
+		"response": "User and related integrations deleted successfully",
 	})
+}
+
+func parseRequestBody(c *gin.Context) (map[string]string, error) {
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var requestBody map[string]string
+	err = json.Unmarshal(body, &requestBody)
+	return requestBody, err
+}
+
+func findUserByID(db *gorm.DB, uid uint64) (models.User, error) {
+	var user models.User
+	err := db.Debug().Model(models.User{}).Where("id = ?", uid).Take(&user).Error
+	return user, err
+}
+
+// handlePasswordUpdate function
+func handlePasswordUpdateAndOtherFields(formerUser models.User, requestBody map[string]string) (models.User, *errors.CustomError) {
+	newUser := formerUser
+
+	// Update username if provided
+	if requestBody["username"] != "" {
+		newUser.Username = requestBody["username"]
+	}
+
+	// Update email if provided
+	if requestBody["email"] != "" {
+		newUser.Email = requestBody["email"]
+	}
+
+	// Handle password update
+	if requestBody["current_password"] != "" {
+		if requestBody["new_password"] == "" {
+			return newUser, &errors.CustomError{Key: "Empty_new", Message: "Please provide a new password"}
+		}
+
+		if len(requestBody["new_password"]) < 6 {
+			return newUser, &errors.CustomError{Key: "Invalid_password", Message: "Password should be at least 6 characters"}
+		}
+
+		err := security.VerifyPassword(formerUser.Password, requestBody["current_password"])
+		if err != nil {
+			return newUser, &errors.CustomError{Key: "Password_mismatch", Message: "Current password is incorrect"}
+		}
+
+		newUser.Password = requestBody["new_password"]
+	} else if requestBody["password"] != "" {
+		// Set a new password without current password verification
+		newUser.Password = requestBody["password"]
+	}
+
+	return newUser, nil
 }
