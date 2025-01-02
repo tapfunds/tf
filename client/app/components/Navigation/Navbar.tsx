@@ -35,10 +35,10 @@ const user = {
 
 const navigation: NavigationItem[] = [
   { name: "Overview", href: "/home", current: true }, // Overall financial trends and insights
-  { name: "Transactions", href: "/transactions", current: false }, // Detailed transaction history
-  { name: "Transfer Funds", href: "/transfer", current: false }, // Move money between accounts
   { name: "Group Management", href: "/groups", current: false }, // Manage shared finances or group accounts
+  { name: "Advice", href: "/transactions", current: false }, // Detailed transaction history
   { name: "Budgeting", href: "/budgeting", current: false }, // Set and track budgets
+  { name: "Transfer Funds", href: "/transfer", current: false }, // Move money between accounts
   { name: "Settings", href: "/settings", current: false }, // Account settings and preferences
 ];
 
@@ -65,11 +65,10 @@ const Navbar = () => {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <Image
-                      className="h-8 w-8"
                       src="/images/logo.svg"
                       alt="Workflow"
-                      height={32}
-                      width={32}
+                      height={100}
+                      width={100}
                     />
                   </div>
                   <div className="hidden md:block">

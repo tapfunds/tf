@@ -40,11 +40,10 @@ const HomePage: NextPage = () => {
   };
 
   return (
-    <div>
-      <div className="bg-white shadow max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="m-5">
+      <div className="bg-white shadow m-5 mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900">Hello, X!</h1>
       </div>
-
       {/* Tab navigation for Banks */}
       <div className="flex space-x-4 border-b-2 pb-4">
         {bank_info.map((bank) => (
@@ -61,7 +60,6 @@ const HomePage: NextPage = () => {
           </button>
         ))}
       </div>
-
       {/* Bank Details */}
       <div className="mt-6">
         {bank_info.map(

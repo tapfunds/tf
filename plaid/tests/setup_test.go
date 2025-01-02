@@ -9,8 +9,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 
-	"github.com/tapfunds/tf/plaid/api/controllers"
 	"github.com/tapfunds/tf/auth/api/models"
+	"github.com/tapfunds/tf/plaid/api/controllers"
 )
 
 var server = controllers.Server{}
@@ -32,7 +32,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-//When using CircleCI
+// When using CircleCI
 func CIBuild() {
 	var err error
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", "127.0.0.1", "5432", "qwelian", "forum_db_test", "password")
@@ -135,7 +135,7 @@ func refreshUserAndIntegrationTable() error {
 func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error) {
 
 	user := models.User{
-		ID: 1,
+		ID:       1,
 		Username: "HannahArendt",
 		Email:    "hannaharendt@example.com",
 		Password: "password",
@@ -145,10 +145,10 @@ func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error
 		return models.User{}, models.PlaidIntegration{}, err
 	}
 	token := models.PlaidIntegration{
-		ItemID:    "This is the item",
-		AccessToken:  "This is the access token",
-		PaymentID:  "This is the payment id",
-		UserID: user.ID,
+		ItemID:      "This is the item",
+		AccessToken: "This is the access token",
+		PaymentID:   "This is the payment id",
+		UserID:      user.ID,
 	}
 	err = server.DB.Model(&models.PlaidIntegration{}).Create(&token).Error
 	if err != nil {
@@ -166,13 +166,13 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 	}
 	var users = []models.User{
 		models.User{
-			ID: 1,
+			ID:       1,
 			Username: "Qwelian",
 			Email:    "qwelian@example.com",
 			Password: "password",
 		},
 		models.User{
-			ID: 2,
+			ID:       2,
 			Username: "Michele",
 			Email:    "mfoucault@example.com",
 			Password: "password",
@@ -180,14 +180,14 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 	}
 	var tokens = []models.PlaidIntegration{
 		models.PlaidIntegration{
-			ItemID:   "ItemID 1",
+			ItemID:      "ItemID 1",
 			AccessToken: "AccessToken 1",
-			PaymentID: "PaymentID 1",
+			PaymentID:   "PaymentID 1",
 		},
 		models.PlaidIntegration{
-			ItemID:   "ItemID 2",
+			ItemID:      "ItemID 2",
 			AccessToken: "AccessToken 2",
-			PaymentID: "PaymentID 2",
+			PaymentID:   "PaymentID 2",
 		},
 	}
 
@@ -248,11 +248,11 @@ func seedUsersPostsAndComments() (models.User, []models.PlaidIntegration, error)
 
 	var tokens = []models.PlaidIntegration{
 		models.PlaidIntegration{
-			
-			User: user,
-			UserID: user.ID,
-			ItemID:   "Adorno made this ItemID",
-			AccessToken:   "Adorno made this AccessToken",
+
+			User:        user,
+			UserID:      user.ID,
+			ItemID:      "Adorno made this ItemID",
+			AccessToken: "Adorno made this AccessToken",
 			PaymentID:   "Adorno made this PaymentID",
 		},
 		models.PlaidIntegration{
