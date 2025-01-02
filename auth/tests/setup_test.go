@@ -54,8 +54,9 @@ func CIBuild() {
 func Database() {
 	TestDbDriver := os.Getenv("TEST_DB_DRIVER")
 	if TestDbDriver == "postgres" {
-		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
-			os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
+		DBURL := fmt.Sprintf("host=localhost port=%s user=%s dbname=%s sslmode=disable password=%s",
+			os.Getenv("TEST_POSTGRES_PORT"), os.Getenv("TEST_POSTGRES_USER"), os.Getenv("TEST_POSTGRES_DB"), os.Getenv("TEST_POSTGRES_PASSWORD"))
+
 		var err error
 		server.DB, err = gorm.Open(TestDbDriver, DBURL)
 		if err != nil {
@@ -99,24 +100,20 @@ func seedAnotherUser() (models.User, error) {
 
 func seedUsers() ([]models.User, error) {
 
-	var err error
-	if err != nil {
-		return nil, err
-	}
 	users := []models.User{
-		models.User{
+		{
 			Username: "Qwelian",
 			Email:    "qwelian@example.com",
 			Password: "password",
 		},
-		models.User{
+		{
 			Username: "Nala",
 			Email:    "nala@example.com",
 			Password: "password",
 		},
 	}
 
-	for i, _ := range users {
+	for i := range users {
 		err := server.DB.Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
 			return []models.User{}, err
@@ -173,20 +170,15 @@ func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error
 }
 
 func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error) {
-
 	var err error
-
-	if err != nil {
-		return []models.User{}, []models.PlaidIntegration{}, err
-	}
 	var users = []models.User{
-		models.User{
+		{
 			ID:       1,
 			Username: "Qwelian",
 			Email:    "qwelian@example.com",
 			Password: "password",
 		},
-		models.User{
+		{
 			ID:       2,
 			Username: "Michele",
 			Email:    "mfoucault@example.com",
@@ -194,17 +186,17 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 		},
 	}
 	var tokens = []models.PlaidIntegration{
-		models.PlaidIntegration{
+		{
 			PlaidItemID: "ItemID 1",
 			AccessToken: "AccessToken 1",
 		},
-		models.PlaidIntegration{
+		{
 			PlaidItemID: "ItemID 2",
 			AccessToken: "AccessToken 2",
 		},
 	}
 
-	for i, _ := range users {
+	for i := range users {
 		err = server.DB.Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed users table: %v", err)
@@ -233,19 +225,19 @@ func seedUsersAndPlaidIntegrations() (models.User, []models.PlaidIntegration, er
 		log.Fatalf("cannot seed users table: %v", err)
 	}
 	var plaidIntegration = []models.PlaidIntegration{
-		models.PlaidIntegration{
+		{
 
 			UserID:      user.ID,
 			PlaidItemID: "Adorno made this ItemID",
 			AccessToken: "Adorno made this AccessToken",
 		},
-		models.PlaidIntegration{
+		{
 			UserID:      user.ID,
 			PlaidItemID: "Adornomade this ItemID",
 			AccessToken: "Adorno made this AccessToken too",
 		},
 	}
-	for i, _ := range plaidIntegration {
+	for i := range plaidIntegration {
 		err = server.DB.Model(&models.PlaidIntegration{}).Create(&plaidIntegration[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed plaidIntegration table: %v", err)

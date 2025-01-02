@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	"testing"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func TestFindAllUsers(t *testing.T) {
+	log.Println("starting")
 	err := refreshUserTable()
 	assert.NoError(t, err)
 
@@ -35,6 +37,7 @@ func TestSaveUser(t *testing.T) {
 	savedUser, err := newUser.SaveUser(server.DB)
 	assert.NoError(t, err)
 
+	// Validate that saved user matches the input
 	assert.Equal(t, newUser.Email, savedUser.Email)
 	assert.Equal(t, newUser.Username, savedUser.Username)
 }
@@ -46,9 +49,11 @@ func TestFindUserByID(t *testing.T) {
 	user, err := seedOneUser()
 	assert.NoError(t, err)
 
+	// Fetch the user by ID
 	foundUser, err := user.FindUserByID(server.DB, user.ID)
 	assert.NoError(t, err)
 
+	// Validate user properties match
 	assert.Equal(t, foundUser.ID, user.ID)
 	assert.Equal(t, foundUser.Email, user.Email)
 	assert.Equal(t, foundUser.Username, user.Username)
@@ -75,8 +80,12 @@ func TestUpdateAUser(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
+	// Assert that the user details are updated correctly
 	assert.Equal(t, updatedUser.Username, userUpdate.Username)
 	assert.Equal(t, updatedUser.Email, userUpdate.Email)
+
+	// Check that the UpdateAt field was updated (allowing for small time delta)
+	assert.WithinDuration(t, updatedUser.UpdatedAt, userUpdate.UpdatedAt, time.Second)
 }
 
 func TestDeleteAUser(t *testing.T) {
@@ -86,8 +95,10 @@ func TestDeleteAUser(t *testing.T) {
 	user, err := seedOneUser()
 	assert.NoError(t, err)
 
+	// Delete the user and verify the deletion response
 	isDeleted, err := user.DeleteAUser(server.DB, user.ID)
 	assert.NoError(t, err)
 
+	// Ensure that deletion returns 1 (indicating success)
 	assert.Equal(t, int64(1), isDeleted)
 }

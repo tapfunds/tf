@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,35 +10,25 @@ import (
 // TestFindAllUserIntegrations retrieves all integrations for a user
 func TestFindAllUserIntegrations(t *testing.T) {
 	err := refreshUserAndPlaidIntegrationTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	user, _, err := seedOneUserAndOneIntegration()
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	integrations, err := user.GetIntegrations(server.DB)
-	if err != nil {
-		t.Errorf("failed to retrieve integrations: %v", err)
-		return
-	}
+	assert.NoError(t, err)
 
-	assert.Equal(t, len(integrations), 1) // Assert one integration for the seeded user
+	// Assert one integration for the seeded user
+	assert.Equal(t, len(integrations), 1)
 }
 
 // TestSaveIntegration tests creating a new integration
 func TestSaveIntegration(t *testing.T) {
 	err := refreshUserAndPlaidIntegrationTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	user, err := seedOneUser() // Seed a user for the integration
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	newIntegration := models.PlaidIntegration{
 		UserID:      user.ID,
@@ -48,11 +37,9 @@ func TestSaveIntegration(t *testing.T) {
 	}
 
 	savedIntegration, err := newIntegration.Save(server.DB)
-	if err != nil {
-		t.Errorf("failed to save integration: %v", err)
-		return
-	}
+	assert.NoError(t, err)
 
+	// Validate saved integration matches the input
 	assert.Equal(t, newIntegration.UserID, savedIntegration.UserID)
 	assert.Equal(t, newIntegration.PlaidItemID, savedIntegration.PlaidItemID)
 	assert.Equal(t, newIntegration.AccessToken, savedIntegration.AccessToken)
@@ -61,14 +48,10 @@ func TestSaveIntegration(t *testing.T) {
 // TestUpdateAIntegration tests updating an existing integration
 func TestUpdateAIntegration(t *testing.T) {
 	err := refreshUserAndPlaidIntegrationTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	integration, err := seedOneIntegration()
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	updateData := map[string]interface{}{
 		"item_id":      "updated_item_id",
@@ -77,12 +60,10 @@ func TestUpdateAIntegration(t *testing.T) {
 	}
 
 	updatedIntegration, err := integration.Update(server.DB, updateData)
-	if err != nil {
-		t.Errorf("failed to update integration: %v", err)
-		return
-	}
+	assert.NoError(t, err)
 
-	assert.Equal(t, integration.ID, updatedIntegration.ID) // Ensure ID remains the same
+	// Ensure ID remains the same
+	assert.Equal(t, integration.ID, updatedIntegration.ID)
 	assert.Equal(t, updateData["item_id"], updatedIntegration.PlaidItemID)
 	assert.Equal(t, updateData["access_token"], updatedIntegration.AccessToken)
 }
@@ -90,41 +71,41 @@ func TestUpdateAIntegration(t *testing.T) {
 // TestDeleteAIntegration tests deleting an integration
 func TestDeleteAIntegration(t *testing.T) {
 	err := refreshUserAndPlaidIntegrationTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	integration, err := seedOneIntegration()
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = integration.Delete(server.DB, integration.ID)
-	if err != nil {
-		t.Errorf("failed to delete integration: %v", err)
-		return
-	}
+	assert.NoError(t, err)
+
+	// Ensure the integration exists before deletion
 	integrationModel := models.PlaidIntegration{}
+	foundIntegration, err := integrationModel.FindByID(server.DB, integration.ID)
+	assert.NoError(t, err)
+	assert.NotNil(t, foundIntegration) // Assert that the integration exists
+
+	// Delete the integration
+	err = integration.Delete(server.DB, integration.ID)
+	assert.NoError(t, err)
+
+	// Check that the integration no longer exists
 	_, err = integrationModel.FindByID(server.DB, integration.ID)
-	assert.Error(t, err)
+	assert.Error(t, err) // Should return an error as integration no longer exists
 }
 
 // TestDeleteUserIntegrations tests deleting all integrations for a user
 func TestDeleteUserIntegrations(t *testing.T) {
 	err := refreshUserAndPlaidIntegrationTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	user, _, err := seedOneUserAndOneIntegration()
-	if err != nil {
-		t.Errorf("Error deleting integrations: %v", err) // Check for errors during deletion
-	}
+	assert.NoError(t, err)
 
+	// Delete all integrations for the user
+	err = server.DB.Where("user_id = ?", user.ID).Delete(&models.PlaidIntegration{}).Error
+	assert.NoError(t, err)
+
+	// Check that no integrations exist for the user
 	var integrations []models.PlaidIntegration
-	err = server.DB.Where("user_id = ?", user.ID).Find(&integrations).Error // Query the database directly
-	if err != nil {
-		t.Errorf("Error finding integrations after delete: %v", err)
-	}
-
-	assert.Equal(t, 0, len(integrations), "Expected 0 integrations after deletion") // Assert that no integrations exist
+	err = server.DB.Where("user_id = ?", user.ID).Find(&integrations).Error
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(integrations), "Expected 0 integrations after deletion")
 }

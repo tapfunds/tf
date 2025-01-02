@@ -127,7 +127,7 @@ func TestLogin(t *testing.T) {
 
 			// Parse the response body
 			responseInterface := make(map[string]interface{})
-			err = json.Unmarshal([]byte(rr.Body.String()), &responseInterface)
+			err = json.Unmarshal([]byte(rr.Body.Bytes()), &responseInterface)
 			if err != nil && v.statusCode != 204 { // Ignore unmarshal error on 204 No Content
 				t.Fatalf("Cannot convert to json: %v, Body: %s", err, rr.Body.String())
 			}
