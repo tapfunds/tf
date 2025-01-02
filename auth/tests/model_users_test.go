@@ -1,117 +1,93 @@
 package tests
 
 import (
-	"log"
 	"testing"
 	"time"
 
-	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql driver
-	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres driver
 	"github.com/stretchr/testify/assert"
 	"github.com/tapfunds/tf/auth/api/models"
 )
 
 func TestFindAllUsers(t *testing.T) {
 	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = seedUsers(2) // Seed 2 users
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
+
+	_, err = seedUsers() // Seed 2 users
+	assert.NoError(t, err)
+
 	user := models.User{}
 	users, err := user.FindAllUsers(server.DB)
-	if err != nil {
-		t.Errorf("this is the error getting the users: %v\n", err)
-		return
-	}
-	assert.Equal(t, len(*users), 2)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, len(*users))
 }
 
 func TestSaveUser(t *testing.T) {
-
 	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
+
 	newUser := models.User{
-		ID:       1,
 		Email:    "test@example.com",
 		Username: "test",
 		Password: "password",
 	}
+
 	savedUser, err := newUser.SaveUser(server.DB)
-	if err != nil {
-		t.Errorf("this is the error getting the users: %v\n", err)
-		return
-	}
-	assert.Equal(t, newUser.ID, savedUser.ID)
+	assert.NoError(t, err)
+
 	assert.Equal(t, newUser.Email, savedUser.Email)
 	assert.Equal(t, newUser.Username, savedUser.Username)
 }
 
 func TestFindUserByID(t *testing.T) {
-
 	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
+
 	user, err := seedOneUser()
-	if err != nil {
-		log.Fatalf("cannot seed users table: %v", err)
-	}
-	foundUser, err := userInstance.FindUserByID(server.DB, user.ID)
-	if err != nil {
-		t.Errorf("this is the error getting one user: %v\n", err)
-		return
-	}
+	assert.NoError(t, err)
+
+	foundUser, err := user.FindUserByID(server.DB, user.ID)
+	assert.NoError(t, err)
+
 	assert.Equal(t, foundUser.ID, user.ID)
 	assert.Equal(t, foundUser.Email, user.Email)
 	assert.Equal(t, foundUser.Username, user.Username)
 }
 
 func TestUpdateAUser(t *testing.T) {
-
 	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
+
 	user, err := seedOneUser()
-	if err != nil {
-		log.Fatalf("Cannot seed user: %v\n", err)
-	}
+	assert.NoError(t, err)
+
 	userUpdate := models.User{
-		ID:        1,
 		Username:  "modiUpdate",
 		Email:     "modiupdate@example.com",
 		Password:  "password",
 		UpdatedAt: time.Now(),
 	}
-	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
-	if err != nil {
-		t.Errorf("this is the error updating the user: %v\n", err)
-		return
-	}
-	assert.Equal(t, updatedUser.ID, userUpdate.ID)
-	assert.Equal(t, updatedUser.Email, userUpdate.Email)
+
+	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID, map[string]interface{}{
+		"username": userUpdate.Username,
+		"email":    userUpdate.Email,
+		"password": userUpdate.Password,
+	})
+	assert.NoError(t, err)
+
 	assert.Equal(t, updatedUser.Username, userUpdate.Username)
+	assert.Equal(t, updatedUser.Email, userUpdate.Email)
 }
 
 func TestDeleteAUser(t *testing.T) {
-
 	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(t, err)
+
 	user, err := seedOneUser()
-	if err != nil {
-		log.Fatalf("Cannot seed user: %v\n", err)
-	}
-	isDeleted, err := userInstance.DeleteAUser(server.DB, user.ID)
-	if err != nil {
-		t.Errorf("this is the error updating the user: %v\n", err)
-		return
-	}
-	assert.Equal(t, isDeleted, int64(1))
+	assert.NoError(t, err)
+
+	isDeleted, err := user.DeleteAUser(server.DB, user.ID)
+	assert.NoError(t, err)
+
+	assert.Equal(t, int64(1), isDeleted)
 }

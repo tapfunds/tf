@@ -144,6 +144,10 @@ func (u *User) UpdateAUserAvatar(db *gorm.DB, uid uint32) (*User, error) {
 }
 
 func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
+	// Delete associated integrations first
+	if err := u.DeleteIntegrationsByUserID(db); err != nil {
+		return 0, err
+	}
 	result := db.Where("id = ?", uid).Delete(&User{})
 	return result.RowsAffected, result.Error
 }
@@ -169,4 +173,10 @@ func (u *User) GetIntegrations(db *gorm.DB) ([]PlaidIntegration, error) {
 		return nil, err
 	}
 	return integrations, nil
+}
+
+// DeleteIntegrationsByUserID deletes all PlaidIntegrations associated with a user ID.
+func (u *User) DeleteIntegrationsByUserID(db *gorm.DB) error {
+	result := db.Where("user_id = ?", u.ID).Delete(&PlaidIntegration{})
+	return result.Error
 }

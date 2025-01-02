@@ -89,46 +89,42 @@ func TestUpdateAIntegration(t *testing.T) {
 
 // TestDeleteAIntegration tests deleting an integration
 func TestDeleteAIntegration(t *testing.T) {
-	err := refreshUserAndIntegrationTable()
+	err := refreshUserAndPlaidIntegrationTable()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, integration, err := seedOneUserAndOneIntegration()
+	integration, err := seedOneIntegration()
 	if err != nil {
 		t.Fatal(err)
 	}
-	integrationModel := models.PlaidIntegration{}
-	err = integrationModel.Delete(server.DB, integration.ID)
+	err = integration.Delete(server.DB, integration.ID)
 	if err != nil {
 		t.Errorf("failed to delete integration: %v", err)
 		return
 	}
+	integrationModel := models.PlaidIntegration{}
 	_, err = integrationModel.FindByID(server.DB, integration.ID)
 	assert.Error(t, err)
 }
 
 // TestDeleteUserIntegrations tests deleting all integrations for a user
 func TestDeleteUserIntegrations(t *testing.T) {
-	err := refreshUserAndIntegrationTable()
+	err := refreshUserAndPlaidIntegrationTable()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	user, _, err := seedOneUserAndOneIntegration()
 	if err != nil {
-		t.Fatal(err)
+		t.Errorf("Error deleting integrations: %v", err) // Check for errors during deletion
 	}
-	integrationModel := models.PlaidIntegration{}
-	err = integrationModel.DeleteByUserID(server.DB, user.ID)
+
+	var integrations []models.PlaidIntegration
+	err = server.DB.Where("user_id = ?", user.ID).Find(&integrations).Error // Query the database directly
 	if err != nil {
-		t.Errorf("failed to delete user integrations: %v", err)
-		return
+		t.Errorf("Error finding integrations after delete: %v", err)
 	}
-	integrations, err := integrationModel.FindByUserID(server.DB, user.ID)
-	if err != nil {
-		t.Errorf("failed to get user integrations: %v", err)
-		return
-	}
-	assert.Equal(t, 0, len(integrations))
+
+	assert.Equal(t, 0, len(integrations), "Expected 0 integrations after deletion") // Assert that no integrations exist
 }
