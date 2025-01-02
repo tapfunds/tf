@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/tapfunds/tf/auth/api/models" // Import your models package
+	// Import your models package
 )
 
 func TestLogin(t *testing.T) {
@@ -125,51 +125,46 @@ func TestLogin(t *testing.T) {
 			rr := httptest.NewRecorder()
 			r.ServeHTTP(rr, req)
 
+			// Parse the response body
 			responseInterface := make(map[string]interface{})
 			err = json.Unmarshal([]byte(rr.Body.String()), &responseInterface)
 			if err != nil && v.statusCode != 204 { // Ignore unmarshal error on 204 No Content
 				t.Fatalf("Cannot convert to json: %v, Body: %s", err, rr.Body.String())
 			}
 
+			// Assert the status code
 			assert.Equal(t, v.statusCode, rr.Code)
 
+			// Handle successful response (status code 200)
 			if v.statusCode == 200 {
 				responseMap, ok := responseInterface["response"].(map[string]interface{})
 				if !ok {
 					t.Fatalf("Response is not a map: %v", responseInterface["response"])
 				}
+				// Assert username, email, and token
 				assert.Equal(t, v.username, responseMap["username"])
 				assert.Equal(t, v.email, responseMap["email"])
+				// Validate that token is not empty
+				token, ok := responseMap["token"].(string)
+				if !ok || token == "" {
+					t.Fatalf("Expected non-empty token, got: %v", token)
+				}
 			} else if v.wantErr {
+				// Handle error response
 				responseMap, ok := responseInterface["error"].(map[string]interface{})
 				if !ok {
 					t.Fatalf("Error response is not a map: %v", responseInterface)
 				}
 				if v.errMessage != "" {
-					for key := range responseMap {
-						assert.Contains(t, key, v.errMessage)
-					}
+					// Ensure that the error contains the expected message
+					assert.Contains(t, responseMap, v.errMessage)
 				}
 			}
 
+			// Check if the status code indicates an internal error
 			if v.statusCode >= 500 {
 				t.Error("Unexpected internal server error")
 			}
 		})
 	}
-}
-
-func seedAnotherUser() (models.User, error) {
-
-	user := models.User{
-		Username: "test",
-		Email:    "test@example.com",
-		Password: "password",
-	}
-
-	err := server.DB.Create(&user).Error
-	if err != nil {
-		return models.User{}, err
-	}
-	return user, nil
 }

@@ -82,6 +82,21 @@ func seedOneUser() (models.User, error) {
 	return user, nil
 }
 
+func seedAnotherUser() (models.User, error) {
+
+	user := models.User{
+		Username: "test",
+		Email:    "test@example.com",
+		Password: "password",
+	}
+
+	err := server.DB.Create(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
+
 func seedUsers() ([]models.User, error) {
 
 	var err error
