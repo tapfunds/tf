@@ -3,20 +3,16 @@ package controllers
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/jinzhu/gorm"
-	"github.com/tapfunds/tf/auth/api/fileupload"
-	"github.com/tapfunds/tf/auth/api/utils/errors"
-
-	"github.com/joho/godotenv"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/auth"
+	"github.com/tapfunds/tf/auth/api/fileupload"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/security"
+	"github.com/tapfunds/tf/auth/api/utils/errors"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
@@ -88,74 +84,38 @@ func (server *Server) GetUser(c *gin.Context) {
 }
 
 func (server *Server) UpdateAvatar(c *gin.Context) {
-
-	//clear previous error if any
-	errList = map[string]string{}
-
-	var err error
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error getting env, %v", err)
-	}
-
 	userID := c.Param("id")
-	// Check if the user id is valid
 	uid, err := strconv.ParseUint(userID, 10, 32)
 	if err != nil {
-		errList["Invalid_request"] = "Invalid Request"
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errList,
-		})
-		return
-	}
-	// Get user id from the token for valid tokens
-	tokenID, err := auth.ExtractTokenID(c.Request)
-	if err != nil {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
-		return
-	}
-	// If the id is not the authenticated user id
-	if tokenID != 0 && tokenID != uint32(uid) {
-		errList["Unauthorized"] = "Unauthorized"
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  errList,
-		})
-		return
-	}
-	file, err := c.FormFile("file")
-	if err != nil {
-		errList["Invalid_file"] = "Invalid File"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
-	uploadedFile, fileErr := fileupload.FileUpload.UploadFile(file)
-	if fileErr != nil {
-		c.JSON(http.StatusUnprocessableEntity, fileErr)
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
 		return
 	}
 
-	//Save the image path to the database
-	user := models.User{}
-	user.AvatarPath = uploadedFile
-	user.Prepare()
-	updatedUser, err := user.UpdateAUserAvatar(server.DB, uint32(uid))
-	if err != nil {
-		errList["Cannot_Save"] = "Cannot Save Image, Pls try again later"
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errList,
-		})
+	tokenID, err := auth.ExtractTokenID(c.Request)
+	if err != nil || tokenID == 0 || tokenID != uint32(uid) {
+		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
 		return
 	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Invalid_file": "Invalid File"})
+		return
+	}
+
+	uploadedFile, fileErr := fileupload.FileUpload.UploadFile(file)
+	if fileErr != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, fileErr)
+		return
+	}
+
+	user := models.User{AvatarPath: uploadedFile} // Set AvatarPath directly
+	updatedUser, err := user.UpdateAUserAvatar(server.DB, uint32(uid))
+	if err != nil {
+		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Cannot_Save": "Cannot Save Image, Pls try again later"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
 		"response": updatedUser,
@@ -164,54 +124,54 @@ func (server *Server) UpdateAvatar(c *gin.Context) {
 
 func (server *Server) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
-
-	// Check if the user id is valid
 	uid, err := strconv.ParseUint(userID, 10, 32)
 	if err != nil {
 		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
 		return
 	}
 
-	// Get user id from the token for valid tokens
 	tokenID, err := auth.ExtractTokenID(c.Request)
 	if err != nil || tokenID == 0 || tokenID != uint32(uid) {
 		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
 		return
 	}
 
-	// read request body
 	requestBody, err := parseRequestBody(c)
 	if err != nil {
 		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Invalid_body": "Unable to get request"})
 		return
 	}
 
-	// get user by id
 	formerUser, err := findUserByID(server.DB, uid)
 	if err != nil {
-		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"User_invalid": "The user does not exist"})
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"User_invalid": "The user does not exist"}) // Corrected status code
 		return
 	}
 
-	// Handle updates
-	updatedUser, err := handlePasswordUpdateAndOtherFields(formerUser, requestBody)
-	if err != nil {
-		if customErr, ok := err.(*errors.CustomError); ok {
-			errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{customErr.Key: customErr.Message})
-		} else {
-			errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Unexpected_error": err.Error()})
-		}
+	updatedUser, customErr := handlePasswordUpdateAndOtherFields(formerUser, requestBody)
+	if customErr != nil {
+		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{customErr.Key: customErr.Message})
 		return
 	}
 
 	updatedUser.Prepare()
 	errorMessages := updatedUser.Validate("update")
 	if len(errorMessages) > 0 {
-		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Validation_error": "Validation failed"})
+		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages) // Pass errorMessages directly
 		return
 	}
+	updateData := make(map[string]interface{})
+	if updatedUser.Username != formerUser.Username {
+		updateData["username"] = updatedUser.Username
+	}
+	if updatedUser.Email != formerUser.Email {
+		updateData["email"] = updatedUser.Email
+	}
+	if updatedUser.Password != formerUser.Password {
+		updateData["password"] = updatedUser.Password
+	}
 
-	finalUser, err := updatedUser.UpdateAUser(server.DB, uint32(uid))
+	finalUser, err := updatedUser.UpdateAUser(server.DB, uint32(uid), updateData)
 	if err != nil {
 		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Update_failed": err.Error()})
 		return
@@ -272,9 +232,10 @@ func parseRequestBody(c *gin.Context) (map[string]string, error) {
 	return requestBody, err
 }
 
+
 func findUserByID(db *gorm.DB, uid uint64) (models.User, error) {
 	var user models.User
-	err := db.Debug().Model(models.User{}).Where("id = ?", uid).Take(&user).Error
+	err := db.Where("id = ?", uid).First(&user).Error // Removed .Debug()
 	return user, err
 }
 
@@ -282,17 +243,14 @@ func findUserByID(db *gorm.DB, uid uint64) (models.User, error) {
 func handlePasswordUpdateAndOtherFields(formerUser models.User, requestBody map[string]string) (models.User, *errors.CustomError) {
 	newUser := formerUser
 
-	// Update username if provided
 	if requestBody["username"] != "" {
 		newUser.Username = requestBody["username"]
 	}
 
-	// Update email if provided
 	if requestBody["email"] != "" {
 		newUser.Email = requestBody["email"]
 	}
 
-	// Handle password update
 	if requestBody["current_password"] != "" {
 		if requestBody["new_password"] == "" {
 			return newUser, &errors.CustomError{Key: "Empty_new", Message: "Please provide a new password"}
@@ -309,7 +267,6 @@ func handlePasswordUpdateAndOtherFields(formerUser models.User, requestBody map[
 
 		newUser.Password = requestBody["new_password"]
 	} else if requestBody["password"] != "" {
-		// Set a new password without current password verification
 		newUser.Password = requestBody["password"]
 	}
 

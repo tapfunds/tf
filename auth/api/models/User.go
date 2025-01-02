@@ -3,28 +3,28 @@ package models
 import (
 	"errors"
 	"html"
-	"log"
+	"net/mail" // Use net/mail for more robust email validation
 	"os"
 	"strings"
 	"time"
 
-	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/security"
+	// Explicitly import bcrypt
 )
 
 type User struct {
 	ID         uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	Username   string    `gorm:"size:255;not null;unique" json:"username"`
-	Email      string    `gorm:"size:100;not null;unique" json:"email"`
-	Password   string    `gorm:"size:100;not null;" json:"password"`
+	Username   string    `gorm:"size:255;not null;unique_index" json:"username"` // Add unique index
+	Email      string    `gorm:"size:100;not null;unique_index" json:"email"`    // Add unique index
+	Password   string    `gorm:"size:100;not null;" json:"-"`                    // Don't expose password in JSON responses
 	AvatarPath string    `gorm:"size:255;null;" json:"avatar_path"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-func (u *User) BeforeSave() error {
-	hashedPassword, err := security.Hash(u.Password)
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	hashedPassword, err := security.Hash(u.Password) // Use your existing hashing function
 	if err != nil {
 		return err
 	}
@@ -40,201 +40,120 @@ func (u *User) Prepare() {
 }
 
 func (u *User) AfterFind() (err error) {
-	if err != nil {
-		return err
-	}
 	if u.AvatarPath != "" {
 		u.AvatarPath = os.Getenv("DO_SPACES_URL") + u.AvatarPath
 	}
-	//dont return the user password
-	// u.Password = ""
 	return nil
 }
 
 func (u *User) Validate(action string) map[string]string {
 	var errorMessages = make(map[string]string)
-	var err error
 
 	switch strings.ToLower(action) {
-	case "update":
+	case "update", "login", "forgotpassword": // Consolidated email validation
 		if u.Email == "" {
-			err = errors.New("Required Email")
-			errorMessages["Required_email"] = err.Error()
-		}
-		if u.Email != "" {
-			if err = checkmail.ValidateFormat(u.Email); err != nil {
-				err = errors.New("Invalid Email")
-				errorMessages["Invalid_email"] = err.Error()
-			}
+			errorMessages["email"] = "Email is required"
+		} else if _, err := mail.ParseAddress(u.Email); err != nil {
+			errorMessages["email"] = "Invalid email format"
 		}
 
-	case "login":
-		if u.Password == "" {
-			err = errors.New("Required Password")
-			errorMessages["Required_password"] = err.Error()
+		if action == "login" && u.Password == "" {
+			errorMessages["password"] = "Password is required"
 		}
-		if u.Email == "" {
-			err = errors.New("Required Email")
-			errorMessages["Required_email"] = err.Error()
-		}
-		if u.Email != "" {
-			if err = checkmail.ValidateFormat(u.Email); err != nil {
-				err = errors.New("Invalid Email")
-				errorMessages["Invalid_email"] = err.Error()
-			}
-		}
-	case "forgotpassword":
-		if u.Email == "" {
-			err = errors.New("Required Email")
-			errorMessages["Required_email"] = err.Error()
-		}
-		if u.Email != "" {
-			if err = checkmail.ValidateFormat(u.Email); err != nil {
-				err = errors.New("Invalid Email")
-				errorMessages["Invalid_email"] = err.Error()
-			}
-		}
-	default:
+
+	default: // Default is for create/register
 		if u.Username == "" {
-			err = errors.New("Required Username")
-			errorMessages["Required_username"] = err.Error()
+			errorMessages["username"] = "Username is required"
 		}
 		if u.Password == "" {
-			err = errors.New("Required Password")
-			errorMessages["Required_password"] = err.Error()
-		}
-		if u.Password != "" && len(u.Password) < 6 {
-			err = errors.New("Password should be atleast 6 characters")
-			errorMessages["Invalid_password"] = err.Error()
+			errorMessages["password"] = "Password is required"
+		} else if len(u.Password) < 6 {
+			errorMessages["password"] = "Password must be at least 6 characters"
 		}
 		if u.Email == "" {
-			err = errors.New("Required Email")
-			errorMessages["Required_email"] = err.Error()
-
-		}
-		if u.Email != "" {
-			if err = checkmail.ValidateFormat(u.Email); err != nil {
-				err = errors.New("Invalid Email")
-				errorMessages["Invalid_email"] = err.Error()
-			}
+			errorMessages["email"] = "Email is required"
+		} else if _, err := mail.ParseAddress(u.Email); err != nil {
+			errorMessages["email"] = "Invalid email format"
 		}
 	}
 	return errorMessages
 }
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
-
-	var err error
-	err = db.Debug().Create(&u).Error
+	err := db.Create(&u).Error // Removed .Debug() for production
 	if err != nil {
-		return &User{}, err
+		return nil, err // Return nil, error for consistency
 	}
 	return u, nil
 }
 
-// THE ONLY PERSON THAT NEED TO DO THIS IS THE ADMIN, SO I HAVE COMMENTED THE ROUTES, SO SOMEONE ELSE DONT VIEW THIS DETAILS.
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
-	var err error
-	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	var users []User
+	err := db.Limit(100).Find(&users).Error // Removed .Debug()
 	if err != nil {
-		return &[]User{}, err
+		return nil, err
 	}
-	return &users, err
+	return &users, nil
 }
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
-	var err error
-	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+	err := db.Where("id = ?", uid).First(&u).Error // Use First() for single record retrieval
 	if err != nil {
-		return &User{}, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return &User{}, errors.New("User Not Found")
-	}
-	return u, err
-}
-
-func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
-
-	if u.Password != "" {
-		// To hash the password
-		err := u.BeforeSave()
-		if err != nil {
-			log.Fatal(err)
+		if errors.Is(err, gorm.ErrRecordNotFound) { // Use errors.Is for better error checking
+			return nil, errors.New("user not found")
 		}
-
-		db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-			map[string]interface{}{
-				"password":   u.Password,
-				"email":      u.Email,
-				"updated_at": time.Now(),
-			},
-		)
-	}
-
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-		map[string]interface{}{
-			"email":      u.Email,
-			"updated_at": time.Now(),
-		},
-	)
-	if db.Error != nil {
-		return &User{}, db.Error
-	}
-
-	// This is the display the updated user
-	err := db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
-	if err != nil {
-		return &User{}, err
+		return nil, err
 	}
 	return u, nil
+}
+
+func (u *User) UpdateAUser(db *gorm.DB, uid uint32, updateData map[string]interface{}) (*User, error) {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return nil, err
+	}
+	if _, ok := updateData["password"]; ok {
+		hashedPassword, err := security.Hash(updateData["password"].(string))
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		updateData["password"] = string(hashedPassword)
+	}
+
+	if err := tx.Model(&User{}).Where("id = ?", uid).Updates(updateData).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Where("id = ?", uid).First(&u).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	return u, tx.Commit().Error
 }
 
 func (u *User) UpdateAUserAvatar(db *gorm.DB, uid uint32) (*User, error) {
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-		map[string]interface{}{
-			"avatar_path": u.AvatarPath,
-			"update_at":   time.Now(),
-		},
-	)
-	if db.Error != nil {
-		return &User{}, db.Error
-	}
-	// This is the display the updated user
-	err := db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
-	if err != nil {
-		return &User{}, err
-	}
-	return u, nil
+	return u.UpdateAUser(db, uid, map[string]interface{}{"avatar_path": u.AvatarPath})
 }
 
 func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
-
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
-
-	if db.Error != nil {
-		return 0, db.Error
-	}
-	return db.RowsAffected, nil
+	result := db.Where("id = ?", uid).Delete(&User{})
+	return result.RowsAffected, result.Error
 }
 
 func (u *User) UpdatePassword(db *gorm.DB) error {
-
-	// To hash the password
-	err := u.BeforeSave()
+	hashedPassword, err := security.Hash(u.Password)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	db = db.Debug().Model(&User{}).Where("email = ?", u.Email).Take(&User{}).UpdateColumns(
-		map[string]interface{}{
-			"password":  u.Password,
-			"update_at": time.Now(),
-		},
-	)
-	if db.Error != nil {
-		return db.Error
-	}
-	return nil
+	result := db.Model(&User{}).Where("email = ?", u.Email).Update("password", string(hashedPassword))
+	return result.Error
 }

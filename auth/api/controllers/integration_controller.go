@@ -1,33 +1,19 @@
 package controllers
 
 import (
-	"encoding/json"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 
+	"github.com/gin-gonic/gin"
 	"github.com/tapfunds/tf/auth/api/auth"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/utils/errors"
-
-	"github.com/gin-gonic/gin"
 )
 
-// Create new token
+// CreatePlaidInfo creates a new Plaid integration.
 func (server *Server) CreatePlaidInfo(c *gin.Context) {
-	//clear previous error if any
-	errList = map[string]string{}
-
-	body, err := io.ReadAll(c.Request.Body)
-	if err != nil {
-		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Unable to read request body"})
-		return
-	}
-
-	integration := models.PlaidIntegration{}
-	err = json.Unmarshal(body, &integration)
-	if err != nil {
+	var integration models.PlaidIntegration
+	if err := c.ShouldBindJSON(&integration); err != nil {
 		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid JSON body"})
 		return
 	}
@@ -38,35 +24,23 @@ func (server *Server) CreatePlaidInfo(c *gin.Context) {
 		return
 	}
 
-	// check if the user exist:
-	user := models.User{}
-	err = server.DB.Debug().Model(models.User{}).Where("id = ?", uid).Take(&user).Error
-	if err != nil {
-		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
-		return
-	}
-
-	integration.UserID = uid //the authenticated user is the one creating the post
+	integration.UserID = uid
 	integration.Prepare()
-	postCreated, err := integration.Save(server.DB)
+
+	createdIntegration, err := integration.Save(server.DB)
 	if err != nil {
-		errList := errors.FormatError(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errList,
-		})
+		formattedError := errors.FormatError(err.Error())
+		errors.HandleError(c, http.StatusInternalServerError, formattedError)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"status":   http.StatusCreated,
-		"response": postCreated,
-	})
+	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "response": createdIntegration})
 }
 
+// GetUserIntegration retrieves a user's Plaid integrations.
 func (server *Server) GetUserIntegration(c *gin.Context) {
 	userID := c.Param("id")
-	uid, err := strconv.ParseUint(userID, 10, 64)
+	uid, err := strconv.ParseUint(userID, 10, 32) // Use uint32 consistently
 	if err != nil {
 		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid User ID"})
 		return
@@ -75,22 +49,19 @@ func (server *Server) GetUserIntegration(c *gin.Context) {
 	integration := models.PlaidIntegration{}
 	integrations, err := integration.FindByUserID(server.DB, uint32(uid))
 	if err != nil {
-		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_post": "No Plaid Credentials Found"})
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_integrations": "No Plaid integrations found"}) // More descriptive message
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusOK,
-		"response": integrations,
-	})
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "response": integrations})
 }
 
+// UpdateIntegration updates a Plaid integration.
 func (server *Server) UpdateIntegration(c *gin.Context) {
-
-	postID := c.Param("id")
-	pid, err := strconv.ParseUint(postID, 10, 64)
+	integrationID := c.Param("id")
+	iid, err := strconv.ParseUint(integrationID, 10, 32)
 	if err != nil {
-		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Post ID"})
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Integration ID"})
 		return
 	}
 
@@ -100,10 +71,10 @@ func (server *Server) UpdateIntegration(c *gin.Context) {
 		return
 	}
 
-	integration := models.PlaidIntegration{}
-	err = server.DB.Debug().Model(models.PlaidIntegration{}).Where("id = ?", pid).Take(&integration).Error
+	integration := &models.PlaidIntegration{} // Declare as a pointer
+	integration, err = integration.FindByID(server.DB, uint32(iid))
 	if err != nil {
-		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_post": "No Post Found"})
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_integration": "No integration Found"})
 		return
 	}
 
@@ -111,45 +82,28 @@ func (server *Server) UpdateIntegration(c *gin.Context) {
 		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
 		return
 	}
-
-	body, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Unable to read request body"})
-		return
-	}
-
-	editedIntegration := models.PlaidIntegration{}
-	err = json.Unmarshal(body, &editedIntegration)
-	if err != nil {
+	var updateData map[string]interface{}
+	if err := c.ShouldBindJSON(&updateData); err != nil {
 		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid JSON body"})
 		return
 	}
 
-	editedIntegration.ID = integration.ID
-	editedIntegration.UserID = integration.UserID
-
-	integrationtUpdated, err := editedIntegration.Update(server.DB)
+	updatedIntegration, err := integration.Update(server.DB, updateData)
 	if err != nil {
-		errList := errors.FormatError(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errList,
-		})
+		formattedError := errors.FormatError(err.Error())
+		errors.HandleError(c, http.StatusInternalServerError, formattedError)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusOK,
-		"response": integrationtUpdated,
-	})
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "response": updatedIntegration})
 }
 
+// DeleteIntegration deletes a Plaid integration.
 func (server *Server) DeleteIntegration(c *gin.Context) {
-
-	postID := c.Param("id")
-	pid, err := strconv.ParseUint(postID, 10, 64)
+	integrationID := c.Param("id")
+	iid, err := strconv.ParseUint(integrationID, 10, 32)
 	if err != nil {
-		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Post ID"})
+		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Integration ID"})
 		return
 	}
 
@@ -159,10 +113,10 @@ func (server *Server) DeleteIntegration(c *gin.Context) {
 		return
 	}
 
-	integration := models.PlaidIntegration{}
-	err = server.DB.Debug().Model(models.PlaidIntegration{}).Where("id = ?", pid).Take(&integration).Error
+	integration := &models.PlaidIntegration{} // Declare as a pointer
+	integration, err = integration.FindByID(server.DB, uint32(iid))
 	if err != nil {
-		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_post": "No Post Found"})
+		errors.HandleError(c, http.StatusNotFound, map[string]string{"No_integration": "No integration Found"})
 		return
 	}
 
@@ -171,14 +125,11 @@ func (server *Server) DeleteIntegration(c *gin.Context) {
 		return
 	}
 
-	err = integration.Delete(server.DB)
+	err = integration.Delete(server.DB, uint32(iid)) // Use the ID from the URL
 	if err != nil {
-		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Other_error": "Please try again later"})
+		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Delete_error": "Failed to delete integration"}) // Improved error message
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusOK,
-		"response": "Item deleted",
-	})
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "response": "Integration deleted"})
 }
