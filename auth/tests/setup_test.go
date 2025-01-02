@@ -8,71 +8,63 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-
 	"github.com/tapfunds/tf/auth/api/controllers"
 	"github.com/tapfunds/tf/auth/api/models"
 )
 
 var server = controllers.Server{}
-var userInstance = models.User{}
-var tokenInstance = models.PlaidIntegration{}
 
 func TestMain(m *testing.M) {
-	//Since we add our .env in .gitignore, Circle CI cannot see it, so see the else statement
+	// Load environment variables
 	if _, err := os.Stat("./../.env"); !os.IsNotExist(err) {
-		var err error
-		err = godotenv.Load(os.ExpandEnv("./../.env"))
-		if err != nil {
-			log.Fatalf("Error getting env %v\n", err)
+		if err := godotenv.Load(os.ExpandEnv("./../.env")); err != nil {
+			log.Fatalf("Error loading env: %v", err)
 		}
-		Database()
-	} else {
+	} else if os.Getenv("CI") != "" { // Check for CI environment variable
 		CIBuild()
+	} else {
+		log.Print("No .env file found and not in CI environment. Skipping environment loading.")
 	}
-	os.Exit(m.Run())
+
+	Database()
+
+	// Run tests
+	code := m.Run()
+
+	// Close the database connection after all tests are done
+	if server.DB != nil {
+		defer server.DB.Close()
+	}
+
+	os.Exit(code)
 }
 
-//When using CircleCI
+// When using CircleCI or other CI environments
 func CIBuild() {
 	var err error
-	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", "127.0.0.1", "5432", "qwelian", "forum_db_test", "password")
+	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+		os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
 	server.DB, err = gorm.Open("postgres", DBURL)
 	if err != nil {
-		fmt.Printf("Cannot connect to %s database\n", "postgres")
-		log.Fatal("This is the error:", err)
-	} else {
-		fmt.Printf("We are connected to the %s database\n", "postgres")
+		log.Fatalf("Cannot connect to Postgres database: %v", err)
 	}
+	fmt.Println("Connected to Postgres database (CI)")
 }
 
 func Database() {
-
-	var err error
-
 	TestDbDriver := os.Getenv("TEST_DB_DRIVER")
 	if TestDbDriver == "postgres" {
-		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s", os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
+		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+			os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
+		var err error
 		server.DB, err = gorm.Open(TestDbDriver, DBURL)
 		if err != nil {
-			fmt.Printf("Cannot connect to %s database\n", TestDbDriver)
-			log.Fatal("This is the error:", err)
-		} else {
-			fmt.Printf("We are connected to the %s database\n", TestDbDriver)
+			log.Fatalf("Cannot connect to %s database: %v", TestDbDriver, err)
 		}
+		fmt.Printf("Connected to the %s database\n", TestDbDriver)
+	} else {
+		log.Printf("No valid TEST_DB_DRIVER set. Skipping database connection. Set TEST_DB_DRIVER to 'postgres'")
 	}
-}
-
-func refreshUserTable() error {
-	err := server.DB.DropTableIfExists(&models.User{}).Error
-	if err != nil {
-		return err
-	}
-	err = server.DB.AutoMigrate(&models.User{}).Error
-	if err != nil {
-		return err
-	}
-	log.Printf("Successfully refreshed table")
-	return nil
 }
 
 func seedOneUser() (models.User, error) {
@@ -118,24 +110,33 @@ func seedUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func refreshUserAndIntegrationTable() error {
-
-	err := server.DB.DropTableIfExists(&models.User{}, &models.PlaidIntegration{}).Error
-	if err != nil {
-		return err
+func seedOneIntegration() (models.PlaidIntegration, error) {
+	user := models.User{
+		ID:       1,
+		Username: "HannahArendt",
+		Email:    "hannaharendt@example.com",
+		Password: "password",
 	}
-	err = server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
+	err := server.DB.Model(&models.User{}).Create(&user).Error
 	if err != nil {
-		return err
+		return models.PlaidIntegration{}, err
 	}
-	log.Printf("Successfully refreshed tables")
-	return nil
+	plaidIntegration := models.PlaidIntegration{
+		PlaidItemID: "This is the item",
+		AccessToken: "This is the access token",
+		UserID:      user.ID,
+	}
+	err = server.DB.Model(&models.PlaidIntegration{}).Create(&plaidIntegration).Error
+	if err != nil {
+		return models.PlaidIntegration{}, err
+	}
+	return plaidIntegration, nil
 }
 
 func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error) {
 
 	user := models.User{
-		ID: 1,
+		ID:       1,
 		Username: "HannahArendt",
 		Email:    "hannaharendt@example.com",
 		Password: "password",
@@ -144,17 +145,16 @@ func seedOneUserAndOneIntegration() (models.User, models.PlaidIntegration, error
 	if err != nil {
 		return models.User{}, models.PlaidIntegration{}, err
 	}
-	token := models.PlaidIntegration{
-		ItemID:    "This is the item",
-		AccessToken:  "This is the access token",
-		PaymentID:  "This is the payment id",
-		UserID: user.ID,
+	plaidIntegration := models.PlaidIntegration{
+		PlaidItemID: "This is the item",
+		AccessToken: "This is the access token",
+		UserID:      user.ID,
 	}
-	err = server.DB.Model(&models.PlaidIntegration{}).Create(&token).Error
+	err = server.DB.Model(&models.PlaidIntegration{}).Create(&plaidIntegration).Error
 	if err != nil {
 		return models.User{}, models.PlaidIntegration{}, err
 	}
-	return user, token, nil
+	return user, plaidIntegration, nil
 }
 
 func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error) {
@@ -166,13 +166,13 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 	}
 	var users = []models.User{
 		models.User{
-			ID: 1,
+			ID:       1,
 			Username: "Qwelian",
 			Email:    "qwelian@example.com",
 			Password: "password",
 		},
 		models.User{
-			ID: 2,
+			ID:       2,
 			Username: "Michele",
 			Email:    "mfoucault@example.com",
 			Password: "password",
@@ -180,14 +180,12 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 	}
 	var tokens = []models.PlaidIntegration{
 		models.PlaidIntegration{
-			ItemID:   "ItemID 1",
+			PlaidItemID: "ItemID 1",
 			AccessToken: "AccessToken 1",
-			PaymentID: "PaymentID 1",
 		},
 		models.PlaidIntegration{
-			ItemID:   "ItemID 2",
+			PlaidItemID: "ItemID 2",
 			AccessToken: "AccessToken 2",
-			PaymentID: "PaymentID 2",
 		},
 	}
 
@@ -206,33 +204,7 @@ func seedUsersAndIntegrations() ([]models.User, []models.PlaidIntegration, error
 	return users, tokens, nil
 }
 
-func refreshUserPostAndLikeTable() error {
-	err := server.DB.DropTableIfExists(&models.User{}, &models.PlaidIntegration{}).Error
-	if err != nil {
-		return err
-	}
-	err = server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
-	if err != nil {
-		return err
-	}
-	log.Printf("Successfully refreshed user, token and like tables")
-	return nil
-}
-
-func refreshUserPostAndCommentTable() error {
-	err := server.DB.DropTableIfExists(&models.User{}, &models.PlaidIntegration{}).Error
-	if err != nil {
-		return err
-	}
-	err = server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
-	if err != nil {
-		return err
-	}
-	log.Printf("Successfully refreshed user, token and comment tables")
-	return nil
-}
-
-func seedUsersPostsAndComments() (models.User, []models.PlaidIntegration, error) {
+func seedUsersAndPlaidIntegrations() (models.User, []models.PlaidIntegration, error) {
 	// The idea here is: one user can have two tokens
 	var err error
 	var user = models.User{
@@ -245,44 +217,26 @@ func seedUsersPostsAndComments() (models.User, []models.PlaidIntegration, error)
 	if err != nil {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
-
-	var tokens = []models.PlaidIntegration{
+	var plaidIntegration = []models.PlaidIntegration{
 		models.PlaidIntegration{
-			
-			User: user,
-			UserID: user.ID,
-			ItemID:   "Adorno made this ItemID",
-			AccessToken:   "Adorno made this AccessToken",
-			PaymentID:   "Adorno made this PaymentID",
+
+			UserID:      user.ID,
+			PlaidItemID: "Adorno made this ItemID",
+			AccessToken: "Adorno made this AccessToken",
 		},
 		models.PlaidIntegration{
-			User:        user,
 			UserID:      user.ID,
-			ItemID:      "Adornomade this ItemID",
-			AccessToken: "Adorno made this AccessToken",
-			PaymentID:   "Adorno made this PaymentID",
+			PlaidItemID: "Adornomade this ItemID",
+			AccessToken: "Adorno made this AccessToken too",
 		},
 	}
-	for i, _ := range tokens {
-		err = server.DB.Model(&models.PlaidIntegration{}).Create(&tokens[i]).Error
+	for i, _ := range plaidIntegration {
+		err = server.DB.Model(&models.PlaidIntegration{}).Create(&plaidIntegration[i]).Error
 		if err != nil {
-			log.Fatalf("cannot seed tokens table: %v", err)
+			log.Fatalf("cannot seed plaidIntegration table: %v", err)
 		}
 	}
-	return user, tokens, nil
-}
-
-func refreshUserAndResetPasswordTable() error {
-	err := server.DB.DropTableIfExists(&models.User{}, &models.ResetPassword{}).Error
-	if err != nil {
-		return err
-	}
-	err = server.DB.AutoMigrate(&models.User{}, &models.ResetPassword{}).Error
-	if err != nil {
-		return err
-	}
-	log.Printf("Successfully refreshed user and resetpassword tables")
-	return nil
+	return user, plaidIntegration, nil
 }
 
 // Seed the reset password table with the token
@@ -297,4 +251,43 @@ func seedResetPassword() (models.ResetPassword, error) {
 		return models.ResetPassword{}, err
 	}
 	return resetDetails, nil
+}
+
+func refreshUserTable() error {
+	err := server.DB.DropTableIfExists(&models.User{}).Error
+	if err != nil {
+		return err
+	}
+	err = server.DB.AutoMigrate(&models.User{}).Error
+	if err != nil {
+		return err
+	}
+	fmt.Println("Successfully refreshed user table")
+	return nil
+}
+
+func refreshUserAndPlaidIntegrationTable() error {
+	err := server.DB.DropTableIfExists(&models.User{}, &models.PlaidIntegration{}).Error
+	if err != nil {
+		return err
+	}
+	err = server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
+	if err != nil {
+		return err
+	}
+	log.Printf("Successfully refreshed user, token and like tables")
+	return nil
+}
+
+func refreshUserAndResetPasswordTable() error {
+	err := server.DB.DropTableIfExists(&models.User{}, &models.ResetPassword{}).Error
+	if err != nil {
+		return err
+	}
+	err = server.DB.AutoMigrate(&models.User{}, &models.ResetPassword{}).Error
+	if err != nil {
+		return err
+	}
+	log.Printf("Successfully refreshed user and resetpassword tables")
+	return nil
 }

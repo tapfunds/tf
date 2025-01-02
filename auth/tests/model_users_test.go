@@ -12,16 +12,16 @@ import (
 )
 
 func TestFindAllUsers(t *testing.T) {
-
 	err := refreshUserTable()
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = seedUsers()
+	_, err = seedUsers(2) // Seed 2 users
 	if err != nil {
 		log.Fatal(err)
 	}
-	users, err := userInstance.FindAllUsers(server.DB)
+	user := models.User{}
+	users, err := user.FindAllUsers(server.DB)
 	if err != nil {
 		t.Errorf("this is the error getting the users: %v\n", err)
 		return
@@ -82,10 +82,10 @@ func TestUpdateAUser(t *testing.T) {
 		log.Fatalf("Cannot seed user: %v\n", err)
 	}
 	userUpdate := models.User{
-		ID:       1,
-		Username: "modiUpdate",
-		Email:    "modiupdate@example.com",
-		Password: "password",
+		ID:        1,
+		Username:  "modiUpdate",
+		Email:     "modiupdate@example.com",
+		Password:  "password",
 		UpdatedAt: time.Now(),
 	}
 	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)

@@ -8,55 +8,57 @@ import (
 )
 
 var users = []models.User{
-	models.User{
+	{
 		Username: "qwelian",
 		Email:    "qwelian@example.com",
-		Password: "password",
+		Password: "password", // Remember to hash password before storing in production!
 	},
-	models.User{
+	{
 		Username: "malcolm",
 		Email:    "x@example.com",
-		Password: "password",
+		Password: "password", // Remember to hash password before storing in production!
 	},
 }
 
 var integrations = []models.PlaidIntegration{
-	models.PlaidIntegration{
+	{
 		AccessToken: "Token 1",
-		ItemID:      "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		PlaidItemID: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	},
-	models.PlaidIntegration{
+	{
 		AccessToken: "Token 2",
-		ItemID:      "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		PlaidItemID: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	},
 }
 
 func Load(db *gorm.DB) {
 
+	// Drop tables (if exist) in reverse order to avoid foreign key constraints
 	err := db.Debug().DropTableIfExists(&models.PlaidIntegration{}, &models.User{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
+
+	// Migrate tables
 	err = db.Debug().AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
 
-	err = db.Debug().Model(&models.PlaidIntegration{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
-	if err != nil {
-		log.Fatalf("attaching foreign key error: %v", err)
-	}
-
-	for i, _ := range users {
-		err = db.Debug().Model(&models.User{}).Create(&users[i]).Error
+	// Create users first
+	for _, user := range users {
+		err = db.Debug().Create(&user).Error
 		if err != nil {
 			log.Fatalf("cannot seed users table: %v", err)
 		}
-		integrations[i].UserID = users[i].ID
+	}
 
-		err = db.Debug().Model(&models.PlaidIntegration{}).Create(&integrations[i]).Error
+	// Now create integrations with user IDs
+	for i, integration := range integrations {
+		integration.UserID = users[i].ID
+		err = db.Debug().Create(&integration).Error
 		if err != nil {
-			log.Fatalf("cannot seed posts table: %v", err)
+			log.Fatalf("cannot seed integrations table: %v", err)
 		}
 	}
 }

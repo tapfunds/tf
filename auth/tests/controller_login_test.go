@@ -3,152 +3,173 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/tapfunds/tf/auth/api/models" // Import your models package
 )
 
-func TestSignIn(t *testing.T) {
-
-	err := refreshUserTable()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	user, err := seedOneUser()
-	if err != nil {
-		fmt.Printf("This is the error %v\n", err)
-	}
-
-	samples := []struct {
-		email        string
-		password     string
-		errorMessage string
-	}{
-		{
-			email:        user.Email,
-			password:     "password", //Note the password has to be this, not the hashed one from the database
-			errorMessage: "",
-		},
-		{
-			email:        user.Email,
-			password:     "Wrong password",
-			errorMessage: "crypto/bcrypt: hashedPassword is not the hash of the given password",
-		},
-		{
-			email:        "Wrong email",
-			password:     "password",
-			errorMessage: "record not found",
-		},
-	}
-
-	for _, v := range samples {
-
-		loginDetails, err := server.SignIn(v.email, v.password)
-		if err != nil {
-			assert.Equal(t, err, errors.New(v.errorMessage))
-		} else {
-			assert.NotEqual(t, loginDetails, "")
-		}
-	}
-}
-
 func TestLogin(t *testing.T) {
-
 	gin.SetMode(gin.TestMode)
 
+	// Ensure a clean database for each test
 	err := refreshUserTable()
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("Error refreshing user table: %v", err) // Use t.Fatalf for test failures
 	}
 
 	user, err := seedOneUser()
 	if err != nil {
-		fmt.Printf("This is the error %v\n", err)
+		t.Fatalf("Error seeding user: %v", err) // Use t.Fatalf for test failures
+	}
+	user2, err := seedAnotherUser()
+	if err != nil {
+		t.Fatalf("Error seeding user: %v", err)
 	}
 
 	samples := []struct {
+		name       string // Add a name for each test case
 		inputJSON  string
 		statusCode int
 		username   string
 		email      string
-		password   string
+		wantErr    bool   // Flag for expected errors
+		errMessage string // Expected error message
 	}{
 		{
-			inputJSON:  `{"email": "dee@example.com", "password": "password"}`,
+			name:       "Valid Login",
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user.Email),
 			statusCode: 200,
 			username:   user.Username,
 			email:      user.Email,
+			wantErr:    false,
 		},
 		{
-			inputJSON:  `{"email": "dee@example.com", "password": "wrong password"}`,
-			statusCode: 422,
+			name:       "Invalid Password",
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "wrong password"}`, user.Email),
+			statusCode: 401, // Use 401 Unauthorized for bad credentials
+			wantErr:    true,
+			errMessage: "Authentication_failed",
 		},
 		{
-			// this record does not exist
+			name:       "User Not Found",
 			inputJSON:  `{"email": "frank@example.com", "password": "password"}`,
-			statusCode: 422,
+			statusCode: 401, // Use 401 Unauthorized
+			wantErr:    true,
+			errMessage: "Authentication_failed",
 		},
 		{
+			name:       "Invalid Email Format",
 			inputJSON:  `{"email": "kanexample.com", "password": "password"}`,
 			statusCode: 422,
+			wantErr:    true,
+			errMessage: "Invalid_email",
 		},
 		{
+			name:       "Missing Email",
 			inputJSON:  `{"email": "", "password": "password"}`,
 			statusCode: 422,
+			wantErr:    true,
+			errMessage: "Required_email",
 		},
 		{
+			name:       "Missing Password",
 			inputJSON:  `{"email": "kan@example.com", "password": ""}`,
 			statusCode: 422,
+			wantErr:    true,
+			errMessage: "Required_password",
+		},
+		{
+			name:       "Duplicate Username",
+			inputJSON:  fmt.Sprintf(`{"username": "%s", "email": "duplicate@example.com", "password": "password"}`, user.Username),
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "username", // or a more specific message if you have one
+		},
+		{
+			name:       "Duplicate Email",
+			inputJSON:  fmt.Sprintf(`{"username": "duplicate_user", "email": "%s", "password": "password"}`, user.Email),
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "email", // Or a more specific message
+		},
+		{
+			name:       "Short Password",
+			inputJSON:  `{"username": "shortpass", "email": "shortpass@example.com", "password": "pass"}`,
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "password",
+		},
+		{
+			name:       "Valid Login another user",
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user2.Email),
+			statusCode: 200,
+			username:   user2.Username,
+			email:      user2.Email,
+			wantErr:    false,
 		},
 	}
 
 	for _, v := range samples {
-
-		r := gin.Default()
-		r.POST("/login", server.Login)
-		req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBufferString(v.inputJSON))
-		if err != nil {
-			t.Errorf("this is the error: %v", err)
-		}
-		rr := httptest.NewRecorder()
-		r.ServeHTTP(rr, req)
-
-		responseInterface := make(map[string]interface{})
-		err = json.Unmarshal([]byte(rr.Body.String()), &responseInterface)
-		if err != nil {
-			fmt.Printf("Cannot convert to json: %v", err)
-		}
-
-		assert.Equal(t, rr.Code, v.statusCode)
-
-		if v.statusCode == 200 {
-			//casting the interface to map:
-			responseMap := responseInterface["response"].(map[string]interface{})
-			assert.Equal(t, responseMap["username"], v.username)
-			assert.Equal(t, responseMap["email"], v.email)
-		}
-		if v.statusCode == 422 {
-			responseMap := responseInterface["error"].(map[string]interface{})
-
-			if responseMap["Incorrect_password"] != nil {
-				assert.Equal(t, responseMap["Incorrect_password"], "Incorrect Password")
+		t.Run(v.name, func(t *testing.T) { // Use t.Run for subtests
+			r := gin.Default()
+			r.POST("/login", server.Login)
+			req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBufferString(v.inputJSON))
+			if err != nil {
+				t.Fatalf("Error creating request: %v", err)
 			}
-			if responseMap["Incorrect_details"] != nil {
-				assert.Equal(t, responseMap["Incorrect_details"], "Incorrect Details")
+			rr := httptest.NewRecorder()
+			r.ServeHTTP(rr, req)
+
+			responseInterface := make(map[string]interface{})
+			err = json.Unmarshal([]byte(rr.Body.String()), &responseInterface)
+			if err != nil && v.statusCode != 204 { // Ignore unmarshal error on 204 No Content
+				t.Fatalf("Cannot convert to json: %v, Body: %s", err, rr.Body.String())
 			}
-			if responseMap["Invalid_email"] != nil {
-				assert.Equal(t, responseMap["Invalid_email"], "Invalid Email")
+
+			assert.Equal(t, v.statusCode, rr.Code)
+
+			if v.statusCode == 200 {
+				responseMap, ok := responseInterface["response"].(map[string]interface{})
+				if !ok {
+					t.Fatalf("Response is not a map: %v", responseInterface["response"])
+				}
+				assert.Equal(t, v.username, responseMap["username"])
+				assert.Equal(t, v.email, responseMap["email"])
+			} else if v.wantErr {
+				responseMap, ok := responseInterface["error"].(map[string]interface{})
+				if !ok {
+					t.Fatalf("Error response is not a map: %v", responseInterface)
+				}
+				if v.errMessage != "" {
+					for key := range responseMap {
+						assert.Contains(t, key, v.errMessage)
+					}
+				}
 			}
-			if responseMap["Required_password"] != nil {
-				assert.Equal(t, responseMap["Required_password"], "Required Password")
+
+			if v.statusCode >= 500 {
+				t.Error("Unexpected internal server error")
 			}
-		}
+		})
 	}
+}
+
+func seedAnotherUser() (models.User, error) {
+
+	user := models.User{
+		Username: "test",
+		Email:    "test@example.com",
+		Password: "password",
+	}
+
+	err := server.DB.Create(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }

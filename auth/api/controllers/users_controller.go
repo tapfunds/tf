@@ -209,7 +209,7 @@ func (server *Server) DeleteUser(c *gin.Context) {
 
 	// Delete related integrations
 	integration := models.PlaidIntegration{}
-	if err := integration.Delete(server.DB); err != nil {
+	if err := integration.DeleteByUserID(server.DB, uint32(uid)); err != nil {
 		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Delete_error": "Failed to delete user integrations"})
 		return
 	}
@@ -231,7 +231,6 @@ func parseRequestBody(c *gin.Context) (map[string]string, error) {
 	err = json.Unmarshal(body, &requestBody)
 	return requestBody, err
 }
-
 
 func findUserByID(db *gorm.DB, uid uint64) (models.User, error) {
 	var user models.User

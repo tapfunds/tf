@@ -68,3 +68,8 @@ func (i *PlaidIntegration) Update(db *gorm.DB, updateData map[string]interface{}
 func (i *PlaidIntegration) Delete(db *gorm.DB, id uint32) error {
 	return db.Where("id = ?", id).Delete(&PlaidIntegration{}).Error
 }
+
+// DeleteByUserID removes all PlaidIntegrations for a given UserID.
+func (i *PlaidIntegration) DeleteByUserID(db *gorm.DB, userID uint32) error {
+	return db.Where("user_id = ?", userID).Delete(&PlaidIntegration{}).Error
+}

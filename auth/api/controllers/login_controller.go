@@ -54,34 +54,3 @@ func (server *Server) Login(c *gin.Context) {
 		},
 	})
 }
-
-// Authenticates the user and returns token data.
-// func (server *Server) SignIn(email, password string) (map[string]interface{}, error) {
-// 	var user models.User
-
-// 	// Fetch user by email
-// 	if err := server.DB.Debug().Where("email = ?", email).Take(&user).Error; err != nil {
-// 		return nil, fmt.Errorf("user not found: %w", err)
-// 	}
-
-// 	// Verify password
-// 	if err := security.VerifyPassword(user.Password, password); err != nil {
-// 		return nil, fmt.Errorf("invalid password: %w", err)
-// 	}
-
-// 	// Generate token
-// 	token, err := auth.CreateToken(user.ID)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("token creation failed: %w", err)
-// 	}
-// 	// Prepare response
-// 	userData := map[string]interface{}{
-// 		"token":       token,
-// 		"id":          user.ID,
-// 		"email":       user.Email,
-// 		"avatar_path": user.AvatarPath,
-// 		"username":    user.Username,
-// 	}
-
-// 	return userData, nil
-// }

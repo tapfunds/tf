@@ -157,3 +157,16 @@ func (u *User) UpdatePassword(db *gorm.DB) error {
 	result := db.Model(&User{}).Where("email = ?", u.Email).Update("password", string(hashedPassword))
 	return result.Error
 }
+
+// GetIntegrations retrieves all PlaidIntegrations associated with a user.
+func (u *User) GetIntegrations(db *gorm.DB) ([]PlaidIntegration, error) {
+	var integrations []PlaidIntegration
+	err := db.Model(&PlaidIntegration{}).Where("user_id = ?", u.ID).Find(&integrations).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("no integrations found for this user")
+		}
+		return nil, err
+	}
+	return integrations, nil
+}
