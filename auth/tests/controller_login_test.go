@@ -140,18 +140,19 @@ func TestLogin(t *testing.T) {
 			t.Log("THIS A LOGGGG")
 			t.Log(responseInterface)
 
+			var response map[string]interface{}
 			if v.wantErr {
 				// Handle error response
-				response := responseInterface["error"].(map[string]interface{})
-				assert.NoError(t, json.Unmarshal(responseInterface.Body.Bytes(), &response), "Failed to parse error response")
+				response = responseInterface["error"].(map[string]interface{})
+				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse error response")
 				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage, "Error message mismatch")
 			} else if v.statusCode == 200 { // Handle successful response (status code 200)
-				data := responseInterface["response"].(map[string]interface{})
-				assert.Equal(t, v.username, data["username"])
-				assert.Equal(t, v.email, data["email"])
-
+				response = responseInterface["response"].(map[string]interface{})
+				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse 200 response")
+				assert.Equal(t, v.username, response["username"])
+				assert.Equal(t, v.email, response["email"])
 				// Validate that token is not empty
-				token, ok := data["token"].(string)
+				token, ok := response["token"].(string)
 				assert.True(t, ok, "Token is missing or invalid")
 				t.Logf("I guess i passed but you really wanna validate that token:%s", token)
 			}
