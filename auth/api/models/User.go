@@ -23,6 +23,13 @@ type User struct {
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+func (u *User) AfterFind() (err error) {
+	if u.AvatarPath != "" {
+		u.AvatarPath = os.Getenv("DO_SPACES_URL") + u.AvatarPath
+	}
+	return nil
+}
+
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 	hashedPassword, err := security.Hash(u.Password) // Use your existing hashing function
 	if err != nil {
@@ -37,13 +44,6 @@ func (u *User) Prepare() {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
-}
-
-func (u *User) AfterFind() (err error) {
-	if u.AvatarPath != "" {
-		u.AvatarPath = os.Getenv("DO_SPACES_URL") + u.AvatarPath
-	}
-	return nil
 }
 
 func validateEmail(email string, errors map[string]string) {

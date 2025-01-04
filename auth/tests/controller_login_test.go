@@ -49,7 +49,7 @@ func TestLogin(t *testing.T) {
 	}{
 		{
 			name:       "Valid Login",
-			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user.Email),
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "%s}`, user.Email, user.Password),
 			statusCode: 200,
 			username:   user.Username,
 			email:      user.Email,
@@ -130,26 +130,35 @@ func TestLogin(t *testing.T) {
 			assert.NoError(t, err, "Error creating request")
 
 			responseRecorder := httptest.NewRecorder()
+
 			router.ServeHTTP(responseRecorder, req)
-			t.Logf("Expected status: %d, Response recorder status: %d", v.statusCode, responseRecorder.Code)
+			t.Logf(" Response recorder: %s", responseRecorder.Body.Bytes())
+			if v.wantErr == false {
+				var response map[string]interface{}
+				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse response body")
+				// Ensure there's no error in the response
+				_, errorExists := response["error"]
+				assert.False(t, errorExists, "Response contains an unexpected error: %v\nResponse: %s\n", response["error"], responseRecorder.Body.Bytes())
+			}
+
 			assert.Equal(t, v.statusCode, responseRecorder.Code, "Unexpected status code")
 
 			if v.wantErr {
 				var response map[string]interface{}
 				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse error response")
-				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage,  v.errMessage)
-			} else if responseRecorder.Code == 200 { // Handle successful response (status code 200)
+				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage, v.errMessage)
+			} else if responseRecorder.Code == 200 { // Handle successful response
 				var response map[string]interface{}
-				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse response body")
 
 				data := response["response"].(map[string]interface{})
-				assert.Equal(t, v.username, data["username"])
-				assert.Equal(t, v.email, data["email"])
+				assert.Equal(t, v.username, data["username"], "Username mismatch")
+				assert.Equal(t, v.email, data["email"], "Email mismatch")
 
-				// Validate that token is not empty
+				// Validate that the token is present and not empty
 				token, ok := response["token"].(string)
 				assert.True(t, ok, "Token is missing or invalid")
 				t.Logf("I guess i passed but you really wanna validate that token:%s", token)
+
 			}
 
 			// Check if the status code indicates an internal error
