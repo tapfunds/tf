@@ -34,9 +34,9 @@ func TestLogin(t *testing.T) {
 	user, err := testsetup.SeedUser("Nala", "nala@example.com", "password")
 	assert.NoError(t, err, "Failed to seed user")
 
-	user2, err := testsetup.SeedUser("Damali", "damali@example.com", "password")
-	assert.NoError(t, err, "Failed to seed user2")
-	t.Log(user, user2)
+	// user2, err := testsetup.SeedUser("Damali", "damali@example.com", "password")
+	// assert.NoError(t, err, "Failed to seed user2")
+	// t.Log(user, user2)
 
 	samples := []struct {
 		name       string // Add a name for each test case
@@ -131,26 +131,21 @@ func TestLogin(t *testing.T) {
 
 			responseRecorder := httptest.NewRecorder()
 			router.ServeHTTP(responseRecorder, req)
-
+			t.Logf("Expected status: %d, Response recorder status: %d", v.statusCode, responseRecorder.Code)
 			assert.Equal(t, v.statusCode, responseRecorder.Code, "Unexpected status code")
 
-			// Parse the response body
-			responseInterface := make(map[string]interface{}) // getting password required
-			assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &responseInterface), "Failed to parse response body")
-			t.Log("THIS A LOGGGG")
-			t.Log(responseInterface)
-
-			var response map[string]interface{}
 			if v.wantErr {
-				// Handle error response
-				response = responseInterface["error"].(map[string]interface{})
+				var response map[string]interface{}
 				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse error response")
-				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage, "Error message mismatch")
-			} else if v.statusCode == 200 { // Handle successful response (status code 200)
-				response = responseInterface["response"].(map[string]interface{})
-				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse 200 response")
-				assert.Equal(t, v.username, response["username"])
-				assert.Equal(t, v.email, response["email"])
+				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage,  v.errMessage)
+			} else if responseRecorder.Code == 200 { // Handle successful response (status code 200)
+				var response map[string]interface{}
+				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse response body")
+
+				data := response["response"].(map[string]interface{})
+				assert.Equal(t, v.username, data["username"])
+				assert.Equal(t, v.email, data["email"])
+
 				// Validate that token is not empty
 				token, ok := response["token"].(string)
 				assert.True(t, ok, "Token is missing or invalid")

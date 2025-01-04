@@ -2,8 +2,8 @@ package models
 
 import (
 	"errors"
-	"html"
-	"net/mail" // Use net/mail for more robust email validation
+	"html" // Use net/mail for more robust email validation
+	"net/mail"
 	"os"
 	"strings"
 	"time"
@@ -46,36 +46,45 @@ func (u *User) AfterFind() (err error) {
 	return nil
 }
 
+func validateEmail(email string, errors map[string]string) {
+	if email == "" {
+		errors["email"] = "Email is required"
+	} else if _, err := mail.ParseAddress(email); err != nil {
+		errors["email"] = "Please enter a valid email address"
+	}
+}
+
+func validateUsername(username string, errors map[string]string) {
+	if username == "" {
+		errors["username"] = "Username is required"
+	}
+}
+
+func validatePassword(password string, errors map[string]string) {
+	if password == "" {
+		errors["password"] = "Password is required"
+	} else if len(password) < 6 {
+		errors["password"] = "Password must be at least 6 characters long"
+	}
+}
+
 func (u *User) Validate(action string) map[string]string {
 	var errorMessages = make(map[string]string)
 
-	switch strings.ToLower(action) {
-	case "update", "login", "forgotpassword": // Consolidated email validation
-		if u.Email == "" {
-			errorMessages["email"] = "Email is required"
-		} else if _, err := mail.ParseAddress(u.Email); err != nil {
-			errorMessages["email"] = "Invalid email format"
-		}
+	// Common validations
+	validateEmail(u.Email, errorMessages)
 
+	switch strings.ToLower(action) {
+	case "update", "login", "forgotpassword":
 		if action == "login" && u.Password == "" {
-			errorMessages["password"] = "Password is required"
+			errorMessages["password"] = "Password is required for login"
 		}
 
 	default: // Default is for create/register
-		if u.Username == "" {
-			errorMessages["username"] = "Username is required"
-		}
-		if u.Password == "" {
-			errorMessages["password"] = "Password is required"
-		} else if len(u.Password) < 6 {
-			errorMessages["password"] = "Password must be at least 6 characters"
-		}
-		if u.Email == "" {
-			errorMessages["email"] = "Email is required"
-		} else if _, err := mail.ParseAddress(u.Email); err != nil {
-			errorMessages["email"] = "Invalid email format"
-		}
+		validateUsername(u.Username, errorMessages)
+		validatePassword(u.Password, errorMessages)
 	}
+
 	return errorMessages
 }
 

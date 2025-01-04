@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/auth"
 	"github.com/tapfunds/tf/auth/api/models"
 	"github.com/tapfunds/tf/auth/api/security"
@@ -28,7 +29,11 @@ func (server *Server) Login(c *gin.Context) {
 
 	var user models.User
 	if err := server.DB.Debug().Where("email = ?", loginRequest.Email).Take(&user).Error; err != nil {
-		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
+		if err == gorm.ErrRecordNotFound {
+			errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
+		} else {
+			errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Database_error": "An unexpected error occurred"})
+		}
 		return
 	}
 
