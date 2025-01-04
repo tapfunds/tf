@@ -49,7 +49,7 @@ func TestLogin(t *testing.T) {
 	}{
 		{
 			name:       "Valid Login",
-			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "%s}`, user.Email, user.Password),
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user.Email),
 			statusCode: 200,
 			username:   user.Username,
 			email:      user.Email,
