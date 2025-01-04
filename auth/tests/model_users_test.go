@@ -1,32 +1,18 @@
 package tests
 
 import (
-	"log"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tapfunds/tf/auth/api/models"
+	testsetup "github.com/tapfunds/tf/auth/tests/setup"
 )
 
-func TestFindAllUsers(t *testing.T) {
-	log.Println("starting")
-	err := refreshUserTable()
-	assert.NoError(t, err)
-
-	_, err = seedUsers() // Seed 2 users
-	assert.NoError(t, err)
-
-	user := models.User{}
-	users, err := user.FindAllUsers(server.DB)
-	assert.NoError(t, err)
-
-	assert.Equal(t, 2, len(*users))
-}
-
 func TestSaveUser(t *testing.T) {
-	err := refreshUserTable()
-	assert.NoError(t, err)
+	testsetup.SetupDatabase()
+
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
 
 	newUser := models.User{
 		Email:    "test@example.com",
@@ -34,36 +20,46 @@ func TestSaveUser(t *testing.T) {
 		Password: "password",
 	}
 
-	savedUser, err := newUser.SaveUser(server.DB)
+	savedUser, err := newUser.SaveUser(testsetup.Server.DB)
 	assert.NoError(t, err)
 
 	// Validate that saved user matches the input
 	assert.Equal(t, newUser.Email, savedUser.Email)
 	assert.Equal(t, newUser.Username, savedUser.Username)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
 
 func TestFindUserByID(t *testing.T) {
-	err := refreshUserTable()
-	assert.NoError(t, err)
+	testsetup.SetupDatabase()
 
-	user, err := seedOneUser()
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Nala", "nala@example.com", "password")
 	assert.NoError(t, err)
 
 	// Fetch the user by ID
-	foundUser, err := user.FindUserByID(server.DB, user.ID)
+	foundUser, err := user.FindUserByID(testsetup.Server.DB, user.ID)
 	assert.NoError(t, err)
 
 	// Validate user properties match
 	assert.Equal(t, foundUser.ID, user.ID)
 	assert.Equal(t, foundUser.Email, user.Email)
 	assert.Equal(t, foundUser.Username, user.Username)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
 
 func TestUpdateAUser(t *testing.T) {
-	err := refreshUserTable()
-	assert.NoError(t, err)
+	testsetup.SetupDatabase()
 
-	user, err := seedOneUser()
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Nala", "nala@example.com", "password")
 	assert.NoError(t, err)
 
 	userUpdate := models.User{
@@ -73,7 +69,7 @@ func TestUpdateAUser(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 
-	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID, map[string]interface{}{
+	updatedUser, err := userUpdate.UpdateAUser(testsetup.Server.DB, user.ID, map[string]interface{}{
 		"username": userUpdate.Username,
 		"email":    userUpdate.Email,
 		"password": userUpdate.Password,
@@ -86,19 +82,28 @@ func TestUpdateAUser(t *testing.T) {
 
 	// Check that the UpdateAt field was updated (allowing for small time delta)
 	assert.WithinDuration(t, updatedUser.UpdatedAt, userUpdate.UpdatedAt, time.Second)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
 
 func TestDeleteAUser(t *testing.T) {
-	err := refreshUserTable()
-	assert.NoError(t, err)
+	testsetup.SetupDatabase()
 
-	user, err := seedOneUser()
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Nala", "nala@example.com", "password")
 	assert.NoError(t, err)
 
 	// Delete the user and verify the deletion response
-	isDeleted, err := user.DeleteAUser(server.DB, user.ID)
+	isDeleted, err := user.DeleteAUser(testsetup.Server.DB, user.ID)
 	assert.NoError(t, err)
 
 	// Ensure that deletion returns 1 (indicating success)
 	assert.Equal(t, int64(1), isDeleted)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }

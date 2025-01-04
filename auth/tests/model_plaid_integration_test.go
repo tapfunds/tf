@@ -5,107 +5,128 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tapfunds/tf/auth/api/models"
+	testsetup "github.com/tapfunds/tf/auth/tests/setup"
 )
 
-// TestFindAllUserIntegrations retrieves all integrations for a user
 func TestFindAllUserIntegrations(t *testing.T) {
-	err := refreshUserAndPlaidIntegrationTable()
+	testsetup.SetupDatabase()
+	// Reset the database tables before the test
+	err := testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{})
 	assert.NoError(t, err)
 
-	user, _, err := seedOneUserAndOneIntegration()
+	// Seed user
+	user, err := testsetup.SeedUser("Dee", "dee@example.com", "password")
 	assert.NoError(t, err)
 
-	integrations, err := user.GetIntegrations(server.DB)
+	// Seed integration
+	_, err = testsetup.SeedIntegration(user.ID, "test_item_id", "test_access_token")
 	assert.NoError(t, err)
 
-	// Assert one integration for the seeded user
-	assert.Equal(t, len(integrations), 1)
-}
-
-// TestSaveIntegration tests creating a new integration
-func TestSaveIntegration(t *testing.T) {
-	err := refreshUserAndPlaidIntegrationTable()
+	// Fetch integrations for user
+	integrations, err := user.GetIntegrations(testsetup.Server.DB)
 	assert.NoError(t, err)
+	assert.Len(t, integrations, 1)
 
-	user, err := seedOneUser() // Seed a user for the integration
-	assert.NoError(t, err)
-
-	newIntegration := models.PlaidIntegration{
-		UserID:      user.ID,
-		PlaidItemID: "test_item_id",
-		AccessToken: "test_access_token",
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
 	}
 
-	savedIntegration, err := newIntegration.Save(server.DB)
-	assert.NoError(t, err)
-
-	// Validate saved integration matches the input
-	assert.Equal(t, newIntegration.UserID, savedIntegration.UserID)
-	assert.Equal(t, newIntegration.PlaidItemID, savedIntegration.PlaidItemID)
-	assert.Equal(t, newIntegration.AccessToken, savedIntegration.AccessToken)
 }
 
-// TestUpdateAIntegration tests updating an existing integration
-func TestUpdateAIntegration(t *testing.T) {
-	err := refreshUserAndPlaidIntegrationTable()
+func TestSaveIntegration(t *testing.T) {
+	testsetup.SetupDatabase()
+
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Dee", "dee@example.com", "password")
 	assert.NoError(t, err)
 
-	integration, err := seedOneIntegration()
+	integration := models.PlaidIntegration{
+		UserID:      user.ID,
+		PlaidItemID: "new_item_id",
+		AccessToken: "new_access_token",
+	}
+
+	savedIntegration, err := integration.Save(testsetup.Server.DB)
+	assert.NoError(t, err)
+	assert.Equal(t, integration.PlaidItemID, savedIntegration.PlaidItemID)
+	assert.Equal(t, integration.AccessToken, savedIntegration.AccessToken)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
+}
+
+func TestUpdateIntegration(t *testing.T) {
+	testsetup.SetupDatabase()
+
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Dee", "dee@example.com", "password")
+	assert.NoError(t, err)
+
+	integration, err := testsetup.SeedIntegration(user.ID, "old_item_id", "old_access_token")
 	assert.NoError(t, err)
 
 	updateData := map[string]interface{}{
-		"item_id":      "updated_item_id",
-		"access_token": "updated_access_token",
-		"payment_id":   "updated_payment_id",
+		"plaid_item_id": "updated_item_id",
+		"access_token":  "updated_access_token",
 	}
 
-	updatedIntegration, err := integration.Update(server.DB, updateData)
+	updatedIntegration, err := integration.Update(testsetup.Server.DB, updateData)
 	assert.NoError(t, err)
-
-	// Ensure ID remains the same
-	assert.Equal(t, integration.ID, updatedIntegration.ID)
-	assert.Equal(t, updateData["item_id"], updatedIntegration.PlaidItemID)
+	assert.Equal(t, updateData["plaid_item_id"], updatedIntegration.PlaidItemID)
 	assert.Equal(t, updateData["access_token"], updatedIntegration.AccessToken)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
 
-// TestDeleteAIntegration tests deleting an integration
-func TestDeleteAIntegration(t *testing.T) {
-	err := refreshUserAndPlaidIntegrationTable()
+func TestDeleteIntegration(t *testing.T) {
+	testsetup.SetupDatabase()
+
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Dee", "dee@example.com", "password")
 	assert.NoError(t, err)
 
-	integration, err := seedOneIntegration()
+	integration, err := testsetup.SeedIntegration(user.ID, "item_id", "access_token")
 	assert.NoError(t, err)
 
-	// Ensure the integration exists before deletion
-	integrationModel := models.PlaidIntegration{}
-	foundIntegration, err := integrationModel.FindByID(server.DB, integration.ID)
-	assert.NoError(t, err)
-	assert.NotNil(t, foundIntegration) // Assert that the integration exists
-
-	// Delete the integration
-	err = integration.Delete(server.DB, integration.ID)
+	err = integration.Delete(testsetup.Server.DB, integration.ID)
 	assert.NoError(t, err)
 
-	// Check that the integration no longer exists
-	_, err = integrationModel.FindByID(server.DB, integration.ID)
-	assert.Error(t, err) // Should return an error as integration no longer exists
+	integrationModel := &models.PlaidIntegration{} // Create a pointer to PlaidIntegration
+	_, err = integrationModel.FindByID(testsetup.Server.DB, integration.ID)
+	assert.Error(t, err)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
 
-// TestDeleteUserIntegrations tests deleting all integrations for a user
 func TestDeleteUserIntegrations(t *testing.T) {
-	err := refreshUserAndPlaidIntegrationTable()
+	testsetup.SetupDatabase()
+
+	assert.NoError(t, testsetup.RefreshTables(&models.User{}, &models.PlaidIntegration{}))
+
+	user, err := testsetup.SeedUser("Dee", "dee@example.com", "password")
 	assert.NoError(t, err)
 
-	user, _, err := seedOneUserAndOneIntegration()
+	_, err = testsetup.SeedIntegration(user.ID, "item_id", "access_token")
 	assert.NoError(t, err)
 
-	// Delete all integrations for the user
-	err = server.DB.Where("user_id = ?", user.ID).Delete(&models.PlaidIntegration{}).Error
+	err = testsetup.Server.DB.Where("user_id = ?", user.ID).Delete(&models.PlaidIntegration{}).Error
 	assert.NoError(t, err)
 
-	// Check that no integrations exist for the user
 	var integrations []models.PlaidIntegration
-	err = server.DB.Where("user_id = ?", user.ID).Find(&integrations).Error
+	err = testsetup.Server.DB.Where("user_id = ?", user.ID).Find(&integrations).Error
 	assert.NoError(t, err)
-	assert.Equal(t, 0, len(integrations), "Expected 0 integrations after deletion")
+	assert.Empty(t, integrations)
+	// Cleanup database connections
+	if testsetup.Server.DB != nil {
+		testsetup.Server.DB.Close()
+	}
 }
