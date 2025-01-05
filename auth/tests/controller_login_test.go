@@ -125,7 +125,6 @@ func TestLogin(t *testing.T) {
 		t.Run(v.name, func(t *testing.T) { // Use t.Run for subtests
 			router := gin.Default()
 			router.POST("/login", testsetup.Server.Login)
-			t.Logf("JSON THAT IS SENT: %+v", v.inputJSON)
 			req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBufferString(v.inputJSON))
 			assert.NoError(t, err, "Error creating request")
 			responseRecorder := httptest.NewRecorder()
@@ -147,16 +146,21 @@ func TestLogin(t *testing.T) {
 				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage, v.errMessage)
 			} else if responseRecorder.Code == 200 { // Handle successful response
 				var response map[string]interface{}
+				err := json.Unmarshal(responseRecorder.Body.Bytes(), &response)
+				assert.NoError(t, err, "Failed to parse response body")
 
-				data := response["response"].(map[string]interface{})
+				// Access nested "response" key
+				data, ok := response["response"].(map[string]interface{})
+				assert.True(t, ok, "Failed to access 'response' key in JSON")
+
+				// Validate fields
 				assert.Equal(t, v.username, data["username"], "Username mismatch")
 				assert.Equal(t, v.email, data["email"], "Email mismatch")
 
 				// Validate that the token is present and not empty
-				token, ok := response["token"].(string)
+				token, ok := data["token"].(string)
 				assert.True(t, ok, "Token is missing or invalid")
-				t.Logf("I guess i passed but you really wanna validate that token:%s", token)
-
+				assert.NotEmpty(t, token, "Token should not be empty")
 			}
 
 			// Check if the status code indicates an internal error
