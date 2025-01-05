@@ -1,5 +1,6 @@
 import "../styles/globals.css";
-import Navbar from "./components/Navigation/Navbar";
+import SignedInNav from "./components/Navigation/SignedInNav";
+import SignedOutNav from "./components/Navigation/SignedOutNav";
 
 export const metadata = {
   title: "Tapfunds",
@@ -14,7 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <SignedOutNav />
+        <SignedInNav />
         {children}
       </body>
     </html>
