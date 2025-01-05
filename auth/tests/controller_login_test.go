@@ -125,14 +125,12 @@ func TestLogin(t *testing.T) {
 		t.Run(v.name, func(t *testing.T) { // Use t.Run for subtests
 			router := gin.Default()
 			router.POST("/login", testsetup.Server.Login)
-
+			t.Logf("JSON THAT IS SENT: %+v", v.inputJSON)
 			req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBufferString(v.inputJSON))
 			assert.NoError(t, err, "Error creating request")
-
 			responseRecorder := httptest.NewRecorder()
 
 			router.ServeHTTP(responseRecorder, req)
-			t.Logf(" Response recorder: %s", responseRecorder.Body.Bytes())
 			if v.wantErr == false {
 				var response map[string]interface{}
 				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse response body")
