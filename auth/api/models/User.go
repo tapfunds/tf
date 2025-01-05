@@ -17,7 +17,7 @@ type User struct {
 	ID         uint32    `gorm:"primary_key;auto_increment" json:"id"`
 	Username   string    `gorm:"size:255;not null;unique_index" json:"username"` // Add unique index
 	Email      string    `gorm:"size:100;not null;unique_index" json:"email"`    // Add unique index
-	Password   string    `gorm:"size:100;not null;" json:"-"`                    // Don't expose password in JSON responses
+	Password   string    `gorm:"size:100;not null;" json:"password"`             // Don't expose password in JSON responses
 	AvatarPath string    `gorm:"size:255;null;" json:"avatar_path"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
@@ -77,7 +77,7 @@ func (u *User) Validate(action string) map[string]string {
 	switch strings.ToLower(action) {
 	case "update", "login", "forgotpassword":
 		if action == "login" && u.Password == "" {
-			errorMessages["password"] = "Password is required for login"
+			errorMessages["password"] = "Password is required for login hoe. password"
 		}
 
 	default: // Default is for create/register

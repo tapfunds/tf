@@ -13,22 +13,22 @@ import (
 
 // Handles the HTTP request, parses and validates input, and calls SignIn.
 func (server *Server) Login(c *gin.Context) {
-	var loginRequest models.User
-	if err := c.ShouldBindJSON(&loginRequest); err != nil {
+	var unauthenticatedUser models.User
+	if err := c.ShouldBindJSON(&unauthenticatedUser); err != nil {
 		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid JSON body"})
 		return
 	}
 
-	// Prepare and validate user
-	loginRequest.Prepare()
-	errorMessages := loginRequest.Validate("login")
+	// // Prepare and validate user
+	unauthenticatedUser.Prepare()
+	errorMessages := unauthenticatedUser.Validate("login")
 	if len(errorMessages) > 0 {
 		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages)
 		return
 	}
 
 	var user models.User
-	if err := server.DB.Debug().Where("email = ?", loginRequest.Email).Take(&user).Error; err != nil {
+	if err := server.DB.Debug().Where("email = ?", unauthenticatedUser.Email).Take(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
 		} else {
@@ -37,7 +37,7 @@ func (server *Server) Login(c *gin.Context) {
 		return
 	}
 
-	if err := security.VerifyPassword(user.Password, loginRequest.Password); err != nil {
+	if err := security.VerifyPassword(user.Password, unauthenticatedUser.Password); err != nil {
 		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Authentication_failed": "Invalid email or password"})
 		return
 	}
