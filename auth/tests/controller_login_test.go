@@ -34,9 +34,9 @@ func TestLogin(t *testing.T) {
 	user, err := testsetup.SeedUser("Nala", "nala@example.com", "password")
 	assert.NoError(t, err, "Failed to seed user")
 
-	// user2, err := testsetup.SeedUser("Damali", "damali@example.com", "password")
-	// assert.NoError(t, err, "Failed to seed user2")
-	// t.Log(user, user2)
+	user2, err := testsetup.SeedUser("Damali", "damali@example.com", "password")
+	assert.NoError(t, err, "Failed to seed user2")
+	t.Log(user, user2)
 
 	samples := []struct {
 		name       string // Add a name for each test case
@@ -55,70 +55,49 @@ func TestLogin(t *testing.T) {
 			email:      user.Email,
 			wantErr:    false,
 		},
-		// {
-		// 	name:       "Invalid Password",
-		// 	inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "wrong password"}`, user.Email),
-		// 	statusCode: 401, // Use 401 Unauthorized for bad credentials
-		// 	wantErr:    true,
-		// 	errMessage: "Authentication_failed",
-		// },
-		// {
-		// 	name:       "User Not Found",
-		// 	inputJSON:  `{"email": "frank@example.com", "password": "password"}`,
-		// 	statusCode: 401, // Use 401 Unauthorized
-		// 	wantErr:    true,
-		// 	errMessage: "Authentication_failed",
-		// },
-		// {
-		// 	name:       "Invalid Email Format",
-		// 	inputJSON:  `{"email": "kanexample.com", "password": "password"}`,
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "Invalid_email",
-		// },
-		// {
-		// 	name:       "Missing Email",
-		// 	inputJSON:  `{"email": "", "password": "password"}`,
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "Required_email",
-		// },
-		// {
-		// 	name:       "Missing Password",
-		// 	inputJSON:  `{"email": "kan@example.com", "password": ""}`,
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "Required_password",
-		// },
-		// {
-		// 	name:       "Duplicate Username",
-		// 	inputJSON:  fmt.Sprintf(`{"username": "%s", "email": "duplicate@example.com", "password": "password"}`, user.Username),
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "username", // or a more specific message if you have one
-		// },
-		// {
-		// 	name:       "Duplicate Email",
-		// 	inputJSON:  fmt.Sprintf(`{"username": "duplicate_user", "email": "%s", "password": "password"}`, user.Email),
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "email", // Or a more specific message
-		// },
-		// {
-		// 	name:       "Short Password",
-		// 	inputJSON:  `{"username": "shortpass", "email": "shortpass@example.com", "password": "pass"}`,
-		// 	statusCode: 422,
-		// 	wantErr:    true,
-		// 	errMessage: "password",
-		// },
-		// {
-		// 	name:       "Valid Login another user",
-		// 	inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user2.Email),
-		// 	statusCode: 200,
-		// 	username:   user2.Username,
-		// 	email:      user2.Email,
-		// 	wantErr:    false,
-		// },
+		{
+			name:       "Invalid Password",
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "wrong password"}`, user.Email),
+			statusCode: 401, // Use 401 Unauthorized for bad credentials
+			wantErr:    true,
+			errMessage: "Authentication_failed",
+		},
+		{
+			name:       "User Not Found",
+			inputJSON:  `{"email": "frank@example.com", "password": "password"}`,
+			statusCode: 401, // Use 401 Unauthorized
+			wantErr:    true,
+			errMessage: "Authentication_failed",
+		},
+		{
+			name:       "Valid Login another user",
+			inputJSON:  fmt.Sprintf(`{"email": "%s", "password": "password"}`, user2.Email),
+			statusCode: 200,
+			username:   user2.Username,
+			email:      user2.Email,
+			wantErr:    false,
+		},
+		{
+			name:       "Missing Email",
+			inputJSON:  `{"email": "", "password": "password"}`,
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "email",
+		},
+		{
+			name:       "Invalid Email Format",
+			inputJSON:  `{"email": "kanexample.com", "password": "password"}`,
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "email",
+		},
+		{
+			name:       "Missing Password",
+			inputJSON:  `{"email": "kan@example.com", "password": ""}`,
+			statusCode: 422,
+			wantErr:    true,
+			errMessage: "password",
+		},
 	}
 
 	for _, v := range samples {
@@ -143,7 +122,12 @@ func TestLogin(t *testing.T) {
 			if v.wantErr {
 				var response map[string]interface{}
 				assert.NoError(t, json.Unmarshal(responseRecorder.Body.Bytes(), &response), "Failed to parse error response")
-				assert.Contains(t, response["error"].(map[string]interface{}), v.errMessage, v.errMessage)
+				// Ensure the "error" key exists and is a map
+				errorMap, ok := response["error"].(map[string]interface{})
+				assert.True(t, ok, "'error' key is missing or not a valid map")
+
+				// Check that the error message is present
+				assert.Contains(t, errorMap, v.errMessage, v.errMessage)
 			} else if responseRecorder.Code == 200 { // Handle successful response
 				var response map[string]interface{}
 				err := json.Unmarshal(responseRecorder.Body.Bytes(), &response)
