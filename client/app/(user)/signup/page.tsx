@@ -1,39 +1,27 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Card from "../../../components/Card";
-
-// Zod validation schema
-const userSchema = z
-  .object({
-    firstname: z.string().min(1, "First name is required").max(255),
-    lastname: z.string().min(1, "Last name is required").max(255),
-    email: z.string().email("Invalid email address").max(100),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100),
-    confirmPassword: z.string().min(6, "Password confirmation is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-export type UserFormData = z.infer<typeof userSchema>;
-
+import { UserFormData, userSignUpSchema } from "../../../lib/schemas";
+import { userSignup } from "./actions";
 export default function SignupPage() {
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(userSchema),
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSignUpSchema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: UserFormData) => {
     console.log("Form data submitted:", data);
-    // Here you can hook up to your API call for submission
+    const result = await userSignup(data);
+    if ("error" in result) {
+      console.error("Signup failed:", result.error);
+      // Handle error (e.g., show a toast or set an error message state)
+      return;
+    }
+    console.log("User created successfully:", result);
+    // Proceed with login or redirect to a protected page
   };
 
   return (
