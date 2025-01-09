@@ -77,9 +77,22 @@
 
 <!-- ABOUT THE PROJECT -->
 
+##
+
+TODO:
+
+- [Account Sync and Data Management]()
+- [AI assisted Budgeting]()
+- [Close Person Invite]()
+- [Collective budgetting]()
+
+The user should be able to setup a locally hosted bank account mangament app. This should be able to sync any account backed by Plaid. The user should be able to create budgetting goals both AI assisted and with forms. The user should be able to do this with others. The user should be able to choose what accounts they want to manage with others.
+
+eventually The user should be able to transfer money between accounts to manage them(kinda).
+
 ## About The Project
 
-The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. Multi service architecture is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to practice a high value skill. Decoupled containerized applications are easier to build in my opinion, but require a different way of thinking about application deployment. I hope whoever visits this learns something benficial or will provide feedback via issues or pull request. Request environment variables via email, or use your own for local development.
+The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. Multi service architecture is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to practice a high value skill. Decoupled containerized applications are easier to build in my opinion, but require a different way of thinking about application deployment. I hope whoever visits this learns something benficial or will provide feedback via issues or pull request.
 
 ### Built With
 
@@ -177,7 +190,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Your Name - [@twitter_handle](https://twitter.com/Qwelian_Tanner) - <qwelian@tapfunds.net>
 
 Project Link: [https://github.com/tapfunds/tf](https://github.com/tapfunds/tf)
-
 
 <https://github.com/tapfunds/tf/blob/main/LICENSE>
 
