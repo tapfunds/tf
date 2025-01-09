@@ -15,6 +15,8 @@ import (
 
 type User struct {
 	ID         uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	Firstname  string    `gorm:"size:255;not null;unique_index" json:"firstname"`
+	Lastname   string    `gorm:"size:255;not null;unique_index" json:"lastname"`
 	Username   string    `gorm:"size:255;not null;unique_index" json:"username"` // Add unique index
 	Email      string    `gorm:"size:100;not null;unique_index" json:"email"`    // Add unique index
 	Password   string    `gorm:"size:100;not null;" json:"password"`             // Don't expose password in JSON responses

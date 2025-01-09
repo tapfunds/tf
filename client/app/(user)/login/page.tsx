@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Card from "../../components/Card";
+import Card from "../../../components/Card";
 
 const LoginPage: NextPage = () => {
   function renderSignUpRedirect() {
