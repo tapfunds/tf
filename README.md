@@ -82,9 +82,10 @@
 TODO:
 
 - [Account Sync and Data Management]()
-- [AI assisted Budgeting]()
+- [Budgeting]()
 - [Close Person Invite]()
 - [Collective budgetting]()
+- [AI assisted Budgeting]()
 
 The user should be able to setup a locally hosted bank account mangament app. This should be able to sync any account backed by Plaid. The user should be able to create budgetting goals both AI assisted and with forms. The user should be able to do this with others. The user should be able to choose what accounts they want to manage with others.
 
