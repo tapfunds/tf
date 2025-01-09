@@ -154,21 +154,26 @@ func (server *Server) UpdateUser(c *gin.Context) {
 		return
 	}
 
+	if requestBody["firstname"] != "" {
+		updatedUser.Firstname = requestBody["firstname"]
+	}
+	if requestBody["lastname"] != "" {
+		updatedUser.Lastname = requestBody["lastname"]
+	}
+
 	updatedUser.Prepare()
 	errorMessages := updatedUser.Validate("update")
 	if len(errorMessages) > 0 {
 		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages) // Pass errorMessages directly
 		return
 	}
-	updateData := make(map[string]interface{})
-	if updatedUser.Username != formerUser.Username {
-		updateData["username"] = updatedUser.Username
-	}
-	if updatedUser.Email != formerUser.Email {
-		updateData["email"] = updatedUser.Email
-	}
-	if updatedUser.Password != formerUser.Password {
-		updateData["password"] = updatedUser.Password
+	
+	updateData := map[string]interface{}{
+		"firstname": updatedUser.Firstname,
+		"lastname":  updatedUser.Lastname,
+		"username":  updatedUser.Username,
+		"email":     updatedUser.Email,
+		"password":  updatedUser.Password,
 	}
 
 	finalUser, err := updatedUser.UpdateAUser(server.DB, uint32(uid), updateData)

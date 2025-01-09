@@ -9,7 +9,7 @@ export async function userSignup(
     // Validate input if needed (optional since Zod likely validates it earlier)
 
     // Make a POST request to the backend service via the Docker network
-    const response = await fetch("http://auth:8080/api/users", {
+    const response = await fetch("http://auth:8080/v1/users/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

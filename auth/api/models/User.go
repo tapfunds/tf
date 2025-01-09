@@ -42,6 +42,8 @@ func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 }
 
 func (u *User) Prepare() {
+	u.Firstname = html.EscapeString(strings.TrimSpace(u.Firstname))
+	u.Lastname = html.EscapeString(strings.TrimSpace(u.Lastname))
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
@@ -70,11 +72,29 @@ func validatePassword(password string, errors map[string]string) {
 	}
 }
 
+func validateFirstname(firstname string, errors map[string]string) {
+	if firstname == "" {
+		errors["firstname"] = "Firstname is required"
+	} else if len(firstname) < 2 {
+		errors["firstname"] = "Firstname must be at least 2 characters long"
+	}
+}
+
+func validateLastname(lastname string, errors map[string]string) {
+	if lastname == "" {
+		errors["lastname"] = "Lastname is required"
+	} else if len(lastname) < 2 {
+		errors["lastname"] = "Lastname must be at least 2 characters long"
+	}
+}
+
 func (u *User) Validate(action string) map[string]string {
 	var errorMessages = make(map[string]string)
 
 	// Common validations
 	validateEmail(u.Email, errorMessages)
+	validateFirstname(u.Firstname, errorMessages)
+	validateLastname(u.Lastname, errorMessages)
 
 	switch strings.ToLower(action) {
 	case "update", "login", "forgotpassword":
@@ -128,6 +148,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32, updateData map[string]interf
 	if err := tx.Error; err != nil {
 		return nil, err
 	}
+
+	// Hash password if it's being updated
 	if _, ok := updateData["password"]; ok {
 		hashedPassword, err := security.Hash(updateData["password"].(string))
 		if err != nil {
@@ -137,11 +159,13 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32, updateData map[string]interf
 		updateData["password"] = string(hashedPassword)
 	}
 
+	// Update user fields
 	if err := tx.Model(&User{}).Where("id = ?", uid).Updates(updateData).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
 
+	// Retrieve updated user
 	if err := tx.Where("id = ?", uid).First(&u).Error; err != nil {
 		tx.Rollback()
 		return nil, err
