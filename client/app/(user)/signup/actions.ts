@@ -7,8 +7,6 @@ export async function userSignup(
 ): Promise<User | { error: string }> {
   try {
     // Validate input if needed (optional since Zod likely validates it earlier)
-
-    // Make a POST request to the backend service via the Docker network
     const response = await fetch("http://auth:8080/v1/users/create", {
       method: "POST",
       headers: {
