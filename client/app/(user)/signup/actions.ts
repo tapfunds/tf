@@ -8,6 +8,7 @@ import {
   SignupFormSchema,
 } from "../../../lib/schemas";
 import { createSession } from "../../../lib/session";
+import { revalidatePath } from "next/cache";
 const baseAPIString = process.env.AUTH_API_CONNECTION_STRING;
 
 export async function signup(
@@ -31,19 +32,17 @@ export async function signup(
       body: JSON.stringify(dataToSend),
     });
 
-    console.log(response);
     if (!response.ok) {
       const errorResponse = await response.json();
       return { error: errorResponse.message || "An unknown error occurred" };
     }
 
     const res = await response.json();
-    console.log("usaaaaaaa", res.response);
-    await createSession(res.response.id, res.response.token);
-    throw redirect("/");
+    await createSession(res.user.id, res.user.token);
   } catch (error) {
     console.error("Error during user signup:", error);
-
     return { error: "Failed to connect to the server" };
+  } finally {
+    redirect("/funds");
   }
 }

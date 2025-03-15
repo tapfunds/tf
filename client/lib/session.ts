@@ -76,11 +76,15 @@ export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
   const isValidToken = await validateAuthAPIToken(session?.token);
-  if (!session?.userId || isValidToken) {
+  if (!session?.userId || !isValidToken) {
     redirect("/login");
   }
 
-  return { isAuth: true, userId: session.userId, authToken: session.token };
+  return {
+    isAuth: true,
+    userId: session.userId as string,
+    authToken: session.token as string,
+  };
 });
 
 export async function validateAuthAPIToken(
@@ -89,7 +93,7 @@ export async function validateAuthAPIToken(
   if (!token) return false;
 
   try {
-    const response = await fetch(`${baseAPIString}` + token, {
+    const response = await fetch(`${baseAPIString}/auth/validate/${token}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

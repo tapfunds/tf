@@ -42,16 +42,14 @@ func TokenValid(tokenString string) error {
 	return nil
 }
 
-// CheckToken validates the provided JWT token
 func (server *Server) CheckToken(c *gin.Context) {
-	// Extract token from the URL
 	token := c.Param("token")
+	fmt.Printf("Parsing Token")
 	if err := TokenValid(token); err != nil {
-		// Token is invalid
 		c.JSON(http.StatusUnauthorized, gin.H{"isValid": false, "error": err.Error()})
 		return
 	}
+	fmt.Printf("Succesfully Token")
 
-	// Token is valid
 	c.JSON(http.StatusOK, gin.H{"isValid": true})
 }

@@ -61,7 +61,7 @@ func (server *Server) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
-		"response": map[string]interface{}{
+		"user": map[string]interface{}{
 			"token":       token,
 			"id":          user.ID,
 			"email":       user.Email,

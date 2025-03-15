@@ -16,7 +16,7 @@ func (s *Server) initializeRoutes() {
 	// Auth Routes: Handles user authentication and password resets.
 	auth := v1.Group(AuthBasePath)
 	{
-		auth.POST("/signup", s.CreateUser)
+		auth.POST("/signup", s.Signup)
 		auth.POST("/login", s.Login)
 		auth.POST("/password/forgot", s.ForgotPassword)
 		auth.POST("/password/reset", s.ResetPassword)
