@@ -66,7 +66,8 @@ func (server *Server) Login(c *gin.Context) {
 			"id":          user.ID,
 			"email":       user.Email,
 			"avatar_path": user.AvatarPath,
-			"username":    user.Username,
+			"firstname":   user.Firstname,
+			"lastname":    user.Lastname,
 		},
 	})
 }

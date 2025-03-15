@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -102,14 +102,14 @@ export const SignedOutNav = () => {
                 >
                   About
                 </Link>
-                <Link
-                  href="https://medium.com/@tapfunds"
+                {/* <Link
+                  href="/blog"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Blog
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -149,12 +149,12 @@ export const SignedOutNav = () => {
           >
             About
           </Link>
-          <Link
+          {/* <Link
             href="/blog"
             className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
           >
             Blog
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>

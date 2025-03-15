@@ -1,11 +1,13 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import {
   FormState,
   User,
   SignupForm,
   SignupFormSchema,
 } from "../../../lib/schemas";
+import { createSession } from "../../../lib/session";
 
 export async function signup(
   state: FormState,
@@ -37,6 +39,9 @@ export async function signup(
 
     // Parse and return the successful response
     const user = await response.json();
+    await createSession(user.token);
+    // 5. Redirect user
+    redirect("/profile");
     return user as User;
   } catch (error) {
     console.error("Error during user signup:", error);
