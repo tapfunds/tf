@@ -31,16 +31,16 @@ export async function signup(
       body: JSON.stringify(dataToSend),
     });
 
+    console.log(response);
     if (!response.ok) {
       const errorResponse = await response.json();
       return { error: errorResponse.message || "An unknown error occurred" };
     }
 
-    const user = await response.json();
-    console.log(user);
-    await createSession(user.ID, user.token);
-    redirect("/funds");
-    return user as User;
+    const res = await response.json();
+    console.log("usaaaaaaa", res.response);
+    await createSession(res.response.id, res.response.token);
+    throw redirect("/");
   } catch (error) {
     console.error("Error during user signup:", error);
 

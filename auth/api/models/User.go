@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
-	"html" // Use net/mail for more robust email validation
+	"html"
 	"os"
 	"strings"
 	"time"
@@ -11,7 +11,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/security"
-	// Explicitly import bcrypt
 )
 
 type User struct {
@@ -45,7 +44,7 @@ func (u *User) AfterFind() (err error) {
 }
 
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
-	hashedPassword, err := security.Hash(u.Password) // Use your existing hashing function
+	hashedPassword, err := security.Hash(u.Password)
 	if err != nil {
 		return err
 	}
@@ -87,16 +86,16 @@ func (u *User) Validate(action string) map[string]string {
 }
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
-	err := db.Create(&u).Error // Removed .Debug() for production
+	err := db.Create(&u).Error 
 	if err != nil {
-		return nil, err // Return nil, error for consistency
+		return nil, err 
 	}
 	return u, nil
 }
 
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var users []User
-	err := db.Limit(100).Find(&users).Error // Removed .Debug()
+	err := db.Limit(100).Find(&users).Error 
 	if err != nil {
 		return nil, err
 	}
@@ -104,9 +103,9 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 }
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
-	err := db.Where("id = ?", uid).First(&u).Error // Use First() for single record retrieval
+	err := db.Where("id = ?", uid).First(&u).Error 
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) { // Use errors.Is for better error checking
+		if errors.Is(err, gorm.ErrRecordNotFound) { 
 			return nil, errors.New("user not found")
 		}
 		return nil, err
