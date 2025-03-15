@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"html" // Use net/mail for more robust email validation
-	"net/mail"
 	"os"
 	"strings"
 	"time"
@@ -61,44 +60,6 @@ func (u *User) Prepare() {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
-}
-
-func validateEmail(email string, errors map[string]string) {
-	if email == "" {
-		errors["email"] = "Email is required"
-	} else if _, err := mail.ParseAddress(email); err != nil {
-		errors["email"] = "Please enter a valid email address"
-	}
-}
-
-func validateUsername(username string, errors map[string]string) {
-	if username == "" {
-		errors["username"] = "Username is required"
-	}
-}
-
-func validatePassword(password string, errors map[string]string) {
-	if password == "" {
-		errors["password"] = "Password is required"
-	} else if len(password) < 6 {
-		errors["password"] = "Password must be at least 6 characters long"
-	}
-}
-
-func validateFirstname(firstname string, errors map[string]string) {
-	if firstname == "" {
-		errors["firstname"] = "Firstname is required"
-	} else if len(firstname) < 2 {
-		errors["firstname"] = "Firstname must be at least 2 characters long"
-	}
-}
-
-func validateLastname(lastname string, errors map[string]string) {
-	if lastname == "" {
-		errors["lastname"] = "Lastname is required"
-	} else if len(lastname) < 2 {
-		errors["lastname"] = "Lastname must be at least 2 characters long"
-	}
 }
 
 func (u *User) Validate(action string) map[string]string {
