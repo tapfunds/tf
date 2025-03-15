@@ -2,28 +2,45 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "../../../components/Card";
-import { UserFormData, userSignUpSchema } from "../../../lib/schemas";
-import { userSignup } from "./actions";
+import { FormState, SignupForm, SignupFormSchema } from "../../../lib/schemas";
+import { signup } from "./actions";
+import { useActionState, useEffect } from "react";
+
 export default function SignupPage() {
+  const [state, action, pending] = useActionState(signup, undefined);
+
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<UserFormData>({
-    resolver: zodResolver(userSignUpSchema),
+  } = useForm<SignupForm>({
+    resolver: zodResolver(SignupFormSchema),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  const onSubmit = async (data: UserFormData) => {
-    console.log("Form data submitted:", data);
-    const result = await userSignup(data);
-    if ("error" in result) {
-      console.error("Signup failed:", result.error);
-      // Handle error (e.g., show a toast or set an error message state)
-      return;
+  useEffect(() => {
+    if (state) {
+      if ("error" in state) {
+        console.error("Signup failed:", state.error);
+        // Handle error (e.g., show a toast or set an error message state)
+      }
     }
-    console.log("User created successfully:", result);
-    // Proceed with login or redirect to a protected page
+  }, [state]);
+
+  const onSubmit = async (data: SignupForm) => {
+    console.log("Form data submitted:", data);
+    await action(data);
   };
+  const isErrorState = (
+    state: FormState
+  ): state is { error: string | Record<string, string[]> } =>
+    typeof state === "object" && state !== null && "error" in state;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
@@ -48,6 +65,7 @@ export default function SignupPage() {
           }
         >
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {/* Form fields */}
             <div className="space-y-6">
               {/* First Name */}
               <div>
@@ -71,9 +89,16 @@ export default function SignupPage() {
                 />
                 {errors.firstname && (
                   <p className="text-xs text-red-500">
-                    {/* {errors.firstname.message} */}
+                    {errors.firstname.message}
                   </p>
                 )}
+                {isErrorState(state) &&
+                  typeof state.error === "object" &&
+                  state.error.firstname && (
+                    <p className="text-xs text-red-500">
+                      {state.error.firstname}
+                    </p>
+                  )}
               </div>
 
               {/* Last Name */}
@@ -98,9 +123,16 @@ export default function SignupPage() {
                 />
                 {errors.lastname && (
                   <p className="text-xs text-red-500">
-                    {/* {errors.lastname.message} */}
+                    {errors.lastname.message}
                   </p>
                 )}
+                {isErrorState(state) &&
+                  typeof state.error === "object" &&
+                  state.error.lastname && (
+                    <p className="text-xs text-red-500">
+                      {state.error.lastname}
+                    </p>
+                  )}
               </div>
 
               {/* Email */}
@@ -124,7 +156,14 @@ export default function SignupPage() {
                     />
                   )}
                 />
-                {errors.email && <p className="text-xs text-red-500">hhhhh</p>}
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                )}
+                {isErrorState(state) &&
+                  typeof state.error === "object" &&
+                  state.error.email && (
+                    <p className="text-xs text-red-500">{state.error.email}</p>
+                  )}
               </div>
 
               {/* Password */}
@@ -150,9 +189,16 @@ export default function SignupPage() {
                 />
                 {errors.password && (
                   <p className="text-xs text-red-500">
-                    {/* {errors.password.message} */}
+                    {errors.password.message}
                   </p>
                 )}
+                {isErrorState(state) &&
+                  typeof state.error === "object" &&
+                  state.error.password && (
+                    <p className="text-xs text-red-500">
+                      {state.error.password}
+                    </p>
+                  )}
               </div>
 
               {/* Confirm Password */}
@@ -178,7 +224,7 @@ export default function SignupPage() {
                 />
                 {errors.confirmPassword && (
                   <p className="text-xs text-red-500">
-                    {/* {errors.confirmPassword.message} */}
+                    {errors.confirmPassword.message}
                   </p>
                 )}
               </div>
@@ -188,6 +234,7 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   className="w-full mt-8 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  disabled={pending}
                 >
                   Sign Up
                 </button>

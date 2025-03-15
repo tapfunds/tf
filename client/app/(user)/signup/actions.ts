@@ -1,18 +1,32 @@
 "use server";
 
-import { User, UserFormData } from "../../../lib/schemas";
+import {
+  FormState,
+  User,
+  SignupForm,
+  SignupFormSchema,
+} from "../../../lib/schemas";
 
-export async function userSignup(
-  data: UserFormData
-): Promise<User | { error: string }> {
+export async function signup(
+  state: FormState,
+  formData: SignupForm
+): Promise<FormState> {
   try {
-    // Validate input if needed (optional since Zod likely validates it earlier)
-    const response = await fetch("http://auth:8080/v1/users/create", {
+    // Validate input if needed (optional since hook forms likely validates it earlier)
+    const validatedFields = SignupFormSchema.safeParse(formData);
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        error: JSON.stringify(validatedFields.error.flatten().fieldErrors),
+      };
+    }
+    const response = await fetch("http://localhost:8080/v1/users/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(validatedFields),
     });
 
     // Handle non-success HTTP statuses

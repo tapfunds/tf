@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Zod validation schema
-export const userSignUpSchema = z
+export const SignupFormSchema = z
   .object({
     firstname: z.string().min(1, "First name is required").max(255),
     lastname: z.string().min(1, "Last name is required").max(255),
@@ -16,11 +16,15 @@ export const userSignUpSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+export type SignupForm = z.infer<typeof SignupFormSchema>;
 
-export type UserFormData = z.infer<typeof userSignUpSchema>;
+export type FormState =
+  | User
+  | { error: string | Record<string, string[]> }
+  | undefined;
 
-export const userSchema = z.object({
-  id: z.number().int().positive().optional(), // ID is optional, as it will be auto-generated
+export const UserSchema = z.object({
+  id: z.number().int().positive(),
   firstname: z.string().min(1, "First name is required").max(255),
   lastname: z.string().min(1, "Last name is required").max(255),
   username: z
@@ -39,4 +43,4 @@ export const userSchema = z.object({
   createdAt: z.date().optional(), // Automatically generated on the server
   updatedAt: z.date().optional(), // Automatically updated on the server
 });
-export type User = z.infer<typeof userSchema>;
+export type User = z.infer<typeof UserSchema>;
