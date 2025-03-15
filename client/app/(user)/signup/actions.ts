@@ -23,7 +23,8 @@ export async function signup(
         error: JSON.stringify(validatedFields.error.flatten().fieldErrors),
       };
     }
-    const response = await fetch("http://localhost:8080/v1/users/create", {
+
+    const response = await fetch("http://localhost:8080/api/v1/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,20 +32,20 @@ export async function signup(
       body: JSON.stringify(validatedFields),
     });
 
-    // Handle non-success HTTP statuses
     if (!response.ok) {
       const errorResponse = await response.json();
       return { error: errorResponse.message || "An unknown error occurred" };
     }
 
-    // Parse and return the successful response
     const user = await response.json();
     await createSession(user.token);
-    // 5. Redirect user
-    redirect("/profile");
+    redirect("/dashboard");
     return user as User;
+
   } catch (error) {
+
     console.error("Error during user signup:", error);
+
     return { error: "Failed to connect to the server" };
   }
 }

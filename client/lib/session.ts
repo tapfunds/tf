@@ -12,3 +12,9 @@ export async function createSession(token: string) {
     path: "/",
   });
 }
+
+// add to logout and canelling account
+export async function deleteSession() {
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
+}

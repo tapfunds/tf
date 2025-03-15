@@ -1,1 +1,1 @@
-export { default as SignedInNav } from "../app/components/Navigation/SignedInNav";
+export { default as SignedInNav } from "./Navigation/SignedInNav";
