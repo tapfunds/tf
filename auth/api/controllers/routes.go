@@ -20,7 +20,7 @@ func (s *Server) initializeRoutes() {
 		auth.POST("/login", s.Login)
 		auth.POST("/password/forgot", s.ForgotPassword)
 		auth.POST("/password/reset", s.ResetPassword)
-		auth.POST("/validate/:token", s.CheckToken)
+		auth.GET("/validate/:token", s.CheckToken)
 	}
 
 	// User Routes: Manages user data and profiles

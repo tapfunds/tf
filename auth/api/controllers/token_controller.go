@@ -1,34 +1,57 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
-	"strconv"
+	"os"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/tapfunds/tf/auth/api/auth"
-	"github.com/tapfunds/tf/auth/api/utils/errors"
 )
 
-func (server *Server) CheckToken(c *gin.Context) {
-
-	// Extract and validate user ID from URL
-	userID := c.Param("token")
-	uid, err := strconv.ParseUint(userID, 10, 32)
-	if err != nil {
-		errors.HandleError(c, http.StatusBadRequest, map[string]string{"Invalid_request": "Invalid Request"})
-		return
+// TokenValid validates the JWT token in the request
+func TokenValid(tokenString string) error {
+	if tokenString == "" {
+		return fmt.Errorf("missing token")
 	}
 
-	// Extract user ID from token
-	tokenID, err := auth.ExtractTokenID(c.Request)
-	if err != nil || tokenID == 0 || tokenID != uint32(uid) {
-		errors.HandleError(c, http.StatusUnauthorized, map[string]string{"Unauthorized": "Unauthorized"})
-		return
-	}
-
-	// Successful validation response
-	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusOK,
-		"response": "Token IS valid",
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Check if the token's signing method is HMAC
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("API_SECRET")), nil
 	})
+	if err != nil {
+		return fmt.Errorf("invalid token: %v", err)
+	}
+
+	// Ensure token is valid and claims are properly extracted
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		exp, ok := claims["exp"].(float64)
+		if !ok {
+			return fmt.Errorf("invalid exp claim")
+		}
+
+		// Compare the expiration time (float64) with the current time (int64)
+		if int64(exp) < time.Now().Unix() {
+			return fmt.Errorf("token has expired")
+		}
+	}
+	return nil
+}
+
+// CheckToken validates the provided JWT token
+func (server *Server) CheckToken(c *gin.Context) {
+	// Extract token from the URL
+	token := c.Param("token")
+	if err := TokenValid(token); err != nil {
+		// Token is invalid
+		c.JSON(http.StatusUnauthorized, gin.H{"isValid": false, "error": err.Error()})
+		return
+	}
+
+	// Token is valid
+	c.JSON(http.StatusOK, gin.H{"isValid": true})
 }

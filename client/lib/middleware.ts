@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const protectedRoutes = ["/budget", "/funds", "/settings", "/profile"];
+const protectedRoutes = ["/budget", "/funds", "/settings", "/logout"];
 const publicRoutes = ["/login", "/signup", "/"];
 
 export default async function middleware(req: NextRequest) {
@@ -12,7 +12,6 @@ export default async function middleware(req: NextRequest) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("session")?.value;
 
-  // Assuming you have a function to validate the token
   const isValidToken = await validateToken(sessionToken);
 
   if (isProtectedRoute && !isValidToken) {
@@ -38,13 +37,15 @@ async function validateToken(token: string | undefined): Promise<boolean> {
   if (!token) return false;
 
   try {
-    const response = await fetch("http://localhost:8080/api/v1/auth/validate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token }),
-    });
+    const response = await fetch(
+      "http://localhost:8080/api/v1/auth/validate/" + token,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Token validation failed");
