@@ -93,7 +93,7 @@ eventually The user should be able to transfer money between accounts to manage 
 
 ## About The Project
 
-The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. Multi service architecture is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to practice a high value skill. Decoupled containerized applications are easier to build in my opinion, but require a different way of thinking about application deployment. I hope whoever visits this learns something benficial or will provide feedback via issues or pull request.
+The Tapfunds service is built to expand my knowledge of multi service architecture. This is opposed to having one monolithic code base. Multi service architecture is unnecessary for a project such as this. A single Go/python/JS/ application can do everything each service does and run performately for a portfolio app. This is meant to practice. Decoupled containerized applications are easier to build in my opinion, but require a different way of thinking about application deployment. I hope whoever visits this learns something benficial or will provide feedback via issues or pull request.
 
 ### Built With
 
