@@ -3,8 +3,7 @@ import Link from "next/link";
 
 const navigation = [
   { name: "Profile", href: "/settings/profile", current: false },
-  { name: "Integrations", href: "/settings/integrations", current: false },
-  { name: "Statements", href: "/settings/statements", current: false },
+  { name: "Accounts", href: "/settings/accounts", current: false },
 ];
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {

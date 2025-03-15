@@ -34,10 +34,9 @@ const user = {
 };
 
 const navigation: NavigationItem[] = [
-  { name: "Overview", href: "/home", current: true }, // Overall financial trends and insights
-  { name: "Accounts", href: "/accounts", current: false }, // Manage shared finances or group accounts
-  // { name: "Advice & Budgeting", href: "/ai", current: false }, // Detailed transaction history
-  { name: "Trends", href: "/trends", current: false }, // Set and track budgets
+  { name: "Overview", href: "/funds", current: true }, // Overall financial trends and insights
+  { name: "Budgeting", href: "/budget", current: false }, // Detailed transaction history
+  // { name: "Trends", href: "/trends", current: false }, // Set and track budgets
   // { name: "Transfer Funds", href: "/transfer", current: false }, // Move money between accounts
   { name: "Settings", href: "/settings", current: false }, // Account settings and preferences
 ];

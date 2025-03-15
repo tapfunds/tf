@@ -39,7 +39,7 @@ export async function signup(
 
     const user = await response.json();
     await createSession(user.token);
-    redirect("/dashboard");
+    redirect("/funds");
     return user as User;
 
   } catch (error) {

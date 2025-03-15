@@ -35,16 +35,6 @@ func CreateToken(uid uint32) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
-// func CreateToken(id uint32) (string, error) {
-// 	claims := jwt.MapClaims{
-// 		"authorized": true,
-// 		"id":         id,
-// 		"exp":        time.Now().Add(time.Hour * 24).Unix(), // Set token expiry to 24 hours
-// 	}
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-// 	return token.SignedString([]byte(os.Getenv("API_SECRET")))
-// }
-
 func IsTokenExpired(claims jwt.MapClaims) bool {
 	exp, ok := claims["exp"].(float64)
 	if !ok {
