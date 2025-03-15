@@ -167,7 +167,7 @@ func (server *Server) UpdateUser(c *gin.Context) {
 		errors.HandleError(c, http.StatusUnprocessableEntity, errorMessages) // Pass errorMessages directly
 		return
 	}
-	
+
 	updateData := map[string]interface{}{
 		"firstname": updatedUser.Firstname,
 		"lastname":  updatedUser.Lastname,

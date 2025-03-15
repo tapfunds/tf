@@ -36,11 +36,8 @@ func Run() {
 		getEnv("POSTGRES_DB", "postgres"),
 	)
 
-	log.Println("Serving API routes")
 	apiPort := getEnv("AUTH_API_PORT", "8080")
 	server.HttpServer.Addr = fmt.Sprintf(":%s", apiPort)
-
-	log.Printf("Serving at %s", apiPort)
 
 	// Create a channel to listen for OS signals
 	quit := make(chan os.Signal, 1)
@@ -48,7 +45,7 @@ func Run() {
 
 	// Run the server
 	go func() {
-		log.Printf("Server is running on %s", apiPort)
+		log.Printf("Boots down 💅 %s", apiPort)
 		if err := server.HttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Error starting server: %v", err)
 		}

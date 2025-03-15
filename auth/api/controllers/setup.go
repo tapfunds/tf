@@ -33,7 +33,7 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 	// https://gobyexample.com/string-formatting
 	DBURL := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
-	
+
 	log.Println("Attempting to open a connection to the db")
 
 	server.DB, err = gorm.Open(Dbdriver, DBURL)
@@ -50,6 +50,8 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		&models.ResetPassword{},
 	)
 
+	log.Println("Creating server")
+
 	server.Router = gin.Default()
 	server.Router.Use(middlewares.CORSMiddleware())
 	server.initializeRoutes()
@@ -60,7 +62,7 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-
+	log.Println("Serving 🤌")
 }
 
 // Shutdown gracefully shuts down the server and cleans up resources.

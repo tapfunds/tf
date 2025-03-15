@@ -2,12 +2,14 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"html" // Use net/mail for more robust email validation
 	"net/mail"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
 	"github.com/tapfunds/tf/auth/api/security"
 	// Explicitly import bcrypt
@@ -15,14 +17,25 @@ import (
 
 type User struct {
 	ID         uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	Firstname  string    `gorm:"size:255;not null;" json:"firstname"`
-	Lastname   string    `gorm:"size:255;not null;" json:"lastname"`
-	Username   string    `gorm:"size:255;not null;unique_index" json:"username"` // Add unique index
-	Email      string    `gorm:"size:100;not null;unique_index" json:"email"`    // Add unique index
-	Password   string    `gorm:"size:100;not null;" json:"password"`             // Don't expose password in JSON responses
-	AvatarPath string    `gorm:"size:255;null;" json:"avatar_path"`
+	Firstname  string    `gorm:"size:255;not null" json:"firstname" validate:"required"`
+	Lastname   string    `gorm:"size:255;not null" json:"lastname" validate:"required"`
+	Email      string    `gorm:"size:100;not null;unique" json:"email" validate:"required,email"`
+	Username   string    `gorm:"size:255;not null;unique_index" json:"username"`
+	Password   string    `gorm:"size:100;not null" json:"password" validate:"required,min=6"`
+	AvatarPath string    `gorm:"size:255" json:"avatar_path"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New()
 }
 
 func (u *User) AfterFind() (err error) {
@@ -89,22 +102,24 @@ func validateLastname(lastname string, errors map[string]string) {
 }
 
 func (u *User) Validate(action string) map[string]string {
-	var errorMessages = make(map[string]string)
+	errorMessages := make(map[string]string)
 
-	// Common validations
-	validateEmail(u.Email, errorMessages)
-	validateFirstname(u.Firstname, errorMessages)
-	validateLastname(u.Lastname, errorMessages)
-
-	switch strings.ToLower(action) {
-	case "update", "login", "forgotpassword":
-		if action == "login" && u.Password == "" {
-			errorMessages["password"] = "Password is required for login hoe. password"
+	// Validate the user struct
+	err := validate.Struct(u)
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			errorMessages[err.Field()] = fmt.Sprintf("Invalid %s", err.Field())
 		}
+	}
 
-	default: // Default is for create/register
-		validateUsername(u.Username, errorMessages)
-		validatePassword(u.Password, errorMessages)
+	// Add action-specific validations if needed
+	switch strings.ToLower(action) {
+	case "login":
+		// No additional validation needed for login (handled by LoginRequest)
+	case "signup":
+		// Add signup-specific validations if needed
+	case "update":
+		// Add update-specific validations if needed
 	}
 
 	return errorMessages
