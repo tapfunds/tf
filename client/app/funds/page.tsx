@@ -2,6 +2,7 @@
 
 import { NextPage } from "next";
 import { useState } from "react";
+import { getUser } from "../../lib/dal";
 
 interface Bank {
   id: string;
@@ -32,13 +33,15 @@ const bank_info: Bank[] = [
   },
 ];
 
-const HomePage: NextPage = () => {
+const HomePage: NextPage = async() => {
   const [selectedBank, setSelectedBank] = useState<string>(bank_info[0].id);
 
   const handleTabClick = (id: string) => {
     setSelectedBank(id);
   };
 
+  // const user = await getUser();
+  // console.log(user)
   return (
     <div className="m-5">
       <div className="bg-white shadow m-5 mx-auto py-6 px-4 sm:px-6 lg:px-8">

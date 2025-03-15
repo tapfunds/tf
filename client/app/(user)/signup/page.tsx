@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Card from "../../../components/Card";
 import { FormState, SignupForm, SignupFormSchema } from "../../../lib/schemas";
 import { signup } from "./actions";
-import { useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -16,6 +16,7 @@ export default function SignupPage() {
   } = useForm<SignupForm>({
     resolver: zodResolver(SignupFormSchema),
     defaultValues: {
+      username: "",
       firstname: "",
       lastname: "",
       email: "",
@@ -24,18 +25,20 @@ export default function SignupPage() {
     },
   });
 
-  useEffect(() => {
-    if (state) {
-      if ("error" in state) {
-        console.error("Signup failed:", state.error);
-        // Handle error (e.g., show a toast or set an error message state)
-      }
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (state) {
+  //     console.log("STATE", state);
+  //     if ("error" in state) {
+  //       console.error("Signup failed:", state.error);
+  //       // Handle error (e.g., show a toast or set an error message state)
+  //     }
+  //   }
+  // }, [state]);
 
   const onSubmit = async (data: SignupForm) => {
-    console.log("Form data submitted:", data);
-    await action(data);
+    startTransition(async () => {
+      await action(data);
+    });
   };
   const isErrorState = (
     state: FormState
@@ -67,6 +70,40 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* Form fields */}
             <div className="space-y-6">
+              {/* User Name */}
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Username
+                </label>
+                <Controller
+                  name="username"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      id="username"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="Enter your username"
+                    />
+                  )}
+                />
+                {errors.username && (
+                  <p className="text-xs text-red-500">
+                    {errors.username.message}
+                  </p>
+                )}
+                {isErrorState(state) &&
+                  typeof state.error === "object" &&
+                  state.error.username && (
+                    <p className="text-xs text-red-500">
+                      {state.error.username}
+                    </p>
+                  )}
+              </div>
+
               {/* First Name */}
               <div>
                 <label

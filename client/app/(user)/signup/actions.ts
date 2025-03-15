@@ -8,28 +8,27 @@ import {
   SignupFormSchema,
 } from "../../../lib/schemas";
 import { createSession } from "../../../lib/session";
+const baseAPIString = process.env.AUTH_API_CONNECTION_STRING;
 
 export async function signup(
   state: FormState,
   formData: SignupForm
 ): Promise<FormState> {
   try {
-    // Validate input if needed (optional since hook forms likely validates it earlier)
     const validatedFields = SignupFormSchema.safeParse(formData);
 
-    // If any form fields are invalid, return early
     if (!validatedFields.success) {
       return {
         error: JSON.stringify(validatedFields.error.flatten().fieldErrors),
       };
     }
-
-    const response = await fetch("http://localhost:8080/api/v1/auth/signup", {
+    const { confirmPassword, ...dataToSend } = validatedFields.data;
+    const response = await fetch(`${baseAPIString}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(validatedFields),
+      body: JSON.stringify(dataToSend),
     });
 
     if (!response.ok) {
@@ -38,12 +37,11 @@ export async function signup(
     }
 
     const user = await response.json();
-    await createSession(user.token);
+    console.log(user);
+    await createSession(user.ID, user.token);
     redirect("/funds");
     return user as User;
-
   } catch (error) {
-
     console.error("Error during user signup:", error);
 
     return { error: "Failed to connect to the server" };

@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -17,10 +18,14 @@ import (
 
 func (server *Server) CreateUser(c *gin.Context) {
 	var user models.User
+	log.Printf("Creating")
 	if err := c.BindJSON(&user); err != nil {
+		log.Printf("Error binding JSON: %v", err)
 		errors.HandleError(c, http.StatusUnprocessableEntity, map[string]string{"Invalid_body": "Unable to get request"})
 		return
 	}
+	userData, _ := json.Marshal(user) // Convert 'user' to a JSON string
+	log.Printf("Found user: %s", string(userData))
 
 	user.Prepare()
 	errorMessages := user.Validate("")
@@ -34,6 +39,7 @@ func (server *Server) CreateUser(c *gin.Context) {
 		errors.HandleError(c, http.StatusInternalServerError, errors.FormatError(err.Error()))
 		return
 	}
+	log.Printf("User created")
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status":   http.StatusCreated,

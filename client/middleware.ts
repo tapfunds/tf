@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { decrypt, validateAuthAPIToken } from "./lib/session";
 
 const protectedRoutes = ["/budget", "/funds", "/settings", "/logout"];
 const publicRoutes = ["/login", "/signup", "/"];
@@ -9,21 +10,21 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
 
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("session")?.value;
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
 
-  const isValidToken = await validateToken(sessionToken);
+  // const isValidToken = await validateToken(sessionToken);
 
-  if (isProtectedRoute && !isValidToken) {
+  if (isProtectedRoute && !session?.userId) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
   if (
     isPublicRoute &&
-    isValidToken &&
-    !req.nextUrl.pathname.startsWith("/dashboard")
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith("/funds")
   ) {
-    return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    return NextResponse.redirect(new URL("/funds", req.nextUrl));
   }
 
   return NextResponse.next();
@@ -32,29 +33,3 @@ export default async function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };
-
-async function validateToken(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
-
-  try {
-    const response = await fetch(
-      "http://localhost:8080/api/v1/auth/validate/" + token,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Token validation failed");
-    }
-
-    const data = await response.json();
-    return data.isValid; // Assuming your API returns { isValid: true/false }
-  } catch (error) {
-    console.error("Token validation error:", error);
-    return false;
-  }
-}

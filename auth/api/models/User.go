@@ -19,7 +19,7 @@ type User struct {
 	Firstname  string    `gorm:"size:255;not null" json:"firstname" validate:"required"`
 	Lastname   string    `gorm:"size:255;not null" json:"lastname" validate:"required"`
 	Email      string    `gorm:"size:100;not null;unique" json:"email" validate:"required,email"`
-	Username   string    `gorm:"size:255;not null;unique_index" json:"username"`
+	Username   string    `gorm:"size:255;not null;unique" json:"username"`
 	Password   string    `gorm:"size:100;not null" json:"password" validate:"required,min=6"`
 	AvatarPath string    `gorm:"size:255" json:"avatar_path"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`

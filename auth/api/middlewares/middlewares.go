@@ -33,6 +33,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		c.Set(string(UserIDKey), userID)
+		log.Println("Using Token Middleware")
 		c.Next()
 	}
 }
@@ -57,15 +58,18 @@ func CORSMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusNoContent) // 204 status code for OPTIONS
 			return
 		}
+		log.Println("Using CORS Middleware")
 		c.Next()
 	}
 }
 
 func LoggingMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		start := time.Now()
 		c.Next()
 		duration := time.Since(start)
+		log.Println("Using Logging Middleware")
 		log.Printf("Method: %s | Path: %s | Status: %d | Duration: %v",
 			c.Request.Method, c.Request.URL.Path, c.Writer.Status(), duration)
 	}

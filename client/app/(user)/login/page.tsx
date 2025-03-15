@@ -87,12 +87,14 @@ const LoginPage: NextPage = () => {
 
   return (
     <Card
-      headerText="Sign in to your account"
-      informationElement={renderSignUpRedirect()}
-      helpElement={renderRememberAndPasswordReset()}
-      formContent={renderFormContent()}
-      buttonText="Sign in"
-    />
+      title="Sign in to your account" // Changed from headerText to title
+      footer={renderSignUpRedirect()} // Moved to footer
+    >
+      <form className="mt-8 space-y-6" action="#" method="POST">
+        {renderFormContent()}
+        {renderRememberAndPasswordReset()}
+      </form>
+    </Card>
   );
 };
 
