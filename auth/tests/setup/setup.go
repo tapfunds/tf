@@ -53,38 +53,34 @@ func setupCIBuild() {
 }
 
 func SetupDatabase() error {
-	TestDbDriver := os.Getenv("TEST_DB_DRIVER")
-	if TestDbDriver == "postgres" {
-		// Log the environment variables used in DB connection
-		DBURL := fmt.Sprintf("host=localhost port=%s user=%s dbname=%s sslmode=disable password=%s",
-			os.Getenv("TEST_POSTGRES_PORT"), os.Getenv("TEST_POSTGRES_USER"), os.Getenv("TEST_POSTGRES_DB"), os.Getenv("TEST_POSTGRES_PASSWORD"))
+	// Log the environment variables used in DB connection
+	DBURL := fmt.Sprintf("host=localhost port=%s user=%s dbname=%s sslmode=disable password=%s",
+		os.Getenv("TEST_POSTGRES_PORT"), os.Getenv("TEST_POSTGRES_USER"), os.Getenv("TEST_POSTGRES_DB"), os.Getenv("TEST_POSTGRES_PASSWORD"))
 
-		// Logging the DB connection string (make sure no sensitive data like passwords are logged)
-		log.Printf("Connecting to DB with URL: %s", DBURL)
+	// Logging the DB connection string (make sure no sensitive data like passwords are logged)
+	log.Printf("Connecting to DB with URL: %s", DBURL)
 
-		var err error
-		Server.DB, err = gorm.Open("postgres", DBURL)
-		if err != nil {
-			log.Printf("Cannot connect to %s database: %v", TestDbDriver, err)
-			return err
-		}
-		log.Printf("Connected to the %s database\n", TestDbDriver)
-
-		// Ensure the DB connection is established before proceeding
-		if Server.DB == nil {
-			log.Printf("Failed to establish DB connection: DB is nil")
-			return err
-		}
-
-		// Run migrations to ensure the tables are created
-		err = Server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
-		if err != nil {
-			log.Fatalf("Error migrating database: %v", err)
-			return err
-		}
-	} else {
-		log.Print("TEST_DB_DRIVER not set or unsupported. Skipping database connection.")
+	var err error
+	Server.DB, err = gorm.Open("postgres", DBURL)
+	if err != nil {
+		log.Printf("Cannot connect to %s database: %v", DBURL, err)
+		return err
 	}
+	log.Printf("Connected to the %s database\n", DBURL)
+
+	// Ensure the DB connection is established before proceeding
+	if Server.DB == nil {
+		log.Printf("Failed to establish DB connection: DB is nil")
+		return err
+	}
+
+	// Run migrations to ensure the tables are created
+	err = Server.DB.AutoMigrate(&models.User{}, &models.PlaidIntegration{}).Error
+	if err != nil {
+		log.Fatalf("Error migrating database: %v", err)
+		return err
+	}
+
 	return nil
 }
 

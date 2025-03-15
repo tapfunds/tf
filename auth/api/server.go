@@ -18,28 +18,29 @@ var server = controllers.Server{}
 
 func init() {
 	// loads values from .env into the system
+	log.Println("Looking for environment variables")
 	if err := godotenv.Load(); err != nil {
-		log.Print("sad, no .env file found")
+		log.Print("sad :(")
 	}
+	log.Println("Success!")
+
 }
 
 func Run() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-
 	server.Initialize(
 		"postgres",
-		getEnv("POSTGRES_USER", "default_user"),
-		getEnv("POSTGRES_PASSWORD", "default_password"),
+		getEnv("POSTGRES_USER", "user"),
+		getEnv("POSTGRES_PASSWORD", "password"),
 		getEnv("POSTGRES_PORT", "5432"),
 		getEnv("POSTGRES_HOST", "localhost"),
-		getEnv("POSTGRES_DB", "default_db"),
+		getEnv("POSTGRES_DB", "postgres"),
 	)
 
+	log.Println("Serving API routes")
 	apiPort := getEnv("AUTH_API_PORT", "8080")
 	server.HttpServer.Addr = fmt.Sprintf(":%s", apiPort)
+
+	log.Printf("Serving at %s", apiPort)
 
 	// Create a channel to listen for OS signals
 	quit := make(chan os.Signal, 1)

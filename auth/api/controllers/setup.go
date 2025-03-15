@@ -27,23 +27,25 @@ type Server struct {
 var errList = make(map[string]string)
 
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+	log.Println("Intializing DB connection")
 
 	var err error
 
 	// https://gobyexample.com/string-formatting
 	DBURL := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v TimeZone=America/New_York", DbHost, DbPort, DbUser, DbName, DbPassword)
+	
+	log.Println("Attempting to open a connection to the db")
 
 	server.DB, err = gorm.Open(Dbdriver, DBURL)
 
 	if err != nil {
-		log.Fatal("This is the error connecting to postgres:", err)
-		panic("Failed to connect to database!")
-
+		log.Fatal("Error connecting to postgres:", err)
 	}
-	fmt.Printf("Connected to a %s database\n", Dbdriver)
+
+	log.Println("Migrating tables")
 
 	server.DB.Debug().AutoMigrate(
-		&models.PlaidIntegration{},
+		&models.PlaidIntegration{}, // using a generic Oauth table is more declaritive https://pkg.go.dev/golang.org/x/oauth2
 		&models.User{},
 		&models.ResetPassword{},
 	)
