@@ -1,1 +1,0 @@
-// https://plaid.com/docs/sandbox/institutions/
