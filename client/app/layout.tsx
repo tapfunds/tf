@@ -1,6 +1,6 @@
 import "../styles/globals.css";
-import { SignedInNav } from "../components/Navigation/SignedInNav";
-import { SignedOutNav } from "../components/Navigation/SignedOutNav";
+import { SignedInNav } from "@/components/Navigation/SignedInNav";
+import { SignedOutNav } from "@/components/Navigation/SignedOutNav";
 import { verifySession } from "@/lib/session";
 
 export const metadata = {

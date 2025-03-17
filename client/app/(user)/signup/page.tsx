@@ -1,8 +1,8 @@
 "use client";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Card from "../../../components/Card";
-import { FormState, SignupForm, SignupFormSchema } from "../../../lib/schemas";
+import Card from "@/components/Card";
+import { FormState, SignupForm, SignupFormSchema } from "@/lib/schemas";
 import { signup } from "./actions";
 import { startTransition, useActionState, useEffect } from "react";
 
