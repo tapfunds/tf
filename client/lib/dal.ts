@@ -7,7 +7,7 @@ const baseAPIString = process.env.AUTH_API_CONNECTION_STRING;
 export const getUser = cache(async (): Promise<User | null> => {
   try {
     const session = await verifySession();
-    if (!session.authToken && session.userId) return null;
+    if (!session) return null;
     console.log("Session Started", session);
 
     // Extract token from session

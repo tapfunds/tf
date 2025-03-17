@@ -75,16 +75,13 @@ export async function deleteSession() {
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
-  const isValidToken = await validateAuthAPIToken(session?.token);
-  if (!session?.userId || !isValidToken) {
-    redirect("/login");
-  }
 
-  return {
-    isAuth: true,
-    userId: session.userId as string,
-    authToken: session.token as string,
-  };
+  return session
+    ? {
+        userId: session?.userId as string,
+        authToken: session?.token as string,
+      }
+    : null;
 });
 
 export async function validateAuthAPIToken(
