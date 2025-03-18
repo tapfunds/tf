@@ -5,16 +5,15 @@ import Image from "next/image";
 import {
   Disclosure,
   DisclosureButton,
-  DisclosurePanel,
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { BellIcon } from "@heroicons/react/24/solid";
 import { NavLinks } from "./NavLinks";
 import { MobileMenu } from "./MobileMenu";
+import { LogoutButton } from "../logout/LogoutButton";
 
 const navigation = [
   { name: "Overview", href: "/funds", current: true },
@@ -23,9 +22,8 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Your Profile", href: "/settings/profile" },
+  { name: "Settings", href: "/settings" },
 ];
 
 const user = {
@@ -94,6 +92,9 @@ export const SignedInNav = () => {
                               )}
                             </MenuItem>
                           ))}
+                          <MenuItem>
+                            {({ active }) => <LogoutButton />}
+                          </MenuItem>
                         </MenuItems>
                       </Transition>
                     </Menu>
