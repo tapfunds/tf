@@ -52,7 +52,7 @@ func (server *Server) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := auth.CreateToken(user.ID)
+	token, err := auth.CreateToken(user.ID, loginRequest.Remember)
 	if err != nil {
 		log.Printf("Failed to create token: %v", err)
 		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Token_error": "Failed to generate token"})

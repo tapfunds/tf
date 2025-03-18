@@ -28,6 +28,7 @@ type User struct {
 type LoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
+	Remember bool   `json:"remember"`
 }
 
 var validate *validator.Validate
@@ -86,16 +87,16 @@ func (u *User) Validate(action string) map[string]string {
 }
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
-	err := db.Create(&u).Error 
+	err := db.Create(&u).Error
 	if err != nil {
-		return nil, err 
+		return nil, err
 	}
 	return u, nil
 }
 
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var users []User
-	err := db.Limit(100).Find(&users).Error 
+	err := db.Limit(100).Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -103,9 +104,9 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 }
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
-	err := db.Where("id = ?", uid).First(&u).Error 
+	err := db.Where("id = ?", uid).First(&u).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) { 
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user not found")
 		}
 		return nil, err

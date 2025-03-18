@@ -19,16 +19,21 @@ type CustomClaims struct {
 }
 
 // CreateToken generates a JWT token for a user
-func CreateToken(uid uint32) (string, error) {
+func CreateToken(uid uint32, remember bool) (string, error) {
 	secret := os.Getenv("API_SECRET")
 	if secret == "" {
 		return "", fmt.Errorf("API_SECRET environment variable not set")
+	}
+
+	expirationTime := time.Hour * 72 // 3 days
+	if remember {
+		expirationTime = time.Hour * 24 // 24 hours
 	}
 	claims := CustomClaims{
 		Authorized: true,
 		ID:         uid,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			ExpiresAt: time.Now().Add(expirationTime).Unix(),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

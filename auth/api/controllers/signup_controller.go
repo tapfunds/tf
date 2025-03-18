@@ -38,7 +38,7 @@ func (server *Server) Signup(c *gin.Context) {
 	}
 
 	// Generate authentication token
-	token, err := auth.CreateToken(userCreated.ID)
+	token, err := auth.CreateToken(userCreated.ID, false)
 	if err != nil {
 		log.Printf("Failed to create token: %v", err)
 		errors.HandleError(c, http.StatusInternalServerError, map[string]string{"Token_error": "Failed to generate token"})

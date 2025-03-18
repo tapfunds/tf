@@ -19,6 +19,19 @@ export const SignupFormSchema = z
   });
 export type SignupForm = z.infer<typeof SignupFormSchema>;
 
+// Define login form schema
+export const LoginFormSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  remember: z.boolean().default(false),
+});
+
+export type LoginFormState =
+  | {
+      error?: string | Record<string, string[]>; // Error can be a string or an object with field-specific errors
+    }
+  | undefined; // Initial state or no errors
+
 export type FormState =
   | User
   | { error: string | Record<string, string[]> }
