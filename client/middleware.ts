@@ -13,15 +13,26 @@ export default async function middleware(req: NextRequest) {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
-  // const isValidToken = await validateToken(sessionToken);
+  let isValidSession = false;
+  if (session?.token) {
+    const validation = await validateAuthAPIToken(session.token);
+    isValidSession = validation.isValid;
 
-  if (isProtectedRoute && !session?.userId) {
+    if (!isValidSession) {
+      const response = NextResponse.redirect(new URL("/login", req.nextUrl));
+      response.cookies.delete("session");
+      return response;
+    }
+  }
+
+  if (isProtectedRoute && (!session?.userId || !isValidSession)) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
   if (
     isPublicRoute &&
     session?.userId &&
+    isValidSession &&
     !req.nextUrl.pathname.startsWith("/funds")
   ) {
     return NextResponse.redirect(new URL("/funds", req.nextUrl));

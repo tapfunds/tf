@@ -86,8 +86,8 @@ export const verifySession = cache(async () => {
 
 export async function validateAuthAPIToken(
   token: string | unknown
-): Promise<boolean> {
-  if (!token) return false;
+): Promise<{ isValid: boolean; user?: any; error?: string }> {
+  if (!token) return { isValid: false, error: "No token provided" };
 
   try {
     const response = await fetch(`${baseAPIString}/auth/validate/${token}`, {
@@ -97,14 +97,29 @@ export async function validateAuthAPIToken(
       },
     });
 
+    if (response.status === 401) {
+      // Token expired or invalid
+      return { isValid: false, error: "Token expired or invalid" };
+    }
+
     if (!response.ok) {
-      throw new Error("Token validation failed");
+      return { isValid: false, error: "Token validation failed" };
     }
 
     const data = await response.json();
-    return data.isValid; // Assuming your API returns { isValid: true/false }
+
+    if (data.isValid && data.user) {
+      // Return user data if available
+      return { isValid: true, user: data.user };
+    }
+
+    return { isValid: data.isValid };
   } catch (error) {
     console.error("Token validation error:", error);
-    return false;
+    return {
+      isValid: false,
+      error:
+        error instanceof Error ? error.message : "Unknown validation error",
+    };
   }
 }
