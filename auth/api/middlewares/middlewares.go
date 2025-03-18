@@ -6,36 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tapfunds/tf/auth/api/auth"
 )
-
-type contextKey string
-
-const UserIDKey contextKey = "user_id"
-
-// TokenAuthMiddleware handles placement of JWT in headers
-func TokenAuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if err := auth.TokenValid(c.Request); err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"status": http.StatusUnauthorized,
-				"error":  "Unauthorized: invalid token",
-			})
-			return
-		}
-
-		userID, err := auth.ExtractTokenID(c.Request)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"status": http.StatusUnauthorized,
-				"error":  "Unauthorized: invalid token",
-			})
-			return
-		}
-		c.Set(string(UserIDKey), userID)
-		c.Next()
-	}
-}
 
 // CORSMiddleware enables us interact with the NextJS Frontend
 func CORSMiddleware() gin.HandlerFunc {

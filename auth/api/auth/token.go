@@ -10,8 +10,18 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
+// TokenResponse represents the standard response format for token operations
+type TokenResponse struct {
+	IsValid   bool   `json:"isValid"`
+	UserID    uint32 `json:"userId,omitempty"`
+	ExpiresIn int64  `json:"expiresIn,omitempty"`
+	Error     string `json:"error,omitempty"`
+}
+
+// CustomClaims defines the structure for JWT claims
 type CustomClaims struct {
 	Authorized bool   `json:"authorized"`
 	ID         uint32 `json:"id"`
@@ -25,10 +35,12 @@ func CreateToken(uid uint32, remember bool) (string, error) {
 		return "", fmt.Errorf("API_SECRET environment variable not set")
 	}
 
-	expirationTime := time.Hour * 72 // 3 days
+	// Default is 3 days, remember me makes it 7 days
+	expirationTime := time.Hour * 72
 	if remember {
-		expirationTime = time.Hour * 24 // 24 hours
+		expirationTime = time.Hour * 168 // 7 days
 	}
+
 	claims := CustomClaims{
 		Authorized: true,
 		ID:         uid,
@@ -40,51 +52,70 @@ func CreateToken(uid uint32, remember bool) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
-func IsTokenExpired(claims jwt.MapClaims) bool {
-	exp, ok := claims["exp"].(float64)
-	if !ok {
-		return true
-	}
-	return time.Now().Unix() > int64(exp)
-}
-
-// TokenValid validates the JWT token in the request
-func TokenValid(r *http.Request) error {
-	tokenString := ExtractToken(r)
+// ParseToken is a core function that parses and validates any JWT token
+func ParseToken(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	if tokenString == "" {
-		return fmt.Errorf("missing token")
+		return nil, nil, fmt.Errorf("missing token")
 	}
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// is token.Method type HMAC?
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(os.Getenv("API_SECRET")), nil
 	})
+
 	if err != nil {
-		return fmt.Errorf("invalid token: %v", err)
-	}
-	// Ensure token is valid and claims are properly extracted
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		exp, ok := claims["exp"].(float64)
-		if !ok {
-			return fmt.Errorf("invalid exp claim")
-		}
-
-		// Compare the expiration time (float64) with the current time (int64)
-		if int64(exp) < time.Now().Unix() {
-			return fmt.Errorf("token has expired")
-		}
-
-		Pretty(claims)
+		return nil, nil, fmt.Errorf("invalid token: %v", err)
 	}
 
-	return nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, nil, fmt.Errorf("invalid token claims")
+	}
+
+	// Check expiration
+	exp, ok := claims["exp"].(float64)
+	if !ok || int64(exp) < time.Now().Unix() {
+		return nil, nil, fmt.Errorf("token has expired")
+	}
+
+	return token, claims, nil
+}
+
+// ValidateToken validates a token string and returns detailed information
+func ValidateToken(tokenString string) TokenResponse {
+	_, claims, err := ParseToken(tokenString)
+	if err != nil {
+		return TokenResponse{
+			IsValid: false,
+			Error:   err.Error(),
+		}
+	}
+
+	// Extract user ID
+	userIDFloat, ok := claims["id"].(float64)
+	if !ok {
+		return TokenResponse{
+			IsValid: false,
+			Error:   "invalid user ID in token",
+		}
+	}
+	userID := uint32(userIDFloat)
+
+	// Calculate remaining lifetime
+	exp := int64(claims["exp"].(float64))
+	expiresIn := exp - time.Now().Unix()
+
+	return TokenResponse{
+		IsValid:   true,
+		UserID:    userID,
+		ExpiresIn: expiresIn,
+	}
 }
 
 // ExtractToken retrieves the token from the request header
 func ExtractToken(r *http.Request) string {
-	// Try to extract from Authorization header
 	bearerToken := r.Header.Get("Authorization")
 	if len(strings.Split(bearerToken, " ")) == 2 {
 		return strings.Split(bearerToken, " ")[1]
@@ -92,43 +123,71 @@ func ExtractToken(r *http.Request) string {
 	return ""
 }
 
-// ExtractTokenID retrieves the user ID from the token
+// ExtractTokenID retrieves the user ID from the token in a request
 func ExtractTokenID(r *http.Request) (uint32, error) {
 	tokenString := ExtractToken(r)
-	if tokenString == "" {
-		return 0, fmt.Errorf("missing token")
-	}
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(os.Getenv("API_SECRET")), nil
-	})
+	_, claims, err := ParseToken(tokenString)
 	if err != nil {
-		return 0, fmt.Errorf("invalid token: %v", err)
+		return 0, err
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
-		return 0, fmt.Errorf("invalid token claims")
-	}
-
-	id, ok := claims["id"].(float64) // JWTs decode numbers as float64
+	userIDFloat, ok := claims["id"].(float64)
 	if !ok {
 		return 0, fmt.Errorf("invalid id claim")
 	}
 
-	return uint32(id), nil
+	return uint32(userIDFloat), nil
 }
 
-// Pretty display the claims licely in the terminal
+// Pretty displays the claims nicely in the terminal
 func Pretty(data interface{}) {
 	b, err := json.MarshalIndent(data, "", " ")
 	if err != nil {
 		log.Println(err)
 		return
 	}
-
 	fmt.Println(string(b))
+}
+
+// GinHandler for token validation endpoints
+func ValidateTokenHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.Param("token")
+		response := ValidateToken(token)
+
+		if !response.IsValid {
+			c.JSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		c.JSON(http.StatusOK, response)
+	}
+}
+
+// TokenAuthMiddleware handles JWT authentication in Gin
+func TokenAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenString := ExtractToken(c.Request)
+		_, claims, err := ParseToken(tokenString)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": http.StatusUnauthorized,
+				"error":  "Unauthorized: " + err.Error(),
+			})
+			return
+		}
+
+		userIDFloat, ok := claims["id"].(float64)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": http.StatusUnauthorized,
+				"error":  "Unauthorized: invalid user ID",
+			})
+			return
+		}
+
+		c.Set("user_id", uint32(userIDFloat))
+		c.Next()
+	}
 }

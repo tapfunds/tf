@@ -53,6 +53,7 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	log.Println("Creating server")
 
 	server.Router = gin.Default()
+	server.Router.Use(middlewares.LoggingMiddleware())
 	server.Router.Use(middlewares.CORSMiddleware())
 	server.initializeRoutes()
 
